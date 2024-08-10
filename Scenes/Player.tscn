@@ -1,0 +1,153 @@
+[gd_scene load_steps=20 format=3 uid="uid://b1tod53s44tqh"]
+
+[ext_resource type="Script" path="res://Scripts/Player.cs" id="1_1cnha"]
+[ext_resource type="Texture2D" uid="uid://cv2vci5bnwdjd" path="res://Sprites/knight.png" id="2_ccksf"]
+[ext_resource type="Shader" path="res://Shaders/PlayerColour.gdshader" id="2_v5kot"]
+[ext_resource type="FontFile" uid="uid://cfi521s5ll4ld" path="res://Fonts/Retrograde/Retrograde-Bold.otf" id="3_q0nro"]
+[ext_resource type="Shader" path="res://Shaders/PixelFontShader.gdshader" id="3_up7dq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u4e7d"]
+shader = ExtResource("2_v5kot")
+shader_parameter/cape1_color_original = Color(0.0392157, 0.439216, 0.188235, 1)
+shader_parameter/cape1_color_new = Color(0.431314, 0.122515, 0.633638, 1)
+shader_parameter/cape2_color_original = Color(0.921569, 0.654902, 0.141176, 1)
+shader_parameter/cape2_color_new = Color(0.711569, 0.00151689, 0.8582, 1)
+shader_parameter/helmet_feathers_original = Color(0.823529, 0.12549, 0.172549, 1)
+shader_parameter/helmet_feathers_new = Color(0.431373, 0.121569, 0.635294, 1)
+shader_parameter/armour_dark_original = Color(0.486275, 0.466667, 0.435294, 1)
+shader_parameter/armour_dark_new = Color(0.800823, 0.786129, 0.762658, 1)
+shader_parameter/armour_med_original = Color(0.701961, 0.666667, 0.631373, 1)
+shader_parameter/armour_med_new = Color(0.891177, 0.874928, 0.858775, 1)
+shader_parameter/armour_light_original = Color(0.917647, 0.87451, 0.819608, 1)
+shader_parameter/armour_light_new = Color(1, 1, 1, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5gw62"]
+atlas = ExtResource("2_ccksf")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_imnct"]
+atlas = ExtResource("2_ccksf")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8ydis"]
+atlas = ExtResource("2_ccksf")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j2jj0"]
+atlas = ExtResource("2_ccksf")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yupyy"]
+atlas = ExtResource("2_ccksf")
+region = Rect2(0, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jqcsh"]
+atlas = ExtResource("2_ccksf")
+region = Rect2(128, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yhx5i"]
+atlas = ExtResource("2_ccksf")
+region = Rect2(224, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tjsdp"]
+atlas = ExtResource("2_ccksf")
+region = Rect2(64, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kflvy"]
+atlas = ExtResource("2_ccksf")
+region = Rect2(64, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_phuae"]
+atlas = ExtResource("2_ccksf")
+region = Rect2(224, 160, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_7ec0b"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5gw62")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_imnct")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8ydis")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j2jj0")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yupyy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jqcsh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yhx5i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tjsdp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kflvy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_phuae")
+}],
+"loop": false,
+"name": &"Jump",
+"speed": 8.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rjnlp"]
+radius = 5.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lpojk"]
+shader = ExtResource("3_up7dq")
+shader_parameter/smoothing = 0.009
+shader_parameter/outline_thickness = 1.0
+shader_parameter/outline_color = Color(0, 0, 0, 1)
+
+[node name="Player" type="CharacterBody2D"]
+position = Vector2(0, -1)
+script = ExtResource("1_1cnha")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_u4e7d")
+position = Vector2(0, -11)
+sprite_frames = SubResource("SpriteFrames_7ec0b")
+animation = &"Idle"
+autoplay = "Idle"
+frame_progress = 0.0483848
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(0, -4)
+shape = SubResource("CircleShape2D_rjnlp")
+
+[node name="DisplayNameLabel" type="Label" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_lpojk")
+custom_minimum_size = Vector2(100, 23)
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -69.0
+offset_top = -35.0
+offset_right = 73.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("3_q0nro")
+theme_override_font_sizes/font_size = 7
+text = "praepollens_sub_caelum"
+horizontal_alignment = 1
+vertical_alignment = 1

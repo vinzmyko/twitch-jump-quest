@@ -1,0 +1,82 @@
+[gd_scene load_steps=8 format=3 uid="uid://dujcycbaipj4k"]
+
+[ext_resource type="FontFile" uid="uid://hnlque4skbpn" path="res://Fonts/Roboto/Roboto-Bold.ttf" id="1_4mhpe"]
+[ext_resource type="Script" path="res://Debug/DebugTwitchChat.cs" id="1_g5rlf"]
+[ext_resource type="FontFile" uid="uid://bth07pu6kwlau" path="res://Fonts/Roboto/Roboto-Black.ttf" id="1_htyiy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1djjh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5lk2m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hscc4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3he44"]
+
+[node name="DebugTwitchChat" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_g5rlf")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer"]
+layout_mode = 2
+color = Color(0.196078, 0.196078, 0.196078, 0.827451)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TwitchChatDebugLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("1_4mhpe")
+text = "   TwitchChatDebug"
+
+[node name="MinimiseButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(30, 25)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_styles/hover = SubResource("StyleBoxEmpty_1djjh")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_5lk2m")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_hscc4")
+text = "-"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+follow_focus = true
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PreviousMessagesLabel" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.629675, 0.629675, 0.629675, 1)
+theme_override_fonts/font = ExtResource("1_htyiy")
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_htyiy")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_3he44")
+max_length = 20
+caret_blink = true

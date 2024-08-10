@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://bj21jp4ymk3l6"]
+
+[ext_resource type="Texture2D" uid="uid://do8e6rs2qjgfh" path="res://Sprites/Platforms/small_sand.tres" id="1_d5ckc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hj0ay"]
+size = Vector2(18, 10)
+
+[node name="SmallPlatform" type="AnimatableBody2D"]
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_d5ckc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_hj0ay")
+one_way_collision = true

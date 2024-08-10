@@ -1,0 +1,33 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="UNLTeamJumpQuest"
+run/main_scene="res://UNLJumpQuest.tscn"
+config/features=PackedStringArray("4.2", "C#", "Forward Plus")
+config/icon="res://icon.svg"
+
+[autoload]
+
+TwitchBot="*res://Scripts/ScriptManagers/TwitchBot.cs"
+GameManager="*res://Scripts/ScriptManagers/GameManager.cs"
+LevelManager="*res://Scripts/ScriptManagers/LevelManager.cs"
+SceneManager="*res://Scripts/ScriptManagers/SceneManager.cs"
+SettingsManager="*res://Scripts/ScriptManagers/SettingsManager.cs"
+UiManager="*res://Scripts/ScriptManagers/UIManager.cs"
+
+[dotnet]
+
+project/assembly_name="UNLTeamJumpQuest"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0

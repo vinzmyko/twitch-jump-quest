@@ -40,7 +40,6 @@ public partial class Player : CharacterBody2D
         // Now send data from twitchchat.cs to player.cs
         if (debugger != null)
         {
-            debugger.DebuggerCommands += OnDebuggerCommandsGiven;
             debugger.DebuggerDeleteSelf += OnDeleteSelf;
         }
 
@@ -55,6 +54,8 @@ public partial class Player : CharacterBody2D
         }
         else
             AddToGroup("Player");
+        
+        GD.Print(IsInGroup("DebugPlayer"));
 
         // Some reason it won't change in Player scene so I do it through code.
         SetCollisionLayerValue(1, false);
@@ -72,12 +73,14 @@ public partial class Player : CharacterBody2D
 
     private void OnDebuggerCommandsGiven(float angle, float power)
     {
+        GD.Print(Name);
+        GD.Print($"{displayName} has {angle} degrees and {power} power, jumpvelocity {BaseJumpVelocity}");
         if (userID != "DEBUG")
             return;
         DoJumpPhysics(angle, power);
     }
 
-    private void DoJumpPhysics(float angle, float power)
+    public void DoJumpPhysics(float angle, float power)
     {
         _jumpVelocity = MyMaths.SetJumpVector(angle, power, BaseJumpVelocity);
         

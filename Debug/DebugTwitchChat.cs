@@ -4,8 +4,6 @@ using System;
 public partial class DebugTwitchChat : Control
 {
     [Signal]
-    public delegate void DebuggerCommandsEventHandler(float angle, float power);
-    [Signal]
     public delegate void DebuggerDeleteSelfEventHandler();
 
     Button minimiseButton;
@@ -73,11 +71,15 @@ public partial class DebugTwitchChat : Control
 
         if (newText == "delete")
         {
+            previousTextString += "delete\n";
+            previousText.Text = previousTextString;
             EmitDeletePlayer();
         }
 
         if (newText == "join")
         {
+            previousTextString += "join\n";
+            previousText.Text = previousTextString;
             GameManager.Instance.HandleJoinRequest(messageInfo);
         }
 
@@ -106,7 +108,8 @@ public partial class DebugTwitchChat : Control
 
     private void DebuggerCommandsEmited(float angle, float power)
     {
-        EmitSignal(SignalName.DebuggerCommands, angle, power);
+        Player DebugPlayer = (Player)GetTree().GetFirstNodeInGroup("DebugPlayer");
+        DebugPlayer.DoJumpPhysics(angle, power);
     }
 
 

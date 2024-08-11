@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://b1tod53s44tqh"]
+[gd_scene load_steps=23 format=3 uid="uid://b1tod53s44tqh"]
 
 [ext_resource type="Script" path="res://Scripts/Player.cs" id="1_1cnha"]
 [ext_resource type="Texture2D" uid="uid://cv2vci5bnwdjd" path="res://Sprites/knight.png" id="2_ccksf"]
@@ -20,6 +20,18 @@ shader_parameter/armour_med_original = Color(0.701961, 0.666667, 0.631373, 1)
 shader_parameter/armour_med_new = Color(0.891177, 0.874928, 0.858775, 1)
 shader_parameter/armour_light_original = Color(0.917647, 0.87451, 0.819608, 1)
 shader_parameter/armour_light_new = Color(1, 1, 1, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r2mwx"]
+atlas = ExtResource("2_ccksf")
+region = Rect2(96, 224, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_00bd3"]
+atlas = ExtResource("2_ccksf")
+region = Rect2(64, 224, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kagw6"]
+atlas = ExtResource("2_ccksf")
+region = Rect2(32, 224, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5gw62"]
 atlas = ExtResource("2_ccksf")
@@ -63,6 +75,26 @@ region = Rect2(224, 160, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_7ec0b"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r2mwx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r2mwx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r2mwx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_00bd3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kagw6")
+}],
+"loop": false,
+"name": &"HeadOnFloor",
+"speed": 2.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_5gw62")
@@ -121,9 +153,10 @@ script = ExtResource("1_1cnha")
 material = SubResource("ShaderMaterial_u4e7d")
 position = Vector2(0, -11)
 sprite_frames = SubResource("SpriteFrames_7ec0b")
-animation = &"Idle"
+animation = &"HeadOnFloor"
 autoplay = "Idle"
-frame_progress = 0.0483848
+frame = 4
+frame_progress = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false

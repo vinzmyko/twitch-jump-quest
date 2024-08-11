@@ -14,6 +14,12 @@ public partial class Player : CharacterBody2D
 
     [Export]
     public float Gravity = 980.0f; // You can adjust this value
+    [Export]
+    public float distanceForHeadOnFloor = 150;
+    public bool headOnFloor = false;
+
+    private float currentYPos = 0;
+    private float previousYPos = 0;
 
     private Vector2 _jumpVelocity = Vector2.Zero;
 
@@ -43,10 +49,12 @@ public partial class Player : CharacterBody2D
             debugger.DebuggerDeleteSelf += OnDeleteSelf;
         }
 
-        TwitchBot.Instance.MessageReceived += OnMessageReceived;
 		animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         displayLabel = GetNode<Label>("DisplayNameLabel");
         displayLabel.Text = displayName;
+
+        TwitchBot.Instance.MessageReceived += OnMessageReceived;
+        animatedSprite.AnimationFinished += OnHeadOnFloorAnimationFinished;
 
         if (userID == "DEBUG")
         {
@@ -61,6 +69,17 @@ public partial class Player : CharacterBody2D
         SetCollisionLayerValue(1, false);
         await showDisplayName(3.5);
     }
+
+    private void OnHeadOnFloorAnimationFinished()
+    {
+        if (animatedSprite.Animation == "HeadOnFloor")
+        {
+            currentYPos = 0;
+            previousYPos = 0;
+            headOnFloor = false;
+        }
+    }
+
 
     private void OnDeleteSelf()
     {
@@ -82,6 +101,10 @@ public partial class Player : CharacterBody2D
 
     public void DoJumpPhysics(float angle, float power)
     {
+        // Only jumps when not head on floor
+        if (headOnFloor)
+            return;
+
         _jumpVelocity = MyMaths.SetJumpVector(angle, power, BaseJumpVelocity);
         
         if (_jumpVelocity.X < 0)
@@ -111,10 +134,28 @@ public partial class Player : CharacterBody2D
 
         if (IsOnFloor())
         {
-			animatedSprite.Play("Idle");
+            if (previousYPos != 0)
+            {
+                if (currentYPos > previousYPos)
+                {
+                    float heightDifference = currentYPos - previousYPos;
+                    if (heightDifference > distanceForHeadOnFloor)
+                    {
+                        headOnFloor = true;
+                    }
+                }
+            }
+            currentYPos = GlobalPosition.Y;
+
+            if (headOnFloor)
+                animatedSprite.Play("HeadOnFloor");
+            else
+                animatedSprite.Play("Idle");
+
             // Apply jump velocity if there's a pending jump
             if (_jumpVelocity != Vector2.Zero)
             {
+                previousYPos = currentYPos;
                 // _ = stop warning error :)
                 _ = showDisplayName(2.0);
                 velocity = _jumpVelocity;

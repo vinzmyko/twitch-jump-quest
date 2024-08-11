@@ -1,5 +1,3 @@
-using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Godot;
 using UNLTeamJumpQuest.TwitchIntegration;
@@ -80,7 +78,6 @@ public partial class Player : CharacterBody2D
         }
     }
 
-
     private void OnDeleteSelf()
     {
         if (userID == "DEBUG")
@@ -132,6 +129,11 @@ public partial class Player : CharacterBody2D
     {
         Vector2 velocity = Velocity;
 
+        if (!IsOnFloor())
+        {
+            velocity.Y += Gravity * (float)delta;
+            animatedSprite.Play("Jump");
+        }
         if (IsOnFloor())
         {
             if (previousYPos != 0)
@@ -165,11 +167,6 @@ public partial class Player : CharacterBody2D
             {
                 velocity.X = 0; // Stop horizontal movement when on floor and not jumping
             }
-        }
-        else
-        {
-            velocity.Y += Gravity * (float)delta;
-			animatedSprite.Play("Jump");
         }
 
         // Move the character

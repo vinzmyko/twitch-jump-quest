@@ -24,6 +24,12 @@ SceneManager="*res://Scripts/ScriptManagers/SceneManager.cs"
 SettingsManager="*res://Scripts/ScriptManagers/SettingsManager.cs"
 UiManager="*res://Scripts/ScriptManagers/UIManager.cs"
 
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="viewport"
+
 [dotnet]
 
 project/assembly_name="UNLTeamJumpQuest"

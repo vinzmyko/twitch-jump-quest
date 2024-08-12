@@ -13,7 +13,7 @@ public partial class Player : CharacterBody2D
     [Export]
     public float Gravity = 980.0f; 
     [Export]
-    public float distanceForHeadOnFloor = 400;
+    public float distanceForHeadOnFloor = 300;
     public bool headOnFloor = false;
 
     private float currentYPos = 0;
@@ -130,18 +130,29 @@ public partial class Player : CharacterBody2D
             velocity.Y += Gravity * (float)delta;
             animatedSprite.Play("Jump");
 
-            // Obtains highest y position during jump
-            if (GlobalPosition.Y < jumpYPos)
+            // If jumping up or is there is an x velocity during a jump then set highest y position while not on the floor
+            if (velocity.Y < 0 && GlobalPosition.Y < jumpYPos || velocity.X > 0)
             {
                 highestYPos = GlobalPosition.Y;
             }
             jumpYPos = GlobalPosition.Y;
+
+            // If collided with wall set highest vector.y to previous platform.y if platform.y is higher then highestYpos
+            if(IsOnWall())
+            {
+                // If highestYPos is lowerer then platformYPos, then use the height from the last platformYPos
+                if (highestYPos > previousYPos)
+                {
+                    highestYPos = previousYPos;
+                }
+            }
         }
+
         if (IsOnFloor())
         {
             // Sets landing y pos to current y value
             currentYPos = GlobalPosition.Y;
-            // If just landed from jump calculate jump distance, if distance > required distance faceplant
+            // If just landed from jump calculate jump distance, if distance > required distance, faceplant
             if (highestYPos != 0)
             {
                 float heightDifference = Math.Abs(currentYPos) - Math.Abs(highestYPos);

@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Godot;
 using UNLTeamJumpQuest.TwitchIntegration;
@@ -9,15 +10,16 @@ public partial class Player : CharacterBody2D
 
     [Export]
     public float BaseJumpVelocity = 500.0f;
-
     [Export]
-    public float Gravity = 980.0f; // You can adjust this value
+    public float Gravity = 980.0f; 
     [Export]
-    public float distanceForHeadOnFloor = 150;
+    public float distanceForHeadOnFloor = 400;
     public bool headOnFloor = false;
 
     private float currentYPos = 0;
     private float previousYPos = 0;
+    private float highestYPos = 0;
+    private float jumpYPos = 0;
 
     private Vector2 _jumpVelocity = Vector2.Zero;
 
@@ -40,8 +42,6 @@ public partial class Player : CharacterBody2D
 
         debugger = GetNodeOrNull<DebugTwitchChat>("/root/Main/CanvasLayer/DebugTwitchChat");
 
-        // Then it's debugging mode
-        // Now send data from twitchchat.cs to player.cs
         if (debugger != null)
         {
             debugger.DebuggerDeleteSelf += OnDeleteSelf;
@@ -60,8 +60,6 @@ public partial class Player : CharacterBody2D
         }
         else
             AddToGroup("Player");
-        
-        GD.Print(IsInGroup("DebugPlayer"));
 
         // Some reason it won't change in Player scene so I do it through code.
         SetCollisionLayerValue(1, false);
@@ -98,7 +96,6 @@ public partial class Player : CharacterBody2D
 
     public void DoJumpPhysics(float angle, float power)
     {
-        // Only jumps when not head on floor
         if (headOnFloor)
             return;
 
@@ -114,7 +111,6 @@ public partial class Player : CharacterBody2D
     {
         if (!IsOnFloor()) return; // Only process jump commands when on the floor
 
-        // If not sent by the Player's user ignore it/return.
         if (messageInfo[1] != userID)
             return;
 
@@ -133,21 +129,28 @@ public partial class Player : CharacterBody2D
         {
             velocity.Y += Gravity * (float)delta;
             animatedSprite.Play("Jump");
+
+            // Obtains highest y position during jump
+            if (GlobalPosition.Y < jumpYPos)
+            {
+                highestYPos = GlobalPosition.Y;
+            }
+            jumpYPos = GlobalPosition.Y;
         }
         if (IsOnFloor())
         {
-            if (previousYPos != 0)
-            {
-                if (currentYPos > previousYPos)
-                {
-                    float heightDifference = currentYPos - previousYPos;
-                    if (heightDifference > distanceForHeadOnFloor)
-                    {
-                        headOnFloor = true;
-                    }
-                }
-            }
+            // Sets landing y pos to current y value
             currentYPos = GlobalPosition.Y;
+            // If just landed from jump calculate jump distance, if distance > required distance faceplant
+            if (highestYPos != 0)
+            {
+                float heightDifference = Math.Abs(currentYPos) - Math.Abs(highestYPos);
+                if (heightDifference >= distanceForHeadOnFloor)
+                {
+                    headOnFloor = true;
+                }
+                highestYPos = 0;
+            }
 
             if (headOnFloor)
                 animatedSprite.Play("HeadOnFloor");
@@ -169,15 +172,8 @@ public partial class Player : CharacterBody2D
             }
         }
 
-        // Move the character
         Velocity = velocity;
         MoveAndSlide();
-    }
-
-    public override void _ExitTree()
-    {
-        base._ExitTree();
-        TwitchBot.Instance.MessageReceived -= OnMessageReceived;
     }
 
     public string GetUserID()

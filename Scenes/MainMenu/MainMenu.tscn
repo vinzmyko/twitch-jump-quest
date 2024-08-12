@@ -59,7 +59,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
 
-[node name="SelectLevel" type="Button" parent="VBoxContainer"]
+[node name="SelectLevelButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(350, 80)
 layout_mode = 2
 size_flags_vertical = 3
@@ -75,7 +75,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_slbnb")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_wgyh3")
 text = "Select Level"
 
-[node name="Settings" type="Button" parent="VBoxContainer"]
+[node name="SettingsButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(350, 80)
 layout_mode = 2
 size_flags_vertical = 3
@@ -91,7 +91,23 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_slbnb")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_wgyh3")
 text = "Settings"
 
-[node name="Exit" type="Button" parent="VBoxContainer"]
+[node name="ManageTeamButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(350, 80)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_ecshk")
+theme_override_font_sizes/font_size = 45
+theme_override_styles/normal = SubResource("StyleBoxFlat_su8kw")
+theme_override_styles/hover = SubResource("StyleBoxFlat_abr2y")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_slbnb")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_wgyh3")
+text = "Manage Teams"
+
+[node name="ExitButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(350, 80)
 layout_mode = 2
 size_flags_vertical = 3

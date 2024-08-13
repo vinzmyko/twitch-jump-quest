@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Godot;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
@@ -11,23 +12,30 @@ namespace UNLTeamJumpQuest.TwitchIntegration
     {
         [Signal]
         public delegate void MessageReceivedEventHandler(string[] messageInfo);
+        [Signal]
+        public delegate void TwitchClientSuccessfullyConnectedEventHandler();
 
-        public int num = 5;
         private const string TWITCH_CHANNEL_NAME = "praepollens_sub_caelum";
-        // WILL NEED TO HIDE THIS LATER
-        private const string TWITCH_ACCESS_TOKEN = "t6ggeo9evwsv8x8u7cxy4tef35kxv4";
+        private const string TWITCH_ACCESS_TOKEN = "knljbxajr6dcbk4b4jq5zzcyjepsjs";
+        private bool isConnected = false;
+        private bool DEBUG = false;
         TwitchClient client;
+        SettingsManager settingsManager;
 
         public static TwitchBot Instance { get; private set;}
 
         public override void _Ready()
         {
+            settingsManager = GetNode<SettingsManager>("/root/SettingsManager");
+
             if (Instance == null)
             {
                 Instance = this;
-                //Maybe connect when the Connect button is pressed.
 
-                Instance.Connect(false);
+                if (DEBUG)
+                {
+                    Instance.ConnectDebug(true);
+                }
             }
             else
             {
@@ -40,7 +48,40 @@ namespace UNLTeamJumpQuest.TwitchIntegration
             client = new TwitchClient();
         }
 
-        internal void Connect(bool isLogging)
+        internal bool Connect(bool isLogging)
+        {
+            ConnectionCredentials creds = new ConnectionCredentials(settingsManager.GetTwitchUserName(), settingsManager.GetTwitchAccessToken());
+            client.Initialize(creds, settingsManager.GetTwitchUserName());
+
+            GD.Print("[Bot]: Connecting...");
+
+            if (isLogging)
+                client.OnLog += Client_OnLog;
+
+            client.OnError += Client_OnError;
+            client.OnMessageReceived += Client_OnMessageReceived;
+            client.OnChatCommandReceived += Client_OnChatCommandReceived;
+            client.OnConnected += client_OnConnected;
+            client.OnIncorrectLogin += Client_OnIncorrectLogin;
+
+            client.Connect();
+
+            return client.IsConnected;
+        }
+
+        private void Client_OnIncorrectLogin(object sender, OnIncorrectLoginArgs e)
+        {
+            GD.Print("Incorrect login: " + e.Exception.Message);
+            CallDeferred(nameof(showUnsuccessfullFloatingMessage));
+            client.Disconnect();
+        }
+
+        private void showUnsuccessfullFloatingMessage()
+        {
+            settingsManager.ShowFloatingMessage("Twitch connection unsuccessfull! Look over the Access Token again!", false);
+        }
+
+        internal bool ConnectDebug(bool isLogging)
         {
             ConnectionCredentials creds = new ConnectionCredentials(TWITCH_CHANNEL_NAME, TWITCH_ACCESS_TOKEN);
             client.Initialize(creds, TWITCH_CHANNEL_NAME);
@@ -50,17 +91,50 @@ namespace UNLTeamJumpQuest.TwitchIntegration
             if (isLogging)
                 client.OnLog += Client_OnLog;
 
-            // client.X is the event and the Client_X is the event handler method that you are subscribing to the event. += is used to attach event handler to event.
             client.OnError += Client_OnError;
             client.OnMessageReceived += Client_OnMessageReceived;
             client.OnChatCommandReceived += Client_OnChatCommandReceived;
-            
-            client.Connect();
             client.OnConnected += client_OnConnected;
+
+            client.Connect();
+
+            return isConnected;
+        }
+
+        internal bool ConnectFailSafe(bool isLogging)
+        {
+            // Dispose of the old client if necessary
+            if (client != null)
+            {
+                client.OnLog -= Client_OnLog;
+                client.OnError -= Client_OnError;
+                client.OnMessageReceived -= Client_OnMessageReceived;
+                client.OnConnected -= client_OnConnected;
+                client.OnIncorrectLogin -= Client_OnIncorrectLogin;
+            }
+
+            // Create a new client instance
+            client = new TwitchClient();
+            ConnectionCredentials creds = new ConnectionCredentials(settingsManager.GetTwitchUserName(), settingsManager.GetTwitchAccessToken());
+            client.Initialize(creds, settingsManager.GetTwitchUserName());
+
+            GD.Print("[Bot]: Connecting...");
+
+            if (isLogging)
+                client.OnLog += Client_OnLog;
+
+            client.OnError += Client_OnError;
+            client.OnMessageReceived += Client_OnMessageReceived;
+            client.OnConnected += client_OnConnected;
+            client.OnIncorrectLogin += Client_OnIncorrectLogin;
+
+            client.Connect();
+            return true;
         }
 
         private void client_OnConnected(object sender, OnConnectedArgs e)
         {
+            CallDeferred(nameof(OnTwitchClientSuccessDeffered));
             GD.Print("[Bot]: Connected");
         }
 
@@ -72,17 +146,17 @@ namespace UNLTeamJumpQuest.TwitchIntegration
             switch (command)
             {
                 case "test":
-                    client.SendMessage(TWITCH_CHANNEL_NAME, "wassup");
+                    client.SendMessage(settingsManager.GetTwitchUserName(), "wassup");
                     break;
             }
 
             // only works for the bot owner
-            if (e.Command.ChatMessage.DisplayName == TWITCH_CHANNEL_NAME)
+            if (e.Command.ChatMessage.DisplayName == settingsManager.GetTwitchUserName())
             {
                 switch (command)
                 {
                     case "hi":
-                        client.SendMessage(TWITCH_CHANNEL_NAME, "Hi Boss");
+                        client.SendMessage(settingsManager.GetTwitchUserName(), "Hi Boss");
                         break;
                 }
             }
@@ -107,9 +181,14 @@ namespace UNLTeamJumpQuest.TwitchIntegration
             EmitSignal(SignalName.MessageReceived, messageInfo);
         }         
 
+        private void OnTwitchClientSuccessDeffered()
+        {
+            EmitSignal(SignalName.TwitchClientSuccessfullyConnected);
+        }
+
         private void Client_OnError(object sender, OnErrorEventArgs e)
         {
-            throw new NotImplementedException();
+            GD.Print(e);
         }
 
         // Whenever a log write happens

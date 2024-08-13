@@ -1,0 +1,230 @@
+[gd_scene load_steps=14 format=3 uid="uid://5x4u3q8iscwy"]
+
+[ext_resource type="Script" path="res://Scenes/Menus/Settings.cs" id="1_h1kca"]
+[ext_resource type="FontFile" uid="uid://bth07pu6kwlau" path="res://Fonts/Roboto/Roboto-Black.ttf" id="1_llqoo"]
+[ext_resource type="FontFile" uid="uid://hnlque4skbpn" path="res://Fonts/Roboto/Roboto-Bold.ttf" id="2_0a1gl"]
+[ext_resource type="Texture2D" uid="uid://dmrmbujb8xib3" path="res://Sprites/ButtonIcons/eye.png" id="3_y2gy5"]
+[ext_resource type="AudioStream" uid="uid://cblf8ar2h0vqm" path="res://Audio/UI/SuccessUI.mp3" id="5_sihyn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wan7f"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lqh5u"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.203922)
+shadow_size = 10
+shadow_offset = Vector2(3, 7)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_djuo1"]
+bg_color = Color(0.830335, 0.830335, 0.830335, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.203922)
+shadow_size = 5
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vl21m"]
+bg_color = Color(0.572988, 0.572988, 0.572988, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.203922)
+shadow_size = 5
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nnl1d"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a4dwu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a03ua"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ti855"]
+
+[node name="Settings" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_h1kca")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -194.0
+offset_top = -201.5
+offset_right = 256.0
+offset_bottom = 201.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 5
+
+[node name="TwitchUsernameLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_llqoo")
+theme_override_font_sizes/font_size = 30
+text = "Twitch Username"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="TwitchUsernameLineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("1_llqoo")
+theme_override_font_sizes/font_size = 20
+
+[node name="MimicShowHideButton" type="Panel" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(31, 31)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_wan7f")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="TwitchAccessTokenLabel" type="Label" parent="VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_llqoo")
+theme_override_font_sizes/font_size = 30
+text = "Twitch Access Token"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TwitchAccessTokenLineEdit" type="LineEdit" parent="VBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("1_llqoo")
+theme_override_font_sizes/font_size = 20
+secret = true
+
+[node name="ShowHideButton" type="Button" parent="VBoxContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(31, 31)
+layout_mode = 2
+icon = ExtResource("3_y2gy5")
+icon_alignment = 1
+expand_icon = true
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 94
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 156
+theme_override_constants/margin_bottom = 10
+
+[node name="Connect" type="Button" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_0a1gl")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_lqh5u")
+theme_override_styles/hover = SubResource("StyleBoxFlat_djuo1")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_vl21m")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_nnl1d")
+text = "Connect
+"
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+theme_override_styles/separator = SubResource("StyleBoxEmpty_a4dwu")
+
+[node name="MasterLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_llqoo")
+theme_override_font_sizes/font_size = 30
+text = "Master
+"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="MasterHSlider" type="HSlider" parent="VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="Panel" type="Panel" parent="VBoxContainer/HBoxContainer4"]
+custom_minimum_size = Vector2(31, 5)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_a03ua")
+
+[node name="HSeparator3" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+theme_override_styles/separator = SubResource("StyleBoxEmpty_a4dwu")
+
+[node name="MusicLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_llqoo")
+theme_override_font_sizes/font_size = 30
+text = "Music"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="MusicHSlider" type="HSlider" parent="VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="Panel2" type="Panel" parent="VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(31, 5)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_ti855")
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+theme_override_styles/separator = SubResource("StyleBoxEmpty_a4dwu")
+
+[node name="SFXLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_llqoo")
+theme_override_font_sizes/font_size = 30
+text = "SFX"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="SFXHSlider" type="HSlider" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="Panel" type="Panel" parent="VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(31, 5)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_a03ua")
+
+[node name="MusicStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_sihyn")
+bus = &"Music"
+
+[node name="SFXMusicPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_sihyn")
+bus = &"SFX"

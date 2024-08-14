@@ -18,7 +18,7 @@ namespace UNLTeamJumpQuest.TwitchIntegration
         private const string TWITCH_CHANNEL_NAME = "praepollens_sub_caelum";
         private const string TWITCH_ACCESS_TOKEN = "knljbxajr6dcbk4b4jq5zzcyjepsjs";
         private bool isConnected = false;
-        private bool DEBUG = false;
+        private bool DEBUG = true;
         TwitchClient client;
         SettingsManager settingsManager;
 
@@ -34,7 +34,7 @@ namespace UNLTeamJumpQuest.TwitchIntegration
 
                 if (DEBUG)
                 {
-                    Instance.ConnectDebug(true);
+                    Instance.ConnectDebug(false);
                 }
             }
             else

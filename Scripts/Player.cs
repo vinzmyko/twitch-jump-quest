@@ -131,9 +131,11 @@ public partial class Player : CharacterBody2D
             animatedSprite.Play("Jump");
 
             // If jumping up or is there is an x velocity during a jump then set highest y position while not on the floor
-            if (velocity.Y < 0 && GlobalPosition.Y < jumpYPos || velocity.X > 0)
+            var goingHorizontal = Math.Abs(velocity.X) > Math.Abs(velocity.Y); // Takes the highest even thought going horizonal
+            if (velocity.Y < 0 && GlobalPosition.Y < jumpYPos || goingHorizontal)
             {
                 highestYPos = GlobalPosition.Y;
+                GD.Print($"{velocity}");
             }
             jumpYPos = GlobalPosition.Y;
 
@@ -156,6 +158,7 @@ public partial class Player : CharacterBody2D
             if (highestYPos != 0)
             {
                 float heightDifference = Math.Abs(currentYPos) - Math.Abs(highestYPos);
+                GD.Print($"{heightDifference} = {Math.Abs(currentYPos)} - {Math.Abs(highestYPos)}");
                 if (heightDifference >= distanceForHeadOnFloor)
                 {
                     headOnFloor = true;

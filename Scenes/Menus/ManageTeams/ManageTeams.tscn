@@ -1,0 +1,550 @@
+[gd_scene load_steps=32 format=3 uid="uid://c4mhfwwwkyri6"]
+
+[ext_resource type="Script" path="res://Scenes/Menus/ManageTeams/ManageTeams.cs" id="1_sfcuu"]
+[ext_resource type="FontFile" uid="uid://bth07pu6kwlau" path="res://Fonts/Roboto/Roboto-Black.ttf" id="2_bdm7f"]
+[ext_resource type="Shader" path="res://Shaders/PlayerColour.gdshader" id="3_jocwj"]
+[ext_resource type="Texture2D" uid="uid://cv2vci5bnwdjd" path="res://Sprites/knight.png" id="4_gs8g4"]
+[ext_resource type="Texture2D" uid="uid://bh7stmonc837u" path="res://Sprites/ButtonIcons/white-larrow.png" id="5_e07ie"]
+[ext_resource type="Texture2D" uid="uid://d2wespwpscajg" path="res://Sprites/ButtonIcons/white-rarrow.png" id="6_w3jg6"]
+[ext_resource type="FontFile" uid="uid://1v2iqrc18mbg" path="res://Fonts/Roboto/Roboto-Light.ttf" id="7_253yc"]
+[ext_resource type="Texture2D" uid="uid://ctwlp0kpqh0pk" path="res://Sprites/ButtonIcons/white-trash.png" id="8_jk8u4"]
+[ext_resource type="Texture2D" uid="uid://dn8lcjfanpl51" path="res://Sprites/ButtonIcons/white-icon.png" id="9_obn84"]
+[ext_resource type="Texture2D" uid="uid://ctjjsvf2cc5g" path="res://Sprites/ButtonIcons/white-json.png" id="10_8l5c6"]
+[ext_resource type="FontFile" uid="uid://hnlque4skbpn" path="res://Fonts/Roboto/Roboto-Bold.ttf" id="11_le8nc"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ask5p"]
+shader = ExtResource("3_jocwj")
+shader_parameter/cape1_color_original = Color(0.0392157, 0.439216, 0.188235, 1)
+shader_parameter/cape1_color_new = Color(0.0392157, 0.439216, 0.188235, 1)
+shader_parameter/cape2_color_original = Color(0.921569, 0.654902, 0.141176, 1)
+shader_parameter/cape2_color_new = Color(0.921569, 0.654902, 0.141176, 1)
+shader_parameter/helmet_feathers_original = Color(0.823529, 0.12549, 0.172549, 1)
+shader_parameter/helmet_feathers_new = Color(0.823529, 0.12549, 0.172549, 1)
+shader_parameter/armour_dark_original = Color(0.486275, 0.466667, 0.435294, 1)
+shader_parameter/armour_dark_new = Color(0.486275, 0.466667, 0.435294, 1)
+shader_parameter/armour_med_original = Color(0.701961, 0.666667, 0.631373, 1)
+shader_parameter/armour_med_new = Color(0.701961, 0.666667, 0.631373, 1)
+shader_parameter/armour_light_original = Color(0.917647, 0.87451, 0.819608, 1)
+shader_parameter/armour_light_new = Color(0.917647, 0.87451, 0.819608, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r2mwx"]
+atlas = ExtResource("4_gs8g4")
+region = Rect2(96, 224, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_00bd3"]
+atlas = ExtResource("4_gs8g4")
+region = Rect2(64, 224, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kagw6"]
+atlas = ExtResource("4_gs8g4")
+region = Rect2(32, 224, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5gw62"]
+atlas = ExtResource("4_gs8g4")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_imnct"]
+atlas = ExtResource("4_gs8g4")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8ydis"]
+atlas = ExtResource("4_gs8g4")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j2jj0"]
+atlas = ExtResource("4_gs8g4")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yupyy"]
+atlas = ExtResource("4_gs8g4")
+region = Rect2(0, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jqcsh"]
+atlas = ExtResource("4_gs8g4")
+region = Rect2(128, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yhx5i"]
+atlas = ExtResource("4_gs8g4")
+region = Rect2(224, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tjsdp"]
+atlas = ExtResource("4_gs8g4")
+region = Rect2(64, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kflvy"]
+atlas = ExtResource("4_gs8g4")
+region = Rect2(64, 160, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ph03x"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r2mwx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r2mwx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r2mwx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_00bd3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kagw6")
+}],
+"loop": false,
+"name": &"HeadOnFloor",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5gw62")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_imnct")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8ydis")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j2jj0")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yupyy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jqcsh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yhx5i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tjsdp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kflvy")
+}],
+"loop": false,
+"name": &"Jump",
+"speed": 8.0
+}]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_whn1n"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_11b54"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xftfx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rlvra"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_eq4p1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5p8pp"]
+
+[node name="ManageTeams" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_sfcuu")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(1000, 600)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -406.0
+offset_top = -270.5
+offset_right = 406.0
+offset_bottom = 270.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="LeftVBox" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(500, 600)
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/HBoxContainer/LeftVBox"]
+custom_minimum_size = Vector2(490, 496)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/LeftVBox/Panel"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 14.0
+offset_right = 187.0
+offset_bottom = 45.0
+theme_override_fonts/font = ExtResource("2_bdm7f")
+theme_override_font_sizes/font_size = 25
+text = "Avatar Preview"
+
+[node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="MarginContainer/HBoxContainer/LeftVBox/Panel"]
+material = SubResource("ShaderMaterial_ask5p")
+position = Vector2(255, 228.5)
+scale = Vector2(15, 15)
+sprite_frames = SubResource("SpriteFrames_ph03x")
+animation = &"Idle"
+autoplay = "Idle"
+
+[node name="AnimationNamesHBox" type="HBoxContainer" parent="MarginContainer/HBoxContainer/LeftVBox"]
+custom_minimum_size = Vector2(500, 100)
+layout_mode = 2
+
+[node name="IdleButton" type="Button" parent="MarginContainer/HBoxContainer/LeftVBox/AnimationNamesHBox"]
+custom_minimum_size = Vector2(164, 100)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_bdm7f")
+theme_override_font_sizes/font_size = 30
+text = "Idle
+"
+
+[node name="JumpButton" type="Button" parent="MarginContainer/HBoxContainer/LeftVBox/AnimationNamesHBox"]
+custom_minimum_size = Vector2(164, 100)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_bdm7f")
+theme_override_font_sizes/font_size = 30
+text = "Jump
+"
+
+[node name="FaceplantButton" type="Button" parent="MarginContainer/HBoxContainer/LeftVBox/AnimationNamesHBox"]
+custom_minimum_size = Vector2(164, 100)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_bdm7f")
+theme_override_font_sizes/font_size = 30
+text = "Faceplant"
+
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 20
+theme_override_styles/separator = SubResource("StyleBoxEmpty_whn1n")
+
+[node name="RightVBox" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(500, 600)
+layout_mode = 2
+
+[node name="TeamNavigationHBox" type="HBoxContainer" parent="MarginContainer/HBoxContainer/RightVBox"]
+custom_minimum_size = Vector2(500, 55)
+layout_mode = 2
+
+[node name="LeftArrowButton" type="Button" parent="MarginContainer/HBoxContainer/RightVBox/TeamNavigationHBox"]
+custom_minimum_size = Vector2(97, 50)
+layout_mode = 2
+icon = ExtResource("5_e07ie")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Panel3" type="Panel" parent="MarginContainer/HBoxContainer/RightVBox/TeamNavigationHBox"]
+custom_minimum_size = Vector2(298, 50)
+layout_mode = 2
+
+[node name="NumOfTeamsLabel" type="Label" parent="MarginContainer/HBoxContainer/RightVBox/TeamNavigationHBox/Panel3"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -89.0
+offset_top = -24.5
+offset_right = 89.0
+offset_bottom = 24.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_bdm7f")
+theme_override_font_sizes/font_size = 30
+text = "Team Navigation"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RightArrowButton" type="Button" parent="MarginContainer/HBoxContainer/RightVBox/TeamNavigationHBox"]
+custom_minimum_size = Vector2(97, 50)
+layout_mode = 2
+icon = ExtResource("6_w3jg6")
+icon_alignment = 1
+expand_icon = true
+
+[node name="TeamInfoHBox" type="HBoxContainer" parent="MarginContainer/HBoxContainer/RightVBox"]
+layout_mode = 2
+
+[node name="LogoPanel" type="Panel" parent="MarginContainer/HBoxContainer/RightVBox/TeamInfoHBox"]
+custom_minimum_size = Vector2(133, 133)
+layout_mode = 2
+
+[node name="LogoLabel" type="Label" parent="MarginContainer/HBoxContainer/RightVBox/TeamInfoHBox/LogoPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -25.0
+offset_top = -12.0
+offset_right = 25.0
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_bdm7f")
+theme_override_font_sizes/font_size = 20
+text = " Logo"
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/HBoxContainer/RightVBox/TeamInfoHBox/LogoPanel"]
+custom_minimum_size = Vector2(133, 133)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+expand_mode = 1
+stretch_mode = 6
+
+[node name="TeamNameVBox" type="VBoxContainer" parent="MarginContainer/HBoxContainer/RightVBox/TeamInfoHBox"]
+custom_minimum_size = Vector2(363, 0)
+layout_mode = 2
+
+[node name="TeamNameLineEdit" type="LineEdit" parent="MarginContainer/HBoxContainer/RightVBox/TeamInfoHBox/TeamNameVBox"]
+custom_minimum_size = Vector2(160, 64)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_bdm7f")
+theme_override_font_sizes/font_size = 35
+placeholder_text = "Team Name"
+
+[node name="TeamAbbrevLineEdit" type="LineEdit" parent="MarginContainer/HBoxContainer/RightVBox/TeamInfoHBox/TeamNameVBox"]
+custom_minimum_size = Vector2(160, 64)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_bdm7f")
+theme_override_font_sizes/font_size = 35
+placeholder_text = "Team Abbreviation"
+
+[node name="ColourPicker" type="Panel" parent="MarginContainer/HBoxContainer/RightVBox"]
+custom_minimum_size = Vector2(154, 300)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_bottom = 0
+
+[node name="ColourPickerVBox" type="VBoxContainer" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="CapeMainHBox" type="HBoxContainer" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox/CapeMainHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("2_bdm7f")
+theme_override_font_sizes/font_size = 30
+text = "Cape Main
+"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox/CapeMainHBox"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+size_flags_horizontal = 8
+edit_alpha = false
+
+[node name="CapeTrimHBox" type="HBoxContainer" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox/CapeTrimHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("2_bdm7f")
+theme_override_font_sizes/font_size = 30
+text = "Cape Trim
+"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox/CapeTrimHBox"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+size_flags_horizontal = 8
+edit_alpha = false
+
+[node name="ArmourLightHBox" type="HBoxContainer" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox/ArmourLightHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("2_bdm7f")
+theme_override_font_sizes/font_size = 30
+text = "Armour - Light
+"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox/ArmourLightHBox"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+size_flags_horizontal = 8
+edit_alpha = false
+
+[node name="ArmourMediumHBox" type="HBoxContainer" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox/ArmourMediumHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("2_bdm7f")
+theme_override_font_sizes/font_size = 30
+text = "Armour - Medium"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox/ArmourMediumHBox"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+size_flags_horizontal = 8
+edit_alpha = false
+
+[node name="ArmourDarkHBox2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox/ArmourDarkHBox2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("2_bdm7f")
+theme_override_font_sizes/font_size = 30
+text = "Armour - Dark"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox/ArmourDarkHBox2"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+size_flags_horizontal = 8
+edit_alpha = false
+
+[node name="AddRemoveTeamsHBox" type="HBoxContainer" parent="MarginContainer/HBoxContainer/RightVBox"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/RightVBox/AddRemoveTeamsHBox"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/RightVBox/AddRemoveTeamsHBox/MarginContainer"]
+layout_mode = 2
+
+[node name="AddTeamButton" type="Button" parent="MarginContainer/HBoxContainer/RightVBox/AddRemoveTeamsHBox/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(164, 100)
+layout_mode = 2
+theme_override_constants/icon_max_width = 60
+theme_override_fonts/font = ExtResource("7_253yc")
+theme_override_font_sizes/font_size = 77
+text = "+"
+icon_alignment = 1
+expand_icon = true
+
+[node name="TrashTeamButton" type="Button" parent="MarginContainer/HBoxContainer/RightVBox/AddRemoveTeamsHBox/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(164, 100)
+layout_mode = 2
+theme_override_constants/icon_max_width = 53
+icon = ExtResource("8_jk8u4")
+icon_alignment = 1
+expand_icon = true
+
+[node name="SaveButton" type="Button" parent="MarginContainer/HBoxContainer/RightVBox/AddRemoveTeamsHBox/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(164, 100)
+layout_mode = 2
+theme_override_constants/icon_max_width = 60
+icon = ExtResource("9_obn84")
+icon_alignment = 1
+expand_icon = true
+
+[node name="MarginContainer2" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -62.0
+offset_bottom = 120.0
+grow_horizontal = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Symbol" type="Button" parent="MarginContainer2/VBoxContainer/Panel"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+offset_top = 1.0
+offset_right = 62.0
+offset_bottom = 51.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_11b54")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_xftfx")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_rlvra")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_eq4p1")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_5p8pp")
+icon = ExtResource("10_8l5c6")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="ImportJsonButton" type="Button" parent="MarginContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("11_le8nc")
+text = "Import
+"
+
+[node name="ExportJsonButton" type="Button" parent="MarginContainer2/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("11_le8nc")
+text = "Export"
+
+[node name="LogoFileDialog" type="FileDialog" parent="MarginContainer2"]
+title = "Open a File"
+initial_position = 2
+size = Vector2i(454, 300)
+ok_button_text = "Open"
+dialog_hide_on_ok = true
+file_mode = 0
+access = 2
+use_native_dialog = true
+
+[node name="ImportFileDialog" type="FileDialog" parent="MarginContainer2"]
+title = "Open a File"
+initial_position = 2
+size = Vector2i(454, 300)
+ok_button_text = "Open"
+dialog_hide_on_ok = true
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.json")
+use_native_dialog = true
+
+[node name="ExportFileDialog" type="FileDialog" parent="MarginContainer2"]
+title = "Save teams.json"
+initial_position = 2
+size = Vector2i(454, 300)
+dialog_hide_on_ok = true
+access = 2
+filters = PackedStringArray("*.json")
+use_native_dialog = true

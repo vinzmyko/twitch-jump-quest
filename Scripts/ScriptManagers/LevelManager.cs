@@ -4,13 +4,14 @@ using System;
 public partial class LevelManager : Node
 {
     Marker2D spawnPosition;
-
     private PackedScene playerScene;
+    SettingsManager settingsManager;
     // Current level information
     private int currentLevel;
     public override void _Ready()
     {
         base._Ready();
+        settingsManager = GetNodeOrNull<SettingsManager>("/root/SettingsManager");
         playerScene = ResourceLoader.Load<PackedScene>("res://Scenes/Player.tscn");
         GameManager.Instance.PlayerJoined += SpawnPlayer;
 
@@ -24,7 +25,7 @@ public partial class LevelManager : Node
     }
 
     // Method to spawn a player in the current level
-    public void SpawnPlayer(string displayName, string userID)
+    public void SpawnPlayer(string displayName, string userID, string teamAbbrev)
     {
         if (playerScene == null)
         {
@@ -40,7 +41,16 @@ public partial class LevelManager : Node
             return;
         }
 
-        playerInstance.Initialize(displayName, userID);
+        UNL.Team targetTeam = null;
+        foreach (UNL.Team team in settingsManager.UNLTeams.Teams)
+        {
+            if (team.TeamAbbreviation.ToLower() == teamAbbrev)
+            {
+                targetTeam = team;
+            }
+        }
+
+        playerInstance.Initialize(displayName, userID, targetTeam);
         playerInstance.Name = $"Player_{userID}";
         
         if (spawnPosition == null)

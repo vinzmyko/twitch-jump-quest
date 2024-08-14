@@ -25,22 +25,27 @@ public partial class Player : CharacterBody2D
 
     public string userID;
     public string displayName;
-
+    private UNL.Team team;
+    private Color[] teamColours;
     private DebugTwitchChat debugger;
+    private SettingsManager settingsManager;
 
     int points;
 
-    public void Initialize(string _displayName, string _userID)
+    public void Initialize(string _displayName, string _userID, UNL.Team _team)
     {
         displayName = _displayName;
         userID = _userID;
         points = 0;
+        team = _team;
+        SetColoursArray(_team);
     }
     public override async void _Ready()
     {
         base._Ready();
 
         debugger = GetNodeOrNull<DebugTwitchChat>("/root/Main/CanvasLayer/DebugTwitchChat");
+        settingsManager = GetNodeOrNull<SettingsManager>("/root/SettingsManager");
 
         if (debugger != null)
         {
@@ -50,6 +55,8 @@ public partial class Player : CharacterBody2D
 		animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         displayLabel = GetNode<Label>("DisplayNameLabel");
         displayLabel.Text = displayName;
+        ShaderMaterial uniqueMaterial = (ShaderMaterial)animatedSprite.Material.Duplicate();
+        SetTeamColours(teamColours, uniqueMaterial);
 
         TwitchBot.Instance.MessageReceived += OnMessageReceived;
         animatedSprite.AnimationFinished += OnHeadOnFloorAnimationFinished;
@@ -135,7 +142,6 @@ public partial class Player : CharacterBody2D
             if (velocity.Y < 0 && GlobalPosition.Y < jumpYPos || goingHorizontal)
             {
                 highestYPos = GlobalPosition.Y;
-                GD.Print($"{velocity}");
             }
             jumpYPos = GlobalPosition.Y;
 
@@ -212,5 +218,38 @@ public partial class Player : CharacterBody2D
         material.SetShaderParameter("armour_dark_new", armourDarkColor); // 7c776f
         material.SetShaderParameter("armour_med_new", armourMedColor); // b3aaa1
         material.SetShaderParameter("armour_light_new", armourLightColor); // eadfd1
+    }
+
+    public void SetTeamColours(Color[] colourArray, ShaderMaterial uniqueMaterial)
+    {
+        uniqueMaterial.SetShaderParameter("cape1_color_new", colourArray[0]);
+        uniqueMaterial.SetShaderParameter("cape2_color_new", colourArray[1]); 
+        // material.SetShaderParameter("helmet_feathers_new", helmetFeathersColor); 
+        uniqueMaterial.SetShaderParameter("armour_dark_new", colourArray[2]);
+        uniqueMaterial.SetShaderParameter("armour_med_new", colourArray[3]);
+        uniqueMaterial.SetShaderParameter("armour_light_new", colourArray[4]);
+
+        animatedSprite.Material = uniqueMaterial;
+    }
+
+    private void SetColoursArray(UNL.Team team)
+    {
+        teamColours = new Color[5];
+        if (team != null)
+        {
+            teamColours[0] = team.TeamColours.CapeMain;
+            teamColours[1] = team.TeamColours.CapeTrim;
+            teamColours[2] = team.TeamColours.ArmourLight;
+            teamColours[3] = team.TeamColours.ArmourMedium;
+            teamColours[4] = team.TeamColours.ArmourDark;
+        }
+        else
+        {
+            teamColours[0] = Color.FromHtml("#ccffcc");
+            teamColours[1] = Color.FromHtml("#eba724");
+            teamColours[2] = Color.FromHtml("#d2202c");
+            teamColours[3] = Color.FromHtml("#7c776f");
+            teamColours[4] = Color.FromHtml("#eadfd1");
+        }
     }
 }

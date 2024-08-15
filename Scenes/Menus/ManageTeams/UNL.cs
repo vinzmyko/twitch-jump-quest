@@ -13,6 +13,7 @@ namespace UNL
         public string LogoPath { get; set; }
         public AvatarColours TeamColours { get; set; }
         public string LogoBase64 { get; set; }
+        public string HexColourCode { get; set; }
 
         [Serializable]
         public class AvatarColours
@@ -56,13 +57,14 @@ namespace UNL
             return manager;
         }
 
-        public void AddTeam(string teamName, string teamAbbrev, string logoPath, Color[] avatarColours)
+        public void AddTeam(string teamName, string teamAbbrev, string logoPath, Color[] avatarColours, string hexColourCode)
         {
             var team = new Team
             {
                 TeamName = teamName,
                 TeamAbbreviation = teamAbbrev,
                 LogoPath = logoPath,
+                HexColourCode = hexColourCode,
                 TeamColours = new Team.AvatarColours
                 {
                     CapeMain = avatarColours[0],

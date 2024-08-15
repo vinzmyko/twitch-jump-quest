@@ -154,7 +154,7 @@ public partial class SettingsManager : Node
         }
     }
 
-    public void AddTeamToList(string teamName, string teamAbbrev, Texture2D logo, ColorPickerButton[] avatarColours)
+    public void AddTeamToList(string teamName, string teamAbbrev, Texture2D logo, ColorPickerButton[] avatarColours, string hexColourCode)
     {
         if (UNLTeams == null)
         {
@@ -176,7 +176,7 @@ public partial class SettingsManager : Node
         Image image = logo.GetImage();
         image.SavePng(fullPath);
 
-        UNLTeams.AddTeam(teamName, teamAbbrev, fileName, colours);
+        UNLTeams.AddTeam(teamName, teamAbbrev, fileName, colours, hexColourCode);
 
         // Add team to the TeamPages version
         TeamPages.AddTeam(UNLTeams.Teams[UNLTeams.Teams.Count - 1]);

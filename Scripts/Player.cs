@@ -5,6 +5,8 @@ using UNLTeamJumpQuest.TwitchIntegration;
 
 public partial class Player : CharacterBody2D
 {
+    [Signal]
+    public delegate void DiedEventHandler(string displayName, string userID, string teamAbbrev);
 	AnimatedSprite2D animatedSprite;
     Label displayLabel;
 
@@ -57,6 +59,7 @@ public partial class Player : CharacterBody2D
         displayLabel.Text = displayName;
         ShaderMaterial uniqueMaterial = (ShaderMaterial)animatedSprite.Material.Duplicate();
         SetTeamColours(teamColours, uniqueMaterial);
+        animatedSprite.Material = uniqueMaterial;
 
         TwitchBot.Instance.MessageReceived += OnMessageReceived;
         animatedSprite.AnimationFinished += OnHeadOnFloorAnimationFinished;
@@ -71,6 +74,12 @@ public partial class Player : CharacterBody2D
         // Some reason it won't change in Player scene so I do it through code.
         SetCollisionLayerValue(1, false);
         await showDisplayName(3.5);
+    }
+
+    public void Die()
+    {
+        EmitSignal(SignalName.Died, displayName, userID, team.TeamAbbreviation);
+        // death logic, play animation, remove from scene
     }
 
     private void OnHeadOnFloorAnimationFinished()
@@ -164,7 +173,6 @@ public partial class Player : CharacterBody2D
             if (highestYPos != 0)
             {
                 float heightDifference = Math.Abs(currentYPos) - Math.Abs(highestYPos);
-                GD.Print($"{heightDifference} = {Math.Abs(currentYPos)} - {Math.Abs(highestYPos)}");
                 if (heightDifference >= distanceForHeadOnFloor)
                 {
                     headOnFloor = true;
@@ -228,28 +236,24 @@ public partial class Player : CharacterBody2D
         uniqueMaterial.SetShaderParameter("armour_dark_new", colourArray[2]);
         uniqueMaterial.SetShaderParameter("armour_med_new", colourArray[3]);
         uniqueMaterial.SetShaderParameter("armour_light_new", colourArray[4]);
-
-        animatedSprite.Material = uniqueMaterial;
     }
 
     private void SetColoursArray(UNL.Team team)
     {
         teamColours = new Color[5];
-        if (team != null)
+        if (team == null)
         {
-            teamColours[0] = team.TeamColours.CapeMain;
-            teamColours[1] = team.TeamColours.CapeTrim;
-            teamColours[2] = team.TeamColours.ArmourLight;
-            teamColours[3] = team.TeamColours.ArmourMedium;
-            teamColours[4] = team.TeamColours.ArmourDark;
-        }
-        else
-        {
-            teamColours[0] = Color.FromHtml("#ccffcc");
+            teamColours[0] = Color.FromHtml("#fff");
             teamColours[1] = Color.FromHtml("#eba724");
             teamColours[2] = Color.FromHtml("#d2202c");
             teamColours[3] = Color.FromHtml("#7c776f");
             teamColours[4] = Color.FromHtml("#eadfd1");
+            return;
         }
+        teamColours[0] = team.TeamColours.CapeMain;
+        teamColours[1] = team.TeamColours.CapeTrim;
+        teamColours[2] = team.TeamColours.ArmourLight;
+        teamColours[3] = team.TeamColours.ArmourMedium;
+        teamColours[4] = team.TeamColours.ArmourDark;
     }
 }

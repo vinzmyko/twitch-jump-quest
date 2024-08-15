@@ -42,6 +42,19 @@ public partial class SettingsManager : Node
         TeamPages = new TeamPageManager();
         InitialiseTeams();
         EnsureTeamImagesDirectoryExists();
+        SetAudioFromMemory();
+    }
+    
+    private void SetAudioFromMemory()
+    {
+        for (int i = 0; i < AudioServer.BusCount; i++)
+        {
+            float? volume = GetBusVolume(i);
+            if (volume.HasValue)
+            {
+                AudioServer.SetBusVolumeDb(i, Mathf.LinearToDb(volume.Value));
+            }
+        }
     }
 
     private void InitialiseTeams()

@@ -328,8 +328,15 @@ theme_override_fonts/font = ExtResource("2_bdm7f")
 theme_override_font_sizes/font_size = 35
 placeholder_text = "Team Abbreviation"
 
+[node name="HexColourLineEdit" type="LineEdit" parent="MarginContainer/HBoxContainer/RightVBox"]
+custom_minimum_size = Vector2(160, 64)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_bdm7f")
+theme_override_font_sizes/font_size = 35
+placeholder_text = "#000000"
+
 [node name="ColourPicker" type="Panel" parent="MarginContainer/HBoxContainer/RightVBox"]
-custom_minimum_size = Vector2(154, 300)
+custom_minimum_size = Vector2(154, 232)
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker"]
@@ -337,13 +344,12 @@ layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 40
-theme_override_constants/margin_bottom = 0
+theme_override_constants/margin_top = 16
 
 [node name="ColourPickerVBox" type="VBoxContainer" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer"]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 5
 
 [node name="CapeMainHBox" type="HBoxContainer" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox"]
 layout_mode = 2
@@ -353,7 +359,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 theme_override_fonts/font = ExtResource("2_bdm7f")
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 25
 text = "Cape Main
 "
 
@@ -371,7 +377,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 theme_override_fonts/font = ExtResource("2_bdm7f")
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 25
 text = "Cape Trim
 "
 
@@ -389,7 +395,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 theme_override_fonts/font = ExtResource("2_bdm7f")
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 25
 text = "Armour - Light
 "
 
@@ -407,7 +413,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 theme_override_fonts/font = ExtResource("2_bdm7f")
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 25
 text = "Armour - Medium"
 
 [node name="ColorPickerButton" type="ColorPickerButton" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox/ArmourMediumHBox"]
@@ -424,7 +430,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 theme_override_fonts/font = ExtResource("2_bdm7f")
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 25
 text = "Armour - Dark"
 
 [node name="ColorPickerButton" type="ColorPickerButton" parent="MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox/ArmourDarkHBox2"]

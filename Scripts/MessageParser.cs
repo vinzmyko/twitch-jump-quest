@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using TwitchLib.Api.Helix.Models.Teams;
 
 public static class MessageParser
 {
@@ -74,5 +76,49 @@ public static class MessageParser
     private static bool ParseAngle(string stringAngle, out float angle)
     {
         return float.TryParse(stringAngle, out angle);
+    }
+
+    public static (bool isValid, UNL.Team team) ParseTeamJoin(string message, UNL.TeamManager UNLTeams)
+    {
+        bool isValid = false;
+        string teamAbbrev = string.Empty;
+        UNL.Team targetTeam = null;
+        string[] messageParts = message.ToLower().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+        if (messageParts.Length == 0)
+        {
+            return (false, targetTeam);
+        }
+
+        string command = messageParts[0];
+
+        if (command != "join")
+        {
+            return (false, targetTeam);
+        }
+
+        foreach (UNL.Team team in UNLTeams.Teams)
+        {
+            if (team.TeamAbbreviation.ToLower() == messageParts[1])
+            {
+                teamAbbrev = messageParts[1];
+            }
+        }
+
+        // if (UNLTeams.Teams.Any(team => team.TeamAbbreviation.ToLower() == messageParts[1]))
+        // {
+        //     teamAbbrev = messageParts[1];
+        // }
+
+        foreach (UNL.Team team in UNLTeams.Teams)
+        {
+            if (teamAbbrev == team.TeamAbbreviation.ToLower())
+            {
+                targetTeam = team;
+                isValid = true;
+            }
+        }
+
+        return (isValid, targetTeam);
     }
 }

@@ -5,6 +5,8 @@ using UNLTeamJumpQuest.TwitchIntegration;
 
 public partial class Player : CharacterBody2D
 {
+    [Signal]
+    public delegate void DiedEventHandler(string displayName, string userID, string teamAbbrev);
 	AnimatedSprite2D animatedSprite;
     Label displayLabel;
 
@@ -25,22 +27,39 @@ public partial class Player : CharacterBody2D
 
     public string userID;
     public string displayName;
-
+    private UNL.Team team;
+    private Color[] teamColours;
     private DebugTwitchChat debugger;
+    private SettingsManager settingsManager;
+    private LevelManager levelManager;
 
     int points;
 
-    public void Initialize(string _displayName, string _userID)
+    public void Initialize(string _displayName, string _userID, UNL.Team _team)
     {
         displayName = _displayName;
         userID = _userID;
         points = 0;
+        team = _team;
+        SetColoursArray(_team);
+        if (_team == null)
+        {
+            return;
+        }
+
+        if (team.TeamAbbreviation.ToLower() == "ggel")
+        {
+            points = 50;
+        }
     }
     public override async void _Ready()
     {
         base._Ready();
 
         debugger = GetNodeOrNull<DebugTwitchChat>("/root/Main/CanvasLayer/DebugTwitchChat");
+        settingsManager = GetNodeOrNull<SettingsManager>("/root/SettingsManager");
+        levelManager = GetNodeOrNull<LevelManager>("/root/LevelManager");
+        
 
         if (debugger != null)
         {
@@ -50,6 +69,9 @@ public partial class Player : CharacterBody2D
 		animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         displayLabel = GetNode<Label>("DisplayNameLabel");
         displayLabel.Text = displayName;
+        ShaderMaterial uniqueMaterial = (ShaderMaterial)animatedSprite.Material.Duplicate();
+        SetTeamColours(teamColours, uniqueMaterial);
+        animatedSprite.Material = uniqueMaterial;
 
         TwitchBot.Instance.MessageReceived += OnMessageReceived;
         animatedSprite.AnimationFinished += OnHeadOnFloorAnimationFinished;
@@ -64,6 +86,18 @@ public partial class Player : CharacterBody2D
         // Some reason it won't change in Player scene so I do it through code.
         SetCollisionLayerValue(1, false);
         await showDisplayName(3.5);
+    }
+
+    public void Die()
+    {
+        EmitSignal(SignalName.Died, displayName, userID, team.TeamAbbreviation);
+        // death logic, play animation, remove from scene
+    }
+
+    public void AddScore(int points)
+    {
+        this.points += points;
+        // levelManager.AddScoreToTeam(team.TeamAbbreviation, points);
     }
 
     private void OnHeadOnFloorAnimationFinished()
@@ -131,7 +165,8 @@ public partial class Player : CharacterBody2D
             animatedSprite.Play("Jump");
 
             // If jumping up or is there is an x velocity during a jump then set highest y position while not on the floor
-            if (velocity.Y < 0 && GlobalPosition.Y < jumpYPos || velocity.X > 0)
+            var goingHorizontal = Math.Abs(velocity.X) > Math.Abs(velocity.Y); // Takes the highest even thought going horizonal
+            if (velocity.Y < 0 && GlobalPosition.Y < jumpYPos || goingHorizontal)
             {
                 highestYPos = GlobalPosition.Y;
             }
@@ -209,5 +244,40 @@ public partial class Player : CharacterBody2D
         material.SetShaderParameter("armour_dark_new", armourDarkColor); // 7c776f
         material.SetShaderParameter("armour_med_new", armourMedColor); // b3aaa1
         material.SetShaderParameter("armour_light_new", armourLightColor); // eadfd1
+    }
+
+    public void SetTeamColours(Color[] colourArray, ShaderMaterial uniqueMaterial)
+    {
+        // int teamPlayerCount = levelManager.teamScores.GetTeamPlayerCount(team.TeamAbbreviation);
+        uniqueMaterial.SetShaderParameter("cape1_color_new", colourArray[0]);
+        uniqueMaterial.SetShaderParameter("cape2_color_new", colourArray[1]); 
+        uniqueMaterial.SetShaderParameter("armour_dark_new", colourArray[2]);
+        uniqueMaterial.SetShaderParameter("armour_med_new", colourArray[3]);
+        uniqueMaterial.SetShaderParameter("armour_light_new", colourArray[4]);
+        if (displayName == "DEBUG")
+        {
+            return;
+        }
+        uniqueMaterial.SetShaderParameter("helmet_feathers_new", 
+            levelManager.uniqueColours[(levelManager.teamScores.GetTeamPlayerCount(team.TeamAbbreviation) - 1) % 15]); 
+    }
+
+    private void SetColoursArray(UNL.Team team)
+    {
+        teamColours = new Color[5];
+        if (team == null)
+        {
+            teamColours[0] = Color.FromHtml("#fff");
+            teamColours[1] = Color.FromHtml("#eba724");
+            teamColours[2] = Color.FromHtml("#d2202c");
+            teamColours[3] = Color.FromHtml("#7c776f");
+            teamColours[4] = Color.FromHtml("#eadfd1");
+            return;
+        }
+        teamColours[0] = team.TeamColours.CapeMain;
+        teamColours[1] = team.TeamColours.CapeTrim;
+        teamColours[2] = team.TeamColours.ArmourLight;
+        teamColours[3] = team.TeamColours.ArmourMedium;
+        teamColours[4] = team.TeamColours.ArmourDark;
     }
 }

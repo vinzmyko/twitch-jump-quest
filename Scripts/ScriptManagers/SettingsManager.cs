@@ -42,6 +42,19 @@ public partial class SettingsManager : Node
         TeamPages = new TeamPageManager();
         InitialiseTeams();
         EnsureTeamImagesDirectoryExists();
+        SetAudioFromMemory();
+    }
+    
+    private void SetAudioFromMemory()
+    {
+        for (int i = 0; i < AudioServer.BusCount; i++)
+        {
+            float? volume = GetBusVolume(i);
+            if (volume.HasValue)
+            {
+                AudioServer.SetBusVolumeDb(i, Mathf.LinearToDb(volume.Value));
+            }
+        }
     }
 
     private void InitialiseTeams()
@@ -154,7 +167,7 @@ public partial class SettingsManager : Node
         }
     }
 
-    public void AddTeamToList(string teamName, string teamAbbrev, Texture2D logo, ColorPickerButton[] avatarColours)
+    public void AddTeamToList(string teamName, string teamAbbrev, Texture2D logo, ColorPickerButton[] avatarColours, string hexColourCode)
     {
         if (UNLTeams == null)
         {
@@ -176,7 +189,7 @@ public partial class SettingsManager : Node
         Image image = logo.GetImage();
         image.SavePng(fullPath);
 
-        UNLTeams.AddTeam(teamName, teamAbbrev, fileName, colours);
+        UNLTeams.AddTeam(teamName, teamAbbrev, fileName, colours, hexColourCode);
 
         // Add team to the TeamPages version
         TeamPages.AddTeam(UNLTeams.Teams[UNLTeams.Teams.Count - 1]);

@@ -13,6 +13,7 @@ namespace UNL
         public string LogoPath { get; set; }
         public AvatarColours TeamColours { get; set; }
         public string LogoBase64 { get; set; }
+        public string HexColourCode { get; set; }
 
         [Serializable]
         public class AvatarColours
@@ -56,13 +57,14 @@ namespace UNL
             return manager;
         }
 
-        public void AddTeam(string teamName, string teamAbbrev, string logoPath, Color[] avatarColours)
+        public void AddTeam(string teamName, string teamAbbrev, string logoPath, Color[] avatarColours, string hexColourCode)
         {
             var team = new Team
             {
                 TeamName = teamName,
                 TeamAbbreviation = teamAbbrev,
                 LogoPath = logoPath,
+                HexColourCode = hexColourCode,
                 TeamColours = new Team.AvatarColours
                 {
                     CapeMain = avatarColours[0],
@@ -91,6 +93,104 @@ namespace UNL
         public override void WriteJson(JsonWriter writer, Color value, JsonSerializer serializer)
         {
             writer.WriteValue(value.ToHtml());
+        }
+    }
+
+    public class TeamScore
+    {
+        public Team TeamInfo { get; private set; }
+        public int PlayerCount { get; private set; }
+        public int TotalScore { get; private set; }
+
+        public TeamScore(Team team)
+        {
+            TeamInfo = team;
+            PlayerCount = 0;
+            TotalScore = 0;
+        }
+
+        public void AddPlayer()
+        {
+            PlayerCount++;
+        }
+
+        public void RemovePlayer()
+        {
+            if (PlayerCount > 0)
+                PlayerCount--;
+        }
+
+        public void AddScore(int score)
+        {
+            TotalScore += score;
+        }
+    }
+
+    public class TeamScoreManager
+    {
+        private Dictionary<string, TeamScore> teamScores;
+
+        public TeamScoreManager()
+        {
+            teamScores = new Dictionary<string, TeamScore>();
+        }
+
+        public void AddTeam(Team team)
+        {
+            if (!teamScores.ContainsKey(team.TeamAbbreviation))
+            {
+                teamScores[team.TeamAbbreviation] = new TeamScore(team);
+            }
+        }
+
+        public void AddPlayerToTeam(string teamAbbrev)
+        {
+            if (teamScores.TryGetValue(teamAbbrev, out TeamScore teamScore))
+            {
+                teamScore.AddPlayer();
+            }
+        }
+
+        public void RemovePlayerFromTeam(string teamAbbrev)
+        {
+            if (teamScores.TryGetValue(teamAbbrev, out TeamScore teamScore))
+            {
+                teamScore.RemovePlayer();
+            }
+        }
+
+        public void AddScoreToTeam(string teamAbbrev, int score)
+        {
+            if (teamScores.TryGetValue(teamAbbrev, out TeamScore teamScore))
+            {
+                teamScore.AddScore(score);
+            }
+        }
+
+        public TeamScore GetTeamScore(string teamAbbrev)
+        {
+            return teamScores.TryGetValue(teamAbbrev, out TeamScore teamScore) ? teamScore : null;
+        }
+
+        public IEnumerable<TeamScore> GetAllTeamScores()
+        {
+            return teamScores.Values;
+        }
+
+        public bool TeamExists(string teamAbbreviation)
+        {
+            string normalizedAbbrev = teamAbbreviation.ToUpper();
+            return teamScores.ContainsKey(normalizedAbbrev);
+        }
+
+        public int GetTeamPlayerCount(string teamAbbrev)
+        {
+            teamAbbrev = teamAbbrev.ToUpper();
+            if (teamScores.TryGetValue(teamAbbrev, out TeamScore teamScore))
+            {
+                return teamScore.PlayerCount;
+            }
+            return -1; 
         }
     }
 }

@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://cubxqqpjap3b1"]
+
+[ext_resource type="FontFile" uid="uid://bil6h4rcb5s0v" path="res://Fonts/Retrograde/Retrograde-Regular.otf" id="1_p7biu"]
+[ext_resource type="FontFile" uid="uid://cfi521s5ll4ld" path="res://Fonts/Retrograde/Retrograde-Bold.otf" id="2_68glx"]
+[ext_resource type="Script" path="res://Scenes/GameUI/ChatBoxSentence.cs" id="3_yvqqm"]
+
+[node name="Sentence" type="RichTextLabel"]
+custom_minimum_size = Vector2(355, 50)
+layout_direction = 1
+theme_override_fonts/normal_font = ExtResource("1_p7biu")
+theme_override_fonts/bold_font = ExtResource("2_68glx")
+theme_override_font_sizes/normal_font_size = 18
+theme_override_font_sizes/bold_font_size = 18
+bbcode_enabled = true
+text = "praepollens_sub_caelum has died"
+script = ExtResource("3_yvqqm")

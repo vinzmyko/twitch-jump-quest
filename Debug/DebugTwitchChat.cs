@@ -80,7 +80,7 @@ public partial class DebugTwitchChat : Control
         {
             previousTextString += "join\n";
             previousText.Text = previousTextString;
-            GameManager.Instance.HandleJoinRequest(messageInfo);
+            GameManager.Instance.HandleJoinRequest(messageInfo, null);
         }
 
         var (isValid, angle, power) = MessageParser.ParseMessage(newText);

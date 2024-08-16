@@ -9,7 +9,7 @@ public partial class ManageTeams : Control
     private Button teamNavigationLeft, teamNavigationRight;
     private Label numOfTeams;
     private TextureRect logoRect;
-    private LineEdit teamNameLineEdit, teamAbbrevLineEdit;
+    private LineEdit teamNameLineEdit, teamAbbrevLineEdit, hexColourLineEdit;
     private ColorPickerButton capeMain, capeTrim, armourLight, armourMedium, armourDark;
     private Button addTeamButton, trashTeamButton, saveTeams;
     private Button jsonImportButton, jsonExportButton;
@@ -33,6 +33,7 @@ public partial class ManageTeams : Control
         logoRect = GetNode<TextureRect>("MarginContainer/HBoxContainer/RightVBox/TeamInfoHBox/LogoPanel/TextureRect");
         teamNameLineEdit = GetNode<LineEdit>("MarginContainer/HBoxContainer/RightVBox/TeamInfoHBox/TeamNameVBox/TeamNameLineEdit");
         teamAbbrevLineEdit = GetNode<LineEdit>("MarginContainer/HBoxContainer/RightVBox/TeamInfoHBox/TeamNameVBox/TeamAbbrevLineEdit");
+        hexColourLineEdit = GetNode<LineEdit>("MarginContainer/HBoxContainer/RightVBox/HexColourLineEdit");
 
         capeMain = GetNode<ColorPickerButton>("MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox/CapeMainHBox/ColorPickerButton");
         capeTrim = GetNode<ColorPickerButton>("MarginContainer/HBoxContainer/RightVBox/ColourPicker/MarginContainer/ColourPickerVBox/CapeTrimHBox/ColorPickerButton");
@@ -58,6 +59,8 @@ public partial class ManageTeams : Control
 
         teamNavigationLeft.Pressed += NavigateToPreviousTeam;
         teamNavigationRight.Pressed += NavigateToNextTeam;
+
+        hexColourLineEdit.TextChanged += ValidateHexColour;
 
         capeMain.ColorChanged += (Color colour) => {ShaderMaterial material = (ShaderMaterial)animatedSprite.Material;material.SetShaderParameter("cape1_color_new", colour);};
         capeTrim.ColorChanged += (Color colour) => {ShaderMaterial material = (ShaderMaterial)animatedSprite.Material;material.SetShaderParameter("cape2_color_new", colour);};
@@ -108,6 +111,18 @@ public partial class ManageTeams : Control
         UpdateTeamDisplay();
     }
 
+    private void ValidateHexColour(string newText)
+    {
+        if (string.IsNullOrEmpty(newText) || (newText.StartsWith("#") && System.Text.RegularExpressions.Regex.IsMatch(newText, @"^#(?:[0-9a-fA-F]{3}){1,2}$")))
+        {
+            hexColourLineEdit.Modulate = Colors.White;
+        }
+        else
+        {
+            hexColourLineEdit.Modulate = Colors.Red;
+        }
+    }
+
     private void SaveCurrentTeamChanges()
     {
         var currentTeam = settingsManager.TeamPages.GetCurrentTeam();
@@ -115,6 +130,7 @@ public partial class ManageTeams : Control
         {
             currentTeam.TeamName = teamNameLineEdit.Text;
             currentTeam.TeamAbbreviation = teamAbbrevLineEdit.Text;
+            currentTeam.HexColourCode = hexColourLineEdit.Text;
             currentTeam.TeamColours.CapeMain = capeMain.Color;
             currentTeam.TeamColours.CapeTrim = capeTrim.Color;
             currentTeam.TeamColours.ArmourLight = armourLight.Color;
@@ -233,6 +249,7 @@ public partial class ManageTeams : Control
     {
         string teamName = teamNameLineEdit.Text;
         string teamAbbrev = teamAbbrevLineEdit.Text;
+        string hexColourCode = hexColourLineEdit.Text;
         Texture2D logo = logoRect.Texture;
         ColorPickerButton[] avatarColours = new ColorPickerButton[5]
         {
@@ -249,6 +266,8 @@ public partial class ManageTeams : Control
             errorText += "Team Name ";
         if (string.IsNullOrEmpty(teamAbbrev))
             errorText += "Team Abbreviation ";
+        if (string.IsNullOrEmpty(hexColourCode))
+            errorText += "Hex Colour Code ";
         if (logo == null)
             errorText += "Logo Image ";
         
@@ -259,7 +278,7 @@ public partial class ManageTeams : Control
         }
 
         // Add the team to the list (also adds it to teampages)
-        settingsManager.AddTeamToList(teamName, teamAbbrev, logo, avatarColours);
+        settingsManager.AddTeamToList(teamName, teamAbbrev, logo, avatarColours, hexColourCode);
         
         // Move to the new team's page
         settingsManager.TeamPages.MoveNext();
@@ -292,6 +311,7 @@ public partial class ManageTeams : Control
         {
             teamNameLineEdit.Text = currentTeam.TeamName;
             teamAbbrevLineEdit.Text = currentTeam.TeamAbbreviation;
+            hexColourLineEdit.Text = currentTeam.HexColourCode;
 
             // Load and set the logo texture
             string fullPath = $"user://{currentTeam.LogoPath.ToLower()}";
@@ -345,6 +365,7 @@ public partial class ManageTeams : Control
     {
         teamNameLineEdit.Text = string.Empty;
         teamAbbrevLineEdit.Text = string.Empty;
+        hexColourLineEdit.Text = "#000000";
         logoRect.Texture = null;
         capeMain.Color = Color.FromHtml("#0a7030");
         capeTrim.Color = Color.FromHtml("#eba724");

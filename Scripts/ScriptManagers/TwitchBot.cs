@@ -170,9 +170,10 @@ namespace UNLTeamJumpQuest.TwitchIntegration
             messageInfo[2] = e.ChatMessage.Message;
             CallDeferred(nameof(OnMessagedReceivedDeffered), messageInfo);
 
-            if (messageInfo[2] == "join" || messageInfo[2] == "!join")
+            var (isValid, targetTeam) = MessageParser.ParseTeamJoin(messageInfo[2], settingsManager.UNLTeams);
+            if (isValid)
             {
-                GameManager.Instance.HandleJoinRequest(messageInfo);
+                GameManager.Instance.HandleJoinRequest(messageInfo, targetTeam);
             }
         }
 

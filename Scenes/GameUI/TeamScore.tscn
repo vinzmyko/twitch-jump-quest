@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://c63v4xdpkfuma"]
+
+[ext_resource type="FontFile" uid="uid://bil6h4rcb5s0v" path="res://Fonts/Retrograde/Retrograde-Regular.otf" id="1_mewrr"]
+[ext_resource type="FontFile" uid="uid://cfi521s5ll4ld" path="res://Fonts/Retrograde/Retrograde-Bold.otf" id="2_ymngf"]
+[ext_resource type="Script" path="res://Scenes/GameUI/TeamScore.cs" id="3_033gt"]
+
+[node name="TeamScore" type="RichTextLabel"]
+custom_minimum_size = Vector2(365, 0)
+offset_right = 365.0
+offset_bottom = 36.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0.859243, 0.175246, 0.759234, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/shadow_outline_size = 13
+theme_override_constants/outline_size = 15
+theme_override_fonts/normal_font = ExtResource("1_mewrr")
+theme_override_fonts/bold_font = ExtResource("2_ymngf")
+theme_override_font_sizes/normal_font_size = 30
+theme_override_font_sizes/bold_font_size = 32
+bbcode_enabled = true
+text = "GGEL [10] - 500"
+fit_content = true
+scroll_active = false
+script = ExtResource("3_033gt")

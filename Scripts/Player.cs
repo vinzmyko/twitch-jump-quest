@@ -31,6 +31,7 @@ public partial class Player : CharacterBody2D
     private Color[] teamColours;
     private DebugTwitchChat debugger;
     private SettingsManager settingsManager;
+    private LevelManager levelManager;
 
     int points;
 
@@ -41,6 +42,15 @@ public partial class Player : CharacterBody2D
         points = 0;
         team = _team;
         SetColoursArray(_team);
+        if (_team == null)
+        {
+            return;
+        }
+
+        if (team.TeamAbbreviation.ToLower() == "ggel")
+        {
+            points = 50;
+        }
     }
     public override async void _Ready()
     {
@@ -48,6 +58,8 @@ public partial class Player : CharacterBody2D
 
         debugger = GetNodeOrNull<DebugTwitchChat>("/root/Main/CanvasLayer/DebugTwitchChat");
         settingsManager = GetNodeOrNull<SettingsManager>("/root/SettingsManager");
+        levelManager = GetNodeOrNull<LevelManager>("/root/LevelManager");
+        
 
         if (debugger != null)
         {
@@ -80,6 +92,12 @@ public partial class Player : CharacterBody2D
     {
         EmitSignal(SignalName.Died, displayName, userID, team.TeamAbbreviation);
         // death logic, play animation, remove from scene
+    }
+
+    public void AddScore(int points)
+    {
+        this.points += points;
+        // levelManager.AddScoreToTeam(team.TeamAbbreviation, points);
     }
 
     private void OnHeadOnFloorAnimationFinished()
@@ -230,12 +248,18 @@ public partial class Player : CharacterBody2D
 
     public void SetTeamColours(Color[] colourArray, ShaderMaterial uniqueMaterial)
     {
+        // int teamPlayerCount = levelManager.teamScores.GetTeamPlayerCount(team.TeamAbbreviation);
         uniqueMaterial.SetShaderParameter("cape1_color_new", colourArray[0]);
         uniqueMaterial.SetShaderParameter("cape2_color_new", colourArray[1]); 
-        // material.SetShaderParameter("helmet_feathers_new", helmetFeathersColor); 
         uniqueMaterial.SetShaderParameter("armour_dark_new", colourArray[2]);
         uniqueMaterial.SetShaderParameter("armour_med_new", colourArray[3]);
         uniqueMaterial.SetShaderParameter("armour_light_new", colourArray[4]);
+        if (displayName == "DEBUG")
+        {
+            return;
+        }
+        uniqueMaterial.SetShaderParameter("helmet_feathers_new", 
+            levelManager.uniqueColours[(levelManager.teamScores.GetTeamPlayerCount(team.TeamAbbreviation) - 1) % 15]); 
     }
 
     private void SetColoursArray(UNL.Team team)

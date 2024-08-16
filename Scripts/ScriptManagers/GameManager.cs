@@ -6,6 +6,8 @@ public partial class GameManager : Node
 {
     [Signal]
     public delegate void PlayerJoinedEventHandler(string displayName, string userID, string teamAbbrev);
+    [Signal]
+    public delegate void PlayerDiedEventHandler(string displayName, string userID, string teamAbbrev);
 
     // Singleton instance
     public static GameManager Instance { get; private set; }
@@ -39,6 +41,17 @@ public partial class GameManager : Node
         CurrentGameState = GameState.WaitingForPlayers;
 
         debugger = GetNodeOrNull<DebugTwitchChat>("/root/Main/CanvasLayer/DebugTwitchChat");
+        GetNode<LevelManager>("/root/LevelManager").PlayerSpawned += OnPlayerSpawned;
+    }
+
+    private void OnPlayerSpawned(Player player)
+    {
+        player.Died += OnPlayerDied;
+    }
+
+    private void OnPlayerDied(string displayName, string userID, string teamAbbrev)
+    {
+        EmitSignal(SignalName.PlayerDied, displayName, userID, teamAbbrev);
     }
 
     public void HandleJoinRequest(string[] messageInfo, UNL.Team team)

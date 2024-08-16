@@ -1,12 +1,38 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class LevelManager : Node
 {
+    [Signal]
+    public delegate void PlayerSpawnedEventHandler(Player player);
+    [Signal]
+    public delegate void TeamScoresUpdatedEventHandler();
+
+    // public Dictionary<string, UNL.TeamScore> teamScores = new Dictionary<string, UNL.TeamScore>();
+    public UNL.TeamScoreManager teamScores = new UNL.TeamScoreManager();
+    public Color[] uniqueColours = new Color[15]
+    {
+        Color.FromHtml("#0000FF"),  // Blue
+        Color.FromHtml("#FF0000"),  // Red
+        Color.FromHtml("#00FF00"),  // Green
+        Color.FromHtml("#FFFF00"),  // Yellow
+        Color.FromHtml("#00FFFF"),  // Cyan
+        Color.FromHtml("#800080"),  // Purple
+        Color.FromHtml("#FFA500"),  // Orange
+        Color.FromHtml("#FF69B4"),  // Hot Pink
+        Color.FromHtml("#808080"),  // Gray
+        Color.FromHtml("#008000"),  // Dark Green
+        Color.FromHtml("#8B4513"),  // Saddle Brown
+        Color.FromHtml("#40E0D0"),  // Turquoise
+        Color.FromHtml("#FF00FF"),  // Magenta
+        Color.FromHtml("#C0C0C0"),  // Silver
+        Color.FromHtml("#800000")   // Maroon
+    };
+
     Marker2D spawnPosition;
     private PackedScene playerScene;
     SettingsManager settingsManager;
-    // Current level information
     private int currentLevel;
     public override void _Ready()
     {
@@ -14,11 +40,18 @@ public partial class LevelManager : Node
         settingsManager = GetNodeOrNull<SettingsManager>("/root/SettingsManager");
         playerScene = ResourceLoader.Load<PackedScene>("res://Scenes/Player.tscn");
         GameManager.Instance.PlayerJoined += SpawnPlayer;
+        GameManager.Instance.PlayerJoined += OnPlayerDied;
 
         spawnPosition = GetNodeOrNull<Marker2D>("/root/Main/SpawnMarker2D");
     }
 
+    private void OnPlayerDied(string displayName, string userID, string teamAbbrev)
+    {
+
+    }
+
     // Method to load a specific level
+
     public void LoadLevel(int levelNumber)
     {
         // TODO: Implement level loading logic
@@ -44,9 +77,10 @@ public partial class LevelManager : Node
         UNL.Team targetTeam = null;
         foreach (UNL.Team team in settingsManager.UNLTeams.Teams)
         {
-            if (team.TeamAbbreviation.ToLower() == teamAbbrev)
+            if (team.TeamAbbreviation.ToLower() == teamAbbrev.ToLower())
             {
                 targetTeam = team;
+                break;
             }
         }
 
@@ -61,9 +95,40 @@ public partial class LevelManager : Node
             playerInstance.GlobalPosition = spawnPosition.GlobalPosition;
 
         // Add player to Level owner scene
+
+        UNL.Team isATeam = IsATeam(teamAbbrev);
+        if (isATeam != null)
+        {
+            // Does check for dupe teams
+            teamScores.AddTeam(isATeam);
+            teamScores.AddPlayerToTeam(isATeam.TeamAbbreviation);
+            GD.Print("added team and player to the team");
+        }
+
         Node levelScene = GetNode<Node>("/root/Main");
         levelScene.AddChild(playerInstance);
 
+        // teamScores.AddTeam();
+        EmitSignal(SignalName.PlayerSpawned, playerInstance);
+    }
+
+    private UNL.Team IsATeam(string teamAbbrev)
+    {
+        UNL.Team returnTeam = new UNL.Team
+        {
+            TeamName = "Bug in IsATeam() function",
+            TeamAbbreviation = "bug",
+            LogoPath = "null",
+            TeamColours = null,
+            HexColourCode = "#BUG"
+
+        };
+        UNL.Team teamAbbrevTeam = settingsManager.UNLTeams.Teams.Find(team => team.TeamAbbreviation.ToLower() == teamAbbrev.ToLower());
+        if (teamAbbrevTeam != null)
+        {
+            returnTeam = teamAbbrevTeam;
+        }
+        return returnTeam;
     }
 
     // Method to update level state (e.g., obstacles, challenges)

@@ -1,0 +1,39 @@
+[gd_scene load_steps=4 format=3 uid="uid://ngnphkty4eu"]
+
+[ext_resource type="Script" path="res://Scenes/GameUI/InformationDisplay.cs" id="1_cgw1b"]
+[ext_resource type="PackedScene" uid="uid://cubxqqpjap3b1" path="res://Scenes/GameUI/ChatBoxSentence.tscn" id="1_edp88"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_es0j7"]
+bg_color = Color(0.176471, 0.176471, 0.176471, 0.333333)
+
+[node name="InformationDisplay" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_cgw1b")
+sentence = ExtResource("1_edp88")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(365, 150)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_es0j7")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/PanelContainer"]
+custom_minimum_size = Vector2(365, 150)
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="SentenceContainer" type="VBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(355, 140)
+layout_mode = 2

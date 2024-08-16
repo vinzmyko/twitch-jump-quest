@@ -6,19 +6,6 @@ public partial class UIManager : Node
 {
     private InformationDisplay informationDisplay;
     private TeamScoresDisplay teamScoresDisplay;
-   private string[] playerJoinMessages = new string[]
-    {
-        "{0} has joined the {1} roster!",
-        "Welcome aboard, {0}! You're now part of {1}.",
-        "{1} just got stronger with {0} joining the squad!",
-        "Breaking news: {0} signs with {1}!",
-        "{0} dons the {1} jersey for the first time.",
-        "{1} fans, give a warm welcome to your newest teammate, {0}!",
-        "{0} is ready to make waves with {1}.",
-        "The {1} family grows as {0} comes on board.",
-        "Look out, opponents! {0} is now playing for {1}.",
-        "{1} just leveled up by adding {0} to the team!"
-    };
 
     public override void _Ready()
     {
@@ -30,7 +17,16 @@ public partial class UIManager : Node
         GameManager gameManager = GetNode<GameManager>("/root/GameManager");
         gameManager.PlayerJoined += OnPlayerJoined;
         gameManager.PlayerDied += OnPlayerDied;
+        LevelManager levelManager = GetNode<LevelManager>("/root/LevelManager");
+        levelManager.TeamScoreUpdated += OnTeamScoreUpdated;
     }
+
+    private void OnTeamScoreUpdated(string teamAbbrev, int teamsTotalScore)
+    {
+        // GD.Print($"{teamAbbrev} has {teamsTotalScore}");
+        teamScoresDisplay.UpdateTeamScore(teamAbbrev, teamsTotalScore);
+    }
+
 
     public void UpdateTeamScores(IEnumerable<UNL.TeamScore> teamScores)
     {

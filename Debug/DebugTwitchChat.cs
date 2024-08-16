@@ -5,6 +5,8 @@ public partial class DebugTwitchChat : Control
 {
     [Signal]
     public delegate void DebuggerDeleteSelfEventHandler();
+    [Signal]
+    public delegate void ActivateCameraEventHandler(string text);
 
     Button minimiseButton;
     Label previousText;
@@ -81,6 +83,21 @@ public partial class DebugTwitchChat : Control
             previousTextString += "join\n";
             previousText.Text = previousTextString;
             GameManager.Instance.HandleJoinRequest(messageInfo, null);
+        }
+
+        if (newText == "go")
+        {
+            EmitSignal(SignalName.ActivateCamera, newText);
+        }
+        
+        if (newText == "pause")
+        {
+            EmitSignal(SignalName.ActivateCamera, newText);
+        }
+
+        if (newText == "down")
+        {
+            EmitSignal(SignalName.ActivateCamera, newText);
         }
 
         var (isValid, angle, power) = MessageParser.ParseMessage(newText);

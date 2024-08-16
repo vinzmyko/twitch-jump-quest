@@ -8,6 +8,7 @@ public partial class GameManager : Node
     public delegate void PlayerJoinedEventHandler(string displayName, string userID, string teamAbbrev);
     [Signal]
     public delegate void PlayerDiedEventHandler(string displayName, string userID, string teamAbbrev);
+    
 
     // Singleton instance
     public static GameManager Instance { get; private set; }

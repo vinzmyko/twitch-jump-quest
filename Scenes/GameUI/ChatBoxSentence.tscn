@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://Scenes/GameUI/ChatBoxSentence.cs" id="3_yvqqm"]
 
 [node name="Sentence" type="RichTextLabel"]
-custom_minimum_size = Vector2(355, 50)
+custom_minimum_size = Vector2(355, 70)
 layout_direction = 1
 theme_override_fonts/normal_font = ExtResource("1_p7biu")
 theme_override_fonts/bold_font = ExtResource("2_68glx")
@@ -13,4 +13,5 @@ theme_override_font_sizes/normal_font_size = 18
 theme_override_font_sizes/bold_font_size = 18
 bbcode_enabled = true
 text = "praepollens_sub_caelum has died"
+fit_content = true
 script = ExtResource("3_yvqqm")

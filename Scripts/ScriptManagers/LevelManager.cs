@@ -6,8 +6,10 @@ public partial class LevelManager : Node
 {
     [Signal]
     public delegate void PlayerSpawnedEventHandler(Player player);
+    // [Signal]
+    // public delegate void TeamScoresUpdatedEventHandler();
     [Signal]
-    public delegate void TeamScoresUpdatedEventHandler();
+    public delegate void TeamScoreUpdatedEventHandler(string teamAbbrev, int points);
 
     // public Dictionary<string, UNL.TeamScore> teamScores = new Dictionary<string, UNL.TeamScore>();
     public UNL.TeamScoreManager teamScores = new UNL.TeamScoreManager();
@@ -34,15 +36,30 @@ public partial class LevelManager : Node
     private PackedScene playerScene;
     SettingsManager settingsManager;
     private int currentLevel;
+    public int totalLevelYDistance = 0;
+    public int endMarkerYPos = 0;
+    public int startMarkerYPos = 0;
     public override void _Ready()
     {
         base._Ready();
         settingsManager = GetNodeOrNull<SettingsManager>("/root/SettingsManager");
         playerScene = ResourceLoader.Load<PackedScene>("res://Scenes/Player.tscn");
         GameManager.Instance.PlayerJoined += SpawnPlayer;
-        GameManager.Instance.PlayerJoined += OnPlayerDied;
+        // GameManager.Instance.PlayerJoined += OnPlayerDied;
 
         spawnPosition = GetNodeOrNull<Marker2D>("/root/Main/SpawnMarker2D");
+        InitLevelMarkers();
+    }
+
+    private void InitLevelMarkers()
+    {
+        var root = GetTree().Root;
+        var levelNode = root.GetChild(root.GetChildCount() - 1);
+        Marker2D startingMarker = levelNode.FindChild("LevelMarkers").GetChild(0) as Marker2D;
+        Marker2D endingMarker = levelNode.FindChild("LevelMarkers").GetChild(1) as Marker2D;
+        totalLevelYDistance = (int)Math.Abs(endingMarker.GlobalPosition.Y - startingMarker.GlobalPosition.Y);
+        endMarkerYPos = (int)endingMarker.GlobalPosition.Y;
+        startMarkerYPos = (int)startingMarker.GlobalPosition.Y;
     }
 
     private void OnPlayerDied(string displayName, string userID, string teamAbbrev)
@@ -86,6 +103,11 @@ public partial class LevelManager : Node
 
         playerInstance.Initialize(displayName, userID, targetTeam);
         playerInstance.Name = $"Player_{userID}";
+
+        if (playerInstance is Player player)
+        {
+            player.ScoreUpdated += OnPlayerScoreUpdated;
+        }
         
         if (spawnPosition == null)
         {
@@ -111,6 +133,15 @@ public partial class LevelManager : Node
         // teamScores.AddTeam();
         EmitSignal(SignalName.PlayerSpawned, playerInstance);
     }
+
+    private void OnPlayerScoreUpdated(string teamAbbrev, int playerAdditionalPoints)
+    {
+        GD.Print($"points being added to {teamAbbrev} = {playerAdditionalPoints}");
+        teamScores.AddScoreToTeam(teamAbbrev, playerAdditionalPoints);
+        UNL.TeamScore teamsScore = teamScores.GetTeamScore(teamAbbrev);
+        EmitSignal(SignalName.TeamScoreUpdated, teamAbbrev, teamsScore.TotalScore);
+    }
+
 
     private UNL.Team IsATeam(string teamAbbrev)
     {

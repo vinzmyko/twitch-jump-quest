@@ -44,4 +44,11 @@ public partial class TeamScoresDisplay : Control
             teamPositionDictionary[teamAbbrev] = teamPositionDictionary.Count;
         }
     }
+
+    public void UpdateTeamScore(string teamAbbrev, int teamScore)
+    {
+        TeamScore teamRichTextLabel = teamsVBoxContainer.GetNode($"TEAM_{teamAbbrev}") as TeamScore;
+        GD.Print($"playercount{ levelManager.teamScores.GetTeamPlayerCount(teamAbbrev) }");
+        teamRichTextLabel.Text = $"{teamAbbrev} [{levelManager.teamScores.GetTeamPlayerCount(teamAbbrev)}] - {teamScore:D4}";
+    }
 }

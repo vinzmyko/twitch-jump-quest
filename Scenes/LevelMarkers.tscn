@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://tylvhqyapbit"]
+
+[node name="LevelMarkers" type="Node2D"]
+
+[node name="StartingMarker" type="Marker2D" parent="."]
+
+[node name="EndingMarker" type="Marker2D" parent="."]

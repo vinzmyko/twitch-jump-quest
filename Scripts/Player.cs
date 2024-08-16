@@ -7,6 +7,8 @@ public partial class Player : CharacterBody2D
 {
     [Signal]
     public delegate void DiedEventHandler(string displayName, string userID, string teamAbbrev);
+    [Signal]
+    public delegate void ScoreUpdatedEventHandler(string teamAbbrev, int points);
 	AnimatedSprite2D animatedSprite;
     Label displayLabel;
 
@@ -33,6 +35,7 @@ public partial class Player : CharacterBody2D
     private SettingsManager settingsManager;
     private LevelManager levelManager;
 
+    float personalHighestYPos;
     int points;
 
     public void Initialize(string _displayName, string _userID, UNL.Team _team)
@@ -45,11 +48,6 @@ public partial class Player : CharacterBody2D
         if (_team == null)
         {
             return;
-        }
-
-        if (team.TeamAbbreviation.ToLower() == "ggel")
-        {
-            points = 50;
         }
     }
     public override async void _Ready()
@@ -83,9 +81,34 @@ public partial class Player : CharacterBody2D
         else
             AddToGroup("Player");
 
+        personalHighestYPos = GlobalPosition.Y;
         // Some reason it won't change in Player scene so I do it through code.
         SetCollisionLayerValue(1, false);
         await showDisplayName(3.5);
+    }
+
+    private void CalculatePercentageDistance()
+    {
+        // Total level distance
+        float totalDistance = levelManager.totalLevelYDistance;
+        
+        // Player's starting Y position (assumed to be at the bottom of the level)
+        float startY = levelManager.startMarkerYPos;
+        
+        // Player's current Y position
+        float currentY = GlobalPosition.Y;
+        
+        // Calculate distance traveled
+        float distanceTraveled = Math.Abs(currentY - startY);
+        
+        // Calculate progress as a fraction
+        float progressFraction = distanceTraveled / totalDistance;
+        
+        // Convert to a percentage (optional)
+        float progressPercentage = progressFraction * 100;
+
+        int pointsGiven = (int)(progressFraction * 100);
+        AddScore(pointsGiven);
     }
 
     public void Die()
@@ -97,7 +120,8 @@ public partial class Player : CharacterBody2D
     public void AddScore(int points)
     {
         this.points += points;
-        // levelManager.AddScoreToTeam(team.TeamAbbreviation, points);
+        GD.Print(this.points);
+        EmitSignal(SignalName.ScoreUpdated, team.TeamAbbreviation, points);
     }
 
     private void OnHeadOnFloorAnimationFinished()
@@ -186,10 +210,31 @@ public partial class Player : CharacterBody2D
         if (IsOnFloor())
         {
             // Sets landing y pos to current y value
-            currentYPos = GlobalPosition.Y;
             // If just landed from jump calculate jump distance, if distance > required distance, faceplant
+            currentYPos = GlobalPosition.Y;
             if (highestYPos != 0)
             {
+                var differenceBetweenPlatforms = currentYPos - previousYPos;
+                bool isOnSamePlatform = differenceBetweenPlatforms > -15 && differenceBetweenPlatforms < 15;
+                if (!isOnSamePlatform)
+                {
+                    if (IsOnCeiling())
+                    {
+                        return;
+                    }
+                    if (IsOnWall())
+                    {
+                        return;
+                    }
+                    if (GlobalPosition.Y < personalHighestYPos)
+                    {
+                        personalHighestYPos = GlobalPosition.Y;
+                        CalculatePercentageDistance();
+                    }
+                    // Check to see if it's your highest position
+                    // If it's your highest position set the points through
+                }
+                
                 float heightDifference = Math.Abs(currentYPos) - Math.Abs(highestYPos);
                 if (heightDifference >= distanceForHeadOnFloor)
                 {

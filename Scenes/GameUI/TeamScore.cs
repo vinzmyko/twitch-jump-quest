@@ -6,12 +6,12 @@ public partial class TeamScore : RichTextLabel
     public UNL.Team team;
     private SettingsManager settingsManager;
     private LevelManager levelManager;
+    public int teamScore = 0;
 
     public override void _Ready()
     {
         settingsManager = GetNode<SettingsManager>("/root/SettingsManager");
         levelManager = GetNode<LevelManager>("/root/LevelManager");
-        var settingsManagerNode = GetNode<Node>("/root/SettingsManager");
     }
 
     public void Initialise(string TeamAbbrev)
@@ -31,5 +31,7 @@ public partial class TeamScore : RichTextLabel
     {
         // Text = $"{TeamAbbrev}[color=yellow][{playerCount}][/color]: [b]{score}[/b]";
         Text = $"{team.TeamAbbreviation} [{playerCount}] - {score}";
+        teamScore = score;
+        GD.Print($"teamsocre is {score}");
     }
 }

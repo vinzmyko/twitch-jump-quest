@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class TeamScoresDisplay : Control
 {
@@ -48,7 +49,23 @@ public partial class TeamScoresDisplay : Control
     public void UpdateTeamScore(string teamAbbrev, int teamScore)
     {
         TeamScore teamRichTextLabel = teamsVBoxContainer.GetNode($"TEAM_{teamAbbrev}") as TeamScore;
-        GD.Print($"playercount{ levelManager.teamScores.GetTeamPlayerCount(teamAbbrev) }");
         teamRichTextLabel.Text = $"{teamAbbrev}\t[{levelManager.teamScores.GetTeamPlayerCount(teamAbbrev)}] -\t{teamScore:D4}";
+        teamRichTextLabel.teamScore = teamScore;
+    
+        var teamScores = teamsVBoxContainer.GetChildren()
+            .Cast<TeamScore>()
+            .OrderByDescending(team => team.teamScore)
+            .ToList();
+
+        for (int i = 0; i < teamScores.Count; i++)
+        {
+            teamsVBoxContainer.MoveChild(teamScores[i], i);
+        }
+
+        // Debug
+        // foreach (var team in teamScores)
+        // {
+        //     GD.Print($"{team.Name}: {team.teamScore}");
+        // }
     }
 }

@@ -107,7 +107,7 @@ public partial class Player : CharacterBody2D
         // Convert to a percentage (optional)
         float progressPercentage = progressFraction * 100;
 
-        int pointsGiven = (int)(progressFraction * 100);
+        int pointsGiven = (int)(progressFraction * 100) / 2;
         AddScore(pointsGiven);
     }
 

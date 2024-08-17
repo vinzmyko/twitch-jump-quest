@@ -18,10 +18,8 @@ public partial class TeamScore : RichTextLabel
     {
             UNL.Team teamAbbrevTeam = settingsManager.UNLTeams.Teams.Find(team => team.TeamAbbreviation.ToLower() == TeamAbbrev.ToLower());
             
-            // if (teamAbbrevTeam != null)
             if (teamAbbrevTeam == null)
             {
-                GD.PushError($"{teamAbbrevTeam} is equal to null");
                 return;
             }
             team = teamAbbrevTeam;

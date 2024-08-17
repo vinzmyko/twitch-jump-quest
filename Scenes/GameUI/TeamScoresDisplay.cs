@@ -30,25 +30,25 @@ public partial class TeamScoresDisplay : Control
         }
         if (!teamPositionDictionary.ContainsKey(teamAbbrev))
         {
-            // Instantiate the teamScoreScene
             TeamScore teamScoreInstance = teamScoreScene.Instantiate<TeamScore>();
+            // Instantiate the teamScoreScene
             teamScoreInstance.Name = $"TEAM_{teamAbbrev}";
-
             // Add the new instance to the VBoxContainer
             teamsVBoxContainer.AddChild(teamScoreInstance);
-
             // Set up properties for the new TeamScore instance
             teamScoreInstance.Initialise(teamAbbrev);
 
             // Store the position of the new team in the dictionary
             teamPositionDictionary[teamAbbrev] = teamPositionDictionary.Count;
         }
+        TeamScore teamRichTextLabel = teamsVBoxContainer.GetNode($"TEAM_{teamAbbrev}") as TeamScore;
+        teamRichTextLabel.Text = $"{teamAbbrev}\t[{levelManager.teamScores.GetTeamPlayerCount(teamAbbrev)}] -\t0000";
     }
 
     public void UpdateTeamScore(string teamAbbrev, int teamScore)
     {
         TeamScore teamRichTextLabel = teamsVBoxContainer.GetNode($"TEAM_{teamAbbrev}") as TeamScore;
         GD.Print($"playercount{ levelManager.teamScores.GetTeamPlayerCount(teamAbbrev) }");
-        teamRichTextLabel.Text = $"{teamAbbrev} [{levelManager.teamScores.GetTeamPlayerCount(teamAbbrev)}] - {teamScore:D4}";
+        teamRichTextLabel.Text = $"{teamAbbrev}\t[{levelManager.teamScores.GetTeamPlayerCount(teamAbbrev)}] -\t{teamScore:D4}";
     }
 }

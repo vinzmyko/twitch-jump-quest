@@ -101,6 +101,14 @@ public partial class LevelManager : Node
             }
         }
 
+        UNL.Team isATeam = IsATeam(teamAbbrev);
+        if (isATeam != null)
+        {
+            // Does check for dupe teams
+            teamScores.AddTeam(isATeam);
+            teamScores.AddPlayerToTeam(isATeam.TeamAbbreviation);
+            GD.Print("added team and player to the team");
+        }
         playerInstance.Initialize(displayName, userID, targetTeam);
         playerInstance.Name = $"Player_{userID}";
 
@@ -116,21 +124,9 @@ public partial class LevelManager : Node
         else
             playerInstance.GlobalPosition = spawnPosition.GlobalPosition;
 
-        // Add player to Level owner scene
-
-        UNL.Team isATeam = IsATeam(teamAbbrev);
-        if (isATeam != null)
-        {
-            // Does check for dupe teams
-            teamScores.AddTeam(isATeam);
-            teamScores.AddPlayerToTeam(isATeam.TeamAbbreviation);
-            GD.Print("added team and player to the team");
-        }
-
         Node levelScene = GetNode<Node>("/root/Main");
         levelScene.AddChild(playerInstance);
 
-        // teamScores.AddTeam();
         EmitSignal(SignalName.PlayerSpawned, playerInstance);
     }
 
@@ -140,6 +136,7 @@ public partial class LevelManager : Node
         teamScores.AddScoreToTeam(teamAbbrev, playerAdditionalPoints);
         UNL.TeamScore teamsScore = teamScores.GetTeamScore(teamAbbrev);
         EmitSignal(SignalName.TeamScoreUpdated, teamAbbrev, teamsScore.TotalScore);
+        GD.Print("Sending team scores in here");
     }
 
 

@@ -34,9 +34,10 @@ public partial class Player : CharacterBody2D
     private DebugTwitchChat debugger;
     private SettingsManager settingsManager;
     private LevelManager levelManager;
-
     float personalHighestYPos;
     int points;
+
+    private Label DEBUG_LABEL;
 
     public void Initialize(string _displayName, string _userID, UNL.Team _team)
     {
@@ -82,6 +83,7 @@ public partial class Player : CharacterBody2D
             AddToGroup("Player");
 
         personalHighestYPos = GlobalPosition.Y;
+        DEBUG_LABEL = GetNode<Label>("DEBUG_POINTS_LABEL");
         // Some reason it won't change in Player scene so I do it through code.
         SetCollisionLayerValue(1, false);
         await showDisplayName(3.5);
@@ -109,6 +111,8 @@ public partial class Player : CharacterBody2D
 
         int pointsGiven = (int)(progressFraction * 100) / 2;
         AddScore(pointsGiven);
+        DEBUG_LABEL.Visible = true;
+        DEBUG_LABEL.Text = $"+{pointsGiven}";
     }
 
     public void Die()
@@ -120,7 +124,6 @@ public partial class Player : CharacterBody2D
     public void AddScore(int points)
     {
         this.points += points;
-        GD.Print(this.points);
         EmitSignal(SignalName.ScoreUpdated, team.TeamAbbreviation, points);
     }
 
@@ -145,7 +148,6 @@ public partial class Player : CharacterBody2D
 
     private void OnDebuggerCommandsGiven(float angle, float power)
     {
-        GD.Print(Name);
         GD.Print($"{displayName} has {angle} degrees and {power} power, jumpvelocity {BaseJumpVelocity}");
         if (userID != "DEBUG")
             return;

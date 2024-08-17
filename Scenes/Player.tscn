@@ -1,10 +1,11 @@
-[gd_scene load_steps=23 format=3 uid="uid://b1tod53s44tqh"]
+[gd_scene load_steps=24 format=3 uid="uid://b1tod53s44tqh"]
 
 [ext_resource type="Script" path="res://Scripts/Player.cs" id="1_1cnha"]
 [ext_resource type="Texture2D" uid="uid://cv2vci5bnwdjd" path="res://Sprites/knight.png" id="2_ccksf"]
 [ext_resource type="Shader" path="res://Shaders/PlayerColour.gdshader" id="2_v5kot"]
 [ext_resource type="FontFile" uid="uid://cfi521s5ll4ld" path="res://Fonts/Retrograde/Retrograde-Bold.otf" id="3_q0nro"]
 [ext_resource type="Shader" path="res://Shaders/PixelFontShader.gdshader" id="3_up7dq"]
+[ext_resource type="FontFile" uid="uid://hnlque4skbpn" path="res://Fonts/Roboto/Roboto-Bold.ttf" id="6_daxqq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u4e7d"]
 shader = ExtResource("2_v5kot")
@@ -184,3 +185,11 @@ theme_override_font_sizes/font_size = 7
 text = "praepollens_sub_caelum"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="DEBUG_POINTS_LABEL" type="Label" parent="."]
+offset_left = -34.0
+offset_top = -55.0
+offset_right = 34.0
+offset_bottom = -13.0
+theme_override_fonts/font = ExtResource("6_daxqq")
+theme_override_font_sizes/font_size = 35

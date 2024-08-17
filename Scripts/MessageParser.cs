@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Godot;
 using TwitchLib.Api.Helix.Models.Teams;
 
 public static class MessageParser
@@ -85,18 +86,20 @@ public static class MessageParser
         UNL.Team targetTeam = null;
         string[] messageParts = message.ToLower().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-        if (messageParts.Length == 0)
+        // Ignore join request if message is one word or less
+        if (messageParts.Length <= 1)
         {
             return (false, targetTeam);
         }
 
         string command = messageParts[0];
-
+        // If first word in not command
         if (command != "join")
         {
             return (false, targetTeam);
         }
 
+        // Problem that bugs the parser is messageParts exceeded array size
         foreach (UNL.Team team in UNLTeams.Teams)
         {
             if (team.TeamAbbreviation.ToLower() == messageParts[1])
@@ -104,11 +107,6 @@ public static class MessageParser
                 teamAbbrev = messageParts[1];
             }
         }
-
-        // if (UNLTeams.Teams.Any(team => team.TeamAbbreviation.ToLower() == messageParts[1]))
-        // {
-        //     teamAbbrev = messageParts[1];
-        // }
 
         foreach (UNL.Team team in UNLTeams.Teams)
         {

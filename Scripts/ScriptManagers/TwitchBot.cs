@@ -62,23 +62,10 @@ namespace UNLTeamJumpQuest.TwitchIntegration
             client.OnMessageReceived += Client_OnMessageReceived;
             client.OnChatCommandReceived += Client_OnChatCommandReceived;
             client.OnConnected += client_OnConnected;
-            client.OnIncorrectLogin += Client_OnIncorrectLogin;
 
             client.Connect();
 
             return client.IsConnected;
-        }
-
-        private void Client_OnIncorrectLogin(object sender, OnIncorrectLoginArgs e)
-        {
-            GD.Print("Incorrect login: " + e.Exception.Message);
-            CallDeferred(nameof(showUnsuccessfullFloatingMessage));
-            client.Disconnect();
-        }
-
-        private void showUnsuccessfullFloatingMessage()
-        {
-            settingsManager.ShowFloatingMessage("Twitch connection unsuccessfull! Look over the Access Token again!", false);
         }
 
         internal bool ConnectDebug(bool isLogging)
@@ -110,7 +97,6 @@ namespace UNLTeamJumpQuest.TwitchIntegration
                 client.OnError -= Client_OnError;
                 client.OnMessageReceived -= Client_OnMessageReceived;
                 client.OnConnected -= client_OnConnected;
-                client.OnIncorrectLogin -= Client_OnIncorrectLogin;
             }
 
             // Create a new client instance
@@ -126,7 +112,6 @@ namespace UNLTeamJumpQuest.TwitchIntegration
             client.OnError += Client_OnError;
             client.OnMessageReceived += Client_OnMessageReceived;
             client.OnConnected += client_OnConnected;
-            client.OnIncorrectLogin += Client_OnIncorrectLogin;
 
             client.Connect();
             return true;

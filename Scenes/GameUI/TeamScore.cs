@@ -32,6 +32,5 @@ public partial class TeamScore : RichTextLabel
         // Text = $"{TeamAbbrev}[color=yellow][{playerCount}][/color]: [b]{score}[/b]";
         Text = $"{team.TeamAbbreviation} [{playerCount}] - {score}";
         teamScore = score;
-        GD.Print($"teamsocre is {score}");
     }
 }

@@ -39,6 +39,7 @@ public partial class LevelManager : Node
     public int totalLevelYDistance = 0;
     public int endMarkerYPos = 0;
     public int startMarkerYPos = 0;
+    public float startMarkerXPos = 0;
     public override void _Ready()
     {
         base._Ready();
@@ -60,6 +61,7 @@ public partial class LevelManager : Node
         totalLevelYDistance = (int)Math.Abs(endingMarker.GlobalPosition.Y - startingMarker.GlobalPosition.Y);
         endMarkerYPos = (int)endingMarker.GlobalPosition.Y;
         startMarkerYPos = (int)startingMarker.GlobalPosition.Y;
+        startMarkerXPos = (float)startingMarker.GlobalPosition.X;
     }
 
     private void OnPlayerDied(string displayName, string userID, string teamAbbrev)
@@ -132,11 +134,9 @@ public partial class LevelManager : Node
 
     private void OnPlayerScoreUpdated(string teamAbbrev, int playerAdditionalPoints)
     {
-        GD.Print($"points being added to {teamAbbrev} = {playerAdditionalPoints}");
         teamScores.AddScoreToTeam(teamAbbrev, playerAdditionalPoints);
         UNL.TeamScore teamsScore = teamScores.GetTeamScore(teamAbbrev);
         EmitSignal(SignalName.TeamScoreUpdated, teamAbbrev, teamsScore.TotalScore);
-        GD.Print("Sending team scores in here");
     }
 
 

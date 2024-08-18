@@ -1,7 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Godot;
+using Vector2 = Godot.Vector2;
 using UNLTeamJumpQuest.TwitchIntegration;
+using System.Data.Common;
 
 public partial class Player : CharacterBody2D
 {
@@ -13,31 +17,53 @@ public partial class Player : CharacterBody2D
     Label displayLabel;
 
     [Export]
+    public float distanceForHeadOnFloor = 250;
     public float BaseJumpVelocity = 500.0f;
-    [Export]
     public float Gravity = 980.0f; 
-    [Export]
-    public float distanceForHeadOnFloor = 300;
     public bool headOnFloor = false;
+    private float currentYPos = 0, previousYPos = 0, highestYPos = 0, jumpYPos = 0, personalHighestYPos;
+    // private float previousYPos = 0;
+    // private float highestYPos = 0;
+    // private float jumpYPos = 0;
+    // float personalHighestYPos;
 
-    private float currentYPos = 0;
-    private float previousYPos = 0;
-    private float highestYPos = 0;
-    private float jumpYPos = 0;
+    private const float TILE_SIZE = 16f;
+    private const int MIN_SCORE_TILES_HORIZONTAL = 2;
+    private const int MIN_SCORE_TILES_VERTICAL = 1;
+    private Vector2 lastScoredPosition;
+    private int currentPlatformId = -1;
 
     private Vector2 _jumpVelocity = Vector2.Zero;
 
-    public string userID;
-    public string displayName;
+    public string userID, displayName;
+    // public string displayName;
     private UNL.Team team;
     private Color[] teamColours;
     private DebugTwitchChat debugger;
     private SettingsManager settingsManager;
     private LevelManager levelManager;
-    float personalHighestYPos;
-    int points;
+    public int points;
+    public int combo = 0;
+    private const int MAX_TRACKED_PLATFORMS = 10;
+    private Queue<PlatformInfo> recentPlatforms = new Queue<PlatformInfo>();
+    private float highestYPosition = float.MaxValue; // Remember, lower Y is higher in Godot
+
+    private struct PlatformInfo
+    {
+        public int PlatformId;
+        public float XPosition;
+        public float YPosition;
+
+        public PlatformInfo(int id, float x, float y)
+        {
+            PlatformId = id;
+            XPosition = x;
+            YPosition = y;
+        }
+    }
 
     private Label DEBUG_LABEL;
+    private Label DEBUG_COMBO;
 
     public void Initialize(string _displayName, string _userID, UNL.Team _team)
     {
@@ -84,35 +110,203 @@ public partial class Player : CharacterBody2D
 
         personalHighestYPos = GlobalPosition.Y;
         DEBUG_LABEL = GetNode<Label>("DEBUG_POINTS_LABEL");
+        DEBUG_COMBO = GetNode<Label>("DEBUG_COMBO_LABEL");
         // Some reason it won't change in Player scene so I do it through code.
         SetCollisionLayerValue(1, false);
         await showDisplayName(3.5);
     }
 
-    private void CalculatePercentageDistance()
+    private void CalculateScore()
     {
-        // Total level distance
-        float totalDistance = levelManager.totalLevelYDistance;
-        
-        // Player's starting Y position (assumed to be at the bottom of the level)
-        float startY = levelManager.startMarkerYPos;
-        
-        // Player's current Y position
-        float currentY = GlobalPosition.Y;
-        
-        // Calculate distance traveled
-        float distanceTraveled = Math.Abs(currentY - startY);
-        
-        // Calculate progress as a fraction
-        float progressFraction = distanceTraveled / totalDistance;
-        
-        // Convert to a percentage (optional)
-        float progressPercentage = progressFraction * 100;
+        var (newPlatformId, layerName) = GetCurrentPlatformId();
+        Vector2 currentPosition = GlobalPosition;
 
-        int pointsGiven = (int)(progressFraction * 100) / 2;
-        AddScore(pointsGiven);
-        DEBUG_LABEL.Visible = true;
-        DEBUG_LABEL.Text = $"+{pointsGiven}";
+        if (newPlatformId == -1 || layerName != "Midground")
+        {
+            return; // Not on a platform or not on Midground
+        }
+
+        bool isNewHighestPosition = currentPosition.Y < highestYPosition;
+        bool isSameHeight = Math.Abs(currentPosition.Y - highestYPosition) < TILE_SIZE;
+        bool isNewHorizontalPosition = !recentPlatforms.Any(p => 
+            Math.Abs(p.YPosition - currentPosition.Y) < TILE_SIZE && 
+            Math.Abs(p.XPosition - currentPosition.X) < TILE_SIZE);
+
+        GD.Print($"isNewHighestPosition: {isNewHighestPosition}, isSameHeight: {isSameHeight}, isNewHorizontalPosition: {isNewHorizontalPosition}");
+        GD.Print($"currentPosition: {currentPosition}, highestYPosition: {highestYPosition}");
+        GD.Print($"Recent platforms: {string.Join(", ", recentPlatforms.Select(p => $"({p.XPosition}, {p.YPosition})"))}");
+
+        // Calculate points
+        float progressFraction = (levelManager.startMarkerYPos - currentPosition.Y) / levelManager.totalLevelYDistance;
+        int pointsGained = Mathf.FloorToInt(progressFraction * 100);
+
+        bool shouldAwardPointsAndIncreaseCombo = (isNewHighestPosition || (isSameHeight && isNewHorizontalPosition)) && pointsGained > 0;
+
+        if (shouldAwardPointsAndIncreaseCombo)
+        {
+            // Increase combo
+            combo++;
+            DEBUG_COMBO.Text = $"combo: {combo}";
+            GD.Print($"Combo increased: {combo}");
+
+            // Award points
+            AddScore(pointsGained);
+            DEBUG_LABEL.Visible = true;
+            DEBUG_LABEL.Text = $"+{pointsGained}";
+            GD.Print($"Points given for Midground platform: {pointsGained}");
+
+            // Update tracking
+            recentPlatforms.Enqueue(new PlatformInfo(newPlatformId, currentPosition.X, currentPosition.Y));
+            if (recentPlatforms.Count > MAX_TRACKED_PLATFORMS)
+            {
+                recentPlatforms.Dequeue();
+            }
+
+            if (isNewHighestPosition)
+            {
+                highestYPosition = currentPosition.Y;
+            }
+
+            lastScoredPosition = currentPosition;
+        }
+        else
+        {
+            if (pointsGained == 0)
+            {
+                GD.Print("No points or combo increase: Calculated points are 0.");
+            }
+            else
+            {
+                GD.Print("No points or combo increase: Position is not new highest and not a new horizontal position at the same height.");
+            }
+        }
+    }
+
+
+
+    private (int platformId, string layerName) GetCurrentPlatformId()
+    {
+        var spaceState = GetWorld2D().DirectSpaceState;
+        uint collisionMask = 1; // Assuming your jumpable tiles are on collision layer 1
+
+        Vector2[] directions = { Vector2.Down, new Vector2(-1, 1), new Vector2(1, 1) };
+        float rayLength = 3f; // Adjust this value as needed
+
+        foreach (var direction in directions)
+        {
+            var query = PhysicsRayQueryParameters2D.Create(
+                GlobalPosition,
+                GlobalPosition + direction * rayLength,
+                collisionMask,
+                new Godot.Collections.Array<Rid> { GetRid() } // Exclude the player's own collision
+            );
+
+            var result = spaceState.IntersectRay(query);
+
+            if (result.Count > 0)
+            {
+                var collider = result["collider"].As<Node2D>();
+                if (collider is TileMap tileMap)
+                {
+                    Vector2 collisionPoint = (Vector2)result["position"];
+                    Vector2I cellCoords = tileMap.LocalToMap(tileMap.ToLocal(collisionPoint));
+                    
+                    for (int layerId = tileMap.GetLayersCount() - 1; layerId >= 0; layerId--)
+                    {
+                        if (tileMap.GetCellSourceId(layerId, cellCoords) != -1)
+                        {
+                            string layerName = tileMap.GetLayerName(layerId);
+                            string directionName = direction == Vector2.Down ? "below" : 
+                                                direction.X < 0 ? "down-left of" : "down-right of";
+                            GD.Print($"Platform detected {directionName} player on layer: {layerName} (ID: {layerId}), coordinates: {cellCoords}");
+                            int platformId = layerId * 1000000 + cellCoords.X * 1000 + cellCoords.Y;
+                            return (platformId, layerName);
+                        }
+                    }
+                }
+            }
+        }
+
+        GD.PrintErr("No valid platform found near player");
+        return (-1, string.Empty);
+    }
+
+
+
+    public override void _PhysicsProcess(double delta)
+    {
+        Vector2 velocity = Velocity;
+
+        if (!IsOnFloor())
+        {
+            velocity.Y += Gravity * (float)delta;
+            animatedSprite.Play("Jump");
+
+            // If jumping up or is there is an x velocity during a jump then set highest y position while not on the floor
+            var goingHorizontal = Math.Abs(velocity.X) > Math.Abs(velocity.Y); // Takes the highest even thought going horizonal
+            if (velocity.Y < 0 && GlobalPosition.Y < jumpYPos || goingHorizontal)
+            {
+                highestYPos = GlobalPosition.Y;
+            }
+            jumpYPos = GlobalPosition.Y;
+
+            // If collided with wall set highest vector.y to previous platform.y if platform.y is higher then highestYpos
+            if(IsOnWall())
+            {
+                // If highestYPos is lowerer then platformYPos, then use the height from the last platformYPos
+                if (highestYPos > previousYPos)
+                {
+                    highestYPos = previousYPos;
+                }
+            }
+        }
+
+        if (IsOnFloor())
+        {
+            if (lastScoredPosition == Vector2.Zero)
+            {
+                lastScoredPosition = GlobalPosition;
+                GD.Print($"Initial landing position set: {lastScoredPosition}");
+            }
+
+            currentYPos = GlobalPosition.Y;
+            if (highestYPos != 0)
+            {
+                if (!IsOnCeiling() && !IsOnWall())
+                {
+                    CalculateScore();
+                }
+                
+                float heightDifference = Math.Abs(currentYPos) - Math.Abs(highestYPos);
+                if (heightDifference >= distanceForHeadOnFloor)
+                {
+                    headOnFloor = true;
+                }
+                highestYPos = 0;
+            }
+
+            if (headOnFloor)
+                animatedSprite.Play("HeadOnFloor");
+            else
+                animatedSprite.Play("Idle");
+
+            // Apply jump velocity if there's a pending jump
+            if (_jumpVelocity != Vector2.Zero)
+            {
+                previousYPos = currentYPos;
+                // _ = stop warning error :)
+                _ = showDisplayName(2.0);
+                velocity = _jumpVelocity;
+                _jumpVelocity = Vector2.Zero; // Reset jump velocity after applying
+            }
+            else
+            {
+                velocity.X = 0; // Stop horizontal movement when on floor and not jumping
+            }
+        }
+
+        Velocity = velocity;
+        MoveAndSlide();
     }
 
     public void Die()
@@ -181,94 +375,6 @@ public partial class Player : CharacterBody2D
         }
     }
 
-    public override void _PhysicsProcess(double delta)
-    {
-        Vector2 velocity = Velocity;
-
-        if (!IsOnFloor())
-        {
-            velocity.Y += Gravity * (float)delta;
-            animatedSprite.Play("Jump");
-
-            // If jumping up or is there is an x velocity during a jump then set highest y position while not on the floor
-            var goingHorizontal = Math.Abs(velocity.X) > Math.Abs(velocity.Y); // Takes the highest even thought going horizonal
-            if (velocity.Y < 0 && GlobalPosition.Y < jumpYPos || goingHorizontal)
-            {
-                highestYPos = GlobalPosition.Y;
-            }
-            jumpYPos = GlobalPosition.Y;
-
-            // If collided with wall set highest vector.y to previous platform.y if platform.y is higher then highestYpos
-            if(IsOnWall())
-            {
-                // If highestYPos is lowerer then platformYPos, then use the height from the last platformYPos
-                if (highestYPos > previousYPos)
-                {
-                    highestYPos = previousYPos;
-                }
-            }
-        }
-
-        if (IsOnFloor())
-        {
-            // Sets landing y pos to current y value
-            // If just landed from jump calculate jump distance, if distance > required distance, faceplant
-            currentYPos = GlobalPosition.Y;
-            if (highestYPos != 0)
-            {
-                var differenceBetweenPlatforms = currentYPos - previousYPos;
-                bool isOnSamePlatform = differenceBetweenPlatforms > -15 && differenceBetweenPlatforms < 15;
-                if (!isOnSamePlatform)
-                {
-                    if (IsOnCeiling())
-                    {
-                        return;
-                    }
-                    if (IsOnWall())
-                    {
-                        return;
-                    }
-                    if (GlobalPosition.Y < personalHighestYPos)
-                    {
-                        personalHighestYPos = GlobalPosition.Y;
-                        CalculatePercentageDistance();
-                    }
-                    // Check to see if it's your highest position
-                    // If it's your highest position set the points through
-                }
-                
-                float heightDifference = Math.Abs(currentYPos) - Math.Abs(highestYPos);
-                if (heightDifference >= distanceForHeadOnFloor)
-                {
-                    headOnFloor = true;
-                }
-                highestYPos = 0;
-            }
-
-            if (headOnFloor)
-                animatedSprite.Play("HeadOnFloor");
-            else
-                animatedSprite.Play("Idle");
-
-            // Apply jump velocity if there's a pending jump
-            if (_jumpVelocity != Vector2.Zero)
-            {
-                previousYPos = currentYPos;
-                // _ = stop warning error :)
-                _ = showDisplayName(2.0);
-                velocity = _jumpVelocity;
-                _jumpVelocity = Vector2.Zero; // Reset jump velocity after applying
-            }
-            else
-            {
-                velocity.X = 0; // Stop horizontal movement when on floor and not jumping
-            }
-        }
-
-        Velocity = velocity;
-        MoveAndSlide();
-    }
-
     public string GetUserID()
     {
         return userID;
@@ -279,18 +385,6 @@ public partial class Player : CharacterBody2D
         displayLabel.Visible = true;
         await ToSignal(GetTree().CreateTimer(time), "timeout");
         displayLabel.Visible = false;
-    }
-
-    public void SetPlayerColours(Color cape1Color, Color cape2Color, Color helmetFeathersColor, 
-        Color armourDarkColor, Color armourMedColor, Color armourLightColor)
-    {
-        ShaderMaterial material = (ShaderMaterial)animatedSprite.Material;
-        material.SetShaderParameter("cape1_color_new", cape1Color); // 0a7030
-        material.SetShaderParameter("cape2_color_new", cape2Color); // eba724
-        material.SetShaderParameter("helmet_feathers_new", helmetFeathersColor); // d2202c
-        material.SetShaderParameter("armour_dark_new", armourDarkColor); // 7c776f
-        material.SetShaderParameter("armour_med_new", armourMedColor); // b3aaa1
-        material.SetShaderParameter("armour_light_new", armourLightColor); // eadfd1
     }
 
     public void SetTeamColours(Color[] colourArray, ShaderMaterial uniqueMaterial)

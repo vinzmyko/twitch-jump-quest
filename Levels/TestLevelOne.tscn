@@ -1,11 +1,11 @@
 [gd_scene load_steps=13 format=3 uid="uid://bkspwoj1m08ew"]
 
-[ext_resource type="TileSet" uid="uid://bh5pht1a0dccl" path="res://TileSetCollisionsTwo.tres" id="1_k75en"]
+[ext_resource type="TileSet" uid="uid://bh5pht1a0dccl" path="res://Levels/TileSetCollisionsTwo.tres" id="1_k75en"]
 [ext_resource type="PackedScene" uid="uid://bqpfpvnticka6" path="res://Scenes/GameUI/TeamScoresDisplay.tscn" id="2_6kwns"]
 [ext_resource type="PackedScene" uid="uid://ngnphkty4eu" path="res://Scenes/GameUI/InformationDisplay.tscn" id="3_qkosv"]
 [ext_resource type="PackedScene" uid="uid://dujcycbaipj4k" path="res://Debug/DebugTwitchChat.tscn" id="4_h7ohr"]
-[ext_resource type="Texture2D" uid="uid://nax0ji5bnawt" path="res://LightTexture.png" id="5_17sde"]
-[ext_resource type="Texture2D" uid="uid://d31x7h87muvcj" path="res://PixelRain.png" id="6_tjd61"]
+[ext_resource type="Texture2D" uid="uid://nax0ji5bnawt" path="res://Levels/LightTexture.png" id="5_17sde"]
+[ext_resource type="Texture2D" uid="uid://d31x7h87muvcj" path="res://Levels/PixelRain.png" id="6_tjd61"]
 [ext_resource type="Script" path="res://Scenes/LevelCamera.cs" id="7_cymm8"]
 
 [sub_resource type="Gradient" id="Gradient_mt3pe"]

@@ -1,17 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://bbh7hua1l03td"]
+[gd_scene load_steps=4 format=3 uid="uid://bbh7hua1l03td"]
 
-[ext_resource type="TileSet" uid="uid://dw6dt7428x5vr" path="res://TileSetCollisionsTwo.tres" id="1_puxpq"]
+[ext_resource type="TileSet" uid="uid://dxak2rfddpct1" path="res://TileSetCollisionsTwo.tres" id="1_puxpq"]
 [ext_resource type="PackedScene" uid="uid://dujcycbaipj4k" path="res://Debug/DebugTwitchChat.tscn" id="2_q4lgv"]
-[ext_resource type="Texture2D" uid="uid://bnwbo74sp78qc" path="res://LightTexture.png" id="4_60sm0"]
-
-[sub_resource type="Gradient" id="Gradient_mt3pe"]
-offsets = PackedFloat32Array(0.0584416, 0.811688)
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_wn8it"]
-gradient = SubResource("Gradient_mt3pe")
-fill = 1
-fill_from = Vector2(0.490826, 0.481651)
+[ext_resource type="Texture2D" uid="uid://nax0ji5bnawt" path="res://Levels/LightTexture.png" id="3_4ft3c"]
 
 [node name="Main" type="Node2D"]
 
@@ -51,7 +42,7 @@ color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
 shadow_filter_smooth = 1.0
-texture = SubResource("GradientTexture2D_wn8it")
+texture = ExtResource("3_4ft3c")
 texture_scale = 50.0
 
 [node name="SmallLight2" type="PointLight2D" parent="Lights"]
@@ -59,7 +50,7 @@ position = Vector2(192, -561)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 3.0
 
 [node name="SmallLight10" type="PointLight2D" parent="Lights"]
@@ -68,7 +59,7 @@ color = Color(0.646753, 0.532975, 0.379549, 1)
 energy = 2.0
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 2.0
 
 [node name="TinyLight1" type="PointLight2D" parent="Lights"]
@@ -76,56 +67,56 @@ position = Vector2(256, -1296)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightThree" type="PointLight2D" parent="Lights"]
 position = Vector2(352, -2028)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightThree12" type="PointLight2D" parent="Lights"]
 position = Vector2(352, -2028)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightThree6" type="PointLight2D" parent="Lights"]
 position = Vector2(16, -2604)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightThree7" type="PointLight2D" parent="Lights"]
 position = Vector2(128, -2641)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightThree8" type="PointLight2D" parent="Lights"]
 position = Vector2(193, -2635)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightThree9" type="PointLight2D" parent="Lights"]
 position = Vector2(336, -2635)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightThree10" type="PointLight2D" parent="Lights"]
 position = Vector2(434, -3071)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightThree11" type="PointLight2D" parent="Lights"]
 position = Vector2(527, -3740)
@@ -133,7 +124,7 @@ color = Color(0.646753, 0.532975, 0.379549, 1)
 energy = 0.5
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 0.5
 
 [node name="Final Light" type="PointLight2D" parent="Lights"]
@@ -142,7 +133,7 @@ color = Color(0.646753, 0.532975, 0.379549, 1)
 energy = 4.0
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 4.0
 
 [node name="StoneLightThree2" type="PointLight2D" parent="Lights"]
@@ -150,84 +141,84 @@ position = Vector2(496, -2650)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightThree3" type="PointLight2D" parent="Lights"]
 position = Vector2(527, -2940)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightThree4" type="PointLight2D" parent="Lights"]
 position = Vector2(496, -3132)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightThree5" type="PointLight2D" parent="Lights"]
 position = Vector2(527, -3695)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightFour" type="PointLight2D" parent="Lights"]
 position = Vector2(65, -2284)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightFour2" type="PointLight2D" parent="Lights"]
 position = Vector2(79, -2826)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightFour3" type="PointLight2D" parent="Lights"]
 position = Vector2(259, -3118)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightFour4" type="PointLight2D" parent="Lights"]
 position = Vector2(-115, -3165)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightFour8" type="PointLight2D" parent="Lights"]
 position = Vector2(432, -1953)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightFour9" type="PointLight2D" parent="Lights"]
 position = Vector2(464, -1885)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightFour10" type="PointLight2D" parent="Lights"]
 position = Vector2(416, -1772)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightFour11" type="PointLight2D" parent="Lights"]
 position = Vector2(334, -1822)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightFour5" type="PointLight2D" parent="Lights"]
 position = Vector2(121, -3233)
@@ -235,7 +226,7 @@ color = Color(0.646753, 0.532975, 0.379549, 1)
 energy = 2.0
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightFour6" type="PointLight2D" parent="Lights"]
 position = Vector2(404, -3294)
@@ -243,7 +234,7 @@ color = Color(0.646753, 0.532975, 0.379549, 1)
 energy = 2.0
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightFour7" type="PointLight2D" parent="Lights"]
 position = Vector2(404, -3487)
@@ -251,7 +242,7 @@ color = Color(0.646753, 0.532975, 0.379549, 1)
 energy = 2.0
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="SmallLightTen" type="PointLight2D" parent="Lights"]
 position = Vector2(-48, -3406)
@@ -259,28 +250,28 @@ color = Color(0.646753, 0.532975, 0.379549, 1)
 energy = 2.0
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLightTwo" type="PointLight2D" parent="Lights"]
 position = Vector2(529, -2189)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="StoneLight" type="PointLight2D" parent="Lights"]
 position = Vector2(452, -2511)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="TinyLight2" type="PointLight2D" parent="Lights"]
 position = Vector2(336, -2398)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 
 [node name="TinyLight3" type="PointLight2D" parent="Lights"]
 position = Vector2(0, -881)
@@ -289,7 +280,7 @@ energy = 0.75
 shadow_enabled = true
 shadow_color = Color(0.482353, 0.486275, 0.435294, 0)
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 0.6
 
 [node name="SmallLight3" type="PointLight2D" parent="Lights"]
@@ -297,7 +288,7 @@ position = Vector2(498, -1279)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 3.0
 
 [node name="SmallLight6" type="PointLight2D" parent="Lights"]
@@ -305,7 +296,7 @@ position = Vector2(368, -1587)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 2.0
 
 [node name="SmallLight7" type="PointLight2D" parent="Lights"]
@@ -313,7 +304,7 @@ position = Vector2(224, -1587)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 2.0
 
 [node name="SmallLight8" type="PointLight2D" parent="Lights"]
@@ -321,7 +312,7 @@ position = Vector2(64, -1587)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 2.0
 
 [node name="SmallLight9" type="PointLight2D" parent="Lights"]
@@ -329,7 +320,7 @@ position = Vector2(-46, -1584)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 2.0
 
 [node name="SmallLight4" type="PointLight2D" parent="Lights"]
@@ -337,7 +328,7 @@ position = Vector2(-82, -1471)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 2.0
 
 [node name="PointLight2D7" type="PointLight2D" parent="Lights"]
@@ -345,7 +336,7 @@ position = Vector2(-64, -1889)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 2.0
 
 [node name="BigLight1" type="PointLight2D" parent="Lights"]
@@ -353,7 +344,7 @@ position = Vector2(304, -858)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 3.0
 
 [node name="BigLight2" type="PointLight2D" parent="Lights"]
@@ -362,7 +353,7 @@ color = Color(0.646753, 0.532975, 0.379549, 1)
 energy = 3.0
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 4.0
 
 [node name="PointLight2D8" type="PointLight2D" parent="Lights"]
@@ -370,7 +361,7 @@ position = Vector2(65, -1996)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 2.0
 
 [node name="SmallLight1" type="PointLight2D" parent="Lights"]
@@ -378,7 +369,7 @@ position = Vector2(96, -784)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 3.0
 
 [node name="PointLight2D6" type="PointLight2D" parent="Lights"]
@@ -386,7 +377,7 @@ position = Vector2(463, -782)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 3.0
 
 [node name="SmallLight5" type="PointLight2D" parent="Lights"]
@@ -394,7 +385,7 @@ position = Vector2(224, -80)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 3.0
 
 [node name="Smalllight4" type="PointLight2D" parent="Lights"]
@@ -402,7 +393,7 @@ position = Vector2(1, 1)
 color = Color(0.646753, 0.532975, 0.379549, 1)
 shadow_enabled = true
 shadow_filter = 2
-texture = ExtResource("4_60sm0")
+texture = ExtResource("3_4ft3c")
 texture_scale = 3.0
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]

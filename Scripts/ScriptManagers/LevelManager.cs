@@ -40,16 +40,52 @@ public partial class LevelManager : Node
     public int endMarkerYPos = 0;
     public int startMarkerYPos = 0;
     public float startMarkerXPos = 0;
+
+    private TileMap tileMap;
+    private PlatformIdentifier platformIdentifier;
+    public int midgroundLayerId;
+
     public override void _Ready()
     {
         base._Ready();
         settingsManager = GetNodeOrNull<SettingsManager>("/root/SettingsManager");
         playerScene = ResourceLoader.Load<PackedScene>("res://Scenes/Player.tscn");
+
+        var root = GetTree().Root;
+        var levelNode = root.GetChild(root.GetChildCount() - 1);
+        tileMap = levelNode.GetNode<TileMap>("TileMap"); // Make sure this path is correct
+        midgroundLayerId = FindMidgroundLayerId();
+        platformIdentifier = new PlatformIdentifier(tileMap, midgroundLayerId);
+        platformIdentifier.IdentifyPlatforms();
+
+        // // Debug: Print platform IDs
+        // platformIdentifier.PrintPlatformIds();
+
         GameManager.Instance.PlayerJoined += SpawnPlayer;
         // GameManager.Instance.PlayerJoined += OnPlayerDied;
 
         spawnPosition = GetNodeOrNull<Marker2D>("/root/Main/SpawnMarker2D");
         InitLevelMarkers();
+    }
+
+     private int FindMidgroundLayerId()
+    {
+        for (int i = 0; i < tileMap.GetLayersCount(); i++)
+        {
+            if (tileMap.GetLayerName(i) == "Midground")
+            {
+                return i;
+            }
+        }
+        GD.PrintErr("Midground layer not found!");
+        return -1;
+    }
+
+    public int GetPlatformId(Vector2I cellPos)
+    {
+        int platformId = platformIdentifier.GetPlatformId(cellPos);
+        GD.Print($"GetPlatformId called for cell {cellPos}, returned ID: {platformId}");
+        return platformId;
     }
 
     private void InitLevelMarkers()

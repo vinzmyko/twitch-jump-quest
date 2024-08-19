@@ -48,15 +48,15 @@ public partial class Player : CharacterBody2D
     private Queue<PlatformInfo> recentPlatforms = new Queue<PlatformInfo>();
     private float highestYPosition = float.MaxValue; // Remember, lower Y is higher in Godot
 
-    private struct PlatformInfo
+    public struct PlatformInfo
     {
-        public int PlatformId;
-        public float XPosition;
-        public float YPosition;
+        public int PlatformId { get; }
+        public float XPosition { get; }
+        public float YPosition { get; }
 
-        public PlatformInfo(int id, float x, float y)
+        public PlatformInfo(int platformId, float x, float y)
         {
-            PlatformId = id;
+            PlatformId = platformId;
             XPosition = x;
             YPosition = y;
         }
@@ -129,38 +129,45 @@ public partial class Player : CharacterBody2D
 
         bool isNewHighestPosition = currentPosition.Y < highestYPosition;
         bool isSameHeight = Math.Abs(currentPosition.Y - highestYPosition) < TILE_SIZE;
-        bool isNewHorizontalPosition = !recentPlatforms.Any(p => 
-            Math.Abs(p.YPosition - currentPosition.Y) < TILE_SIZE && 
-            Math.Abs(p.XPosition - currentPosition.X) < TILE_SIZE);
-
-        // GD.Print($"isNewHighestPosition: {isNewHighestPosition}, isSameHeight: {isSameHeight}, isNewHorizontalPosition: {isNewHorizontalPosition}");
-        // GD.Print($"currentPosition: {currentPosition}, highestYPosition: {highestYPosition}");
-        // GD.Print($"Recent platforms: {string.Join(", ", recentPlatforms.Select(p => $"({p.XPosition}, {p.YPosition})"))}");
+        bool isNewPlatform = !recentPlatforms.Any(p => 
+            p.PlatformId == newPlatformId);
+        
+        GD.Print($"newPlatfromId: {newPlatformId}");
+        GD.Print($"isNewHighestPosition: {isNewHighestPosition}, isSameHeight: {isSameHeight}, isNewPlatform: {isNewPlatform}");
+        GD.Print($"currentPosition: {currentPosition}, highestYPosition: {highestYPosition}");
+        GD.Print($"Recent platforms: {string.Join(", ", recentPlatforms.Select(p => $"(ID:{p.PlatformId},{p.XPosition}, {p.YPosition})"))}");
 
         // Calculate points
         float progressFraction = (levelManager.startMarkerYPos - currentPosition.Y) / levelManager.totalLevelYDistance;
         int pointsGained = Mathf.FloorToInt(progressFraction * 100);
 
-        bool shouldAwardPointsAndIncreaseCombo = (isNewHighestPosition || (isSameHeight && isNewHorizontalPosition)) && pointsGained > 0;
+        // bool shouldAwardPointsAndIncreaseCombo = (isNewHighestPosition || (isSameHeight && isNewPlatform)) && pointsGained > 0;
+        bool shouldAwardPointsAndIncreaseCombo = ((isNewHighestPosition || isSameHeight) && isNewPlatform) && pointsGained > 0;
 
         if (shouldAwardPointsAndIncreaseCombo)
         {
-            // Increase combo
             combo++;
             DEBUG_COMBO.Text = $"combo: {combo}";
-            GD.Print($"Combo increased: {combo}");
+            // GD.Print($"Combo increased: {combo}");
 
-            // Award points
             AddScore(pointsGained);
             DEBUG_LABEL.Visible = true;
             DEBUG_LABEL.Text = $"+{pointsGained}";
             // GD.Print($"Points given for Midground platform: {pointsGained}");
 
-            // Update tracking
             recentPlatforms.Enqueue(new PlatformInfo(newPlatformId, currentPosition.X, currentPosition.Y));
             if (recentPlatforms.Count > MAX_TRACKED_PLATFORMS)
             {
                 recentPlatforms.Dequeue();
+            }
+
+    if (isNewPlatform)
+            {
+                recentPlatforms.Enqueue(new PlatformInfo(newPlatformId, currentPosition.X, currentPosition.Y));
+                if (recentPlatforms.Count > MAX_TRACKED_PLATFORMS)
+                {
+                    recentPlatforms.Dequeue();
+                }
             }
 
             if (isNewHighestPosition)
@@ -172,18 +179,10 @@ public partial class Player : CharacterBody2D
         }
         else
         {
-            if (pointsGained == 0)
-            {
-                // GD.Print("No points or combo increase: Calculated points are 0.");
-            }
-            else
-            {
-                // GD.Print("No points or combo increase: Position is not new highest and not a new horizontal position at the same height.");
-            }
+            combo = 0;
+            DEBUG_COMBO.Text = $"combo: {combo}";
         }
     }
-
-
 
     private (int platformId, string layerName) GetCurrentPlatformId()
     {
@@ -212,17 +211,12 @@ public partial class Player : CharacterBody2D
                     Vector2 collisionPoint = (Vector2)result["position"];
                     Vector2I cellCoords = tileMap.LocalToMap(tileMap.ToLocal(collisionPoint));
                     
-                    for (int layerId = tileMap.GetLayersCount() - 1; layerId >= 0; layerId--)
+                    string layerName = tileMap.GetLayerName(levelManager.midgroundLayerId);
+                    if (tileMap.GetCellSourceId(levelManager.midgroundLayerId, cellCoords) != -1)
                     {
-                        if (tileMap.GetCellSourceId(layerId, cellCoords) != -1)
-                        {
-                            string layerName = tileMap.GetLayerName(layerId);
-                            string directionName = direction == Vector2.Down ? "below" : 
-                                                direction.X < 0 ? "down-left of" : "down-right of";
-                            // GD.Print($"Platform detected {directionName} player on layer: {layerName} (ID: {layerId}), coordinates: {cellCoords}");
-                            int platformId = layerId * 1000000 + cellCoords.X * 1000 + cellCoords.Y;
-                            return (platformId, layerName);
-                        }
+                        int platformId = levelManager.GetPlatformId(cellCoords);
+                        GD.Print($"Player at cell {cellCoords}, Platform ID: {platformId}");
+                        return (platformId, layerName);
                     }
                 }
             }
@@ -231,8 +225,6 @@ public partial class Player : CharacterBody2D
         GD.PrintErr("No valid platform found near player");
         return (-1, string.Empty);
     }
-
-
 
     public override void _PhysicsProcess(double delta)
     {

@@ -13,7 +13,7 @@ public partial class GameManager : Node
     // Singleton instance
     public static GameManager Instance { get; private set; }
     // List to store all active players
-    private List<Player> players = new List<Player>();
+    public List<Player> players = new List<Player>();
 
     private DebugTwitchChat debugger;
 

@@ -113,6 +113,7 @@ public partial class Player : CharacterBody2D
         DEBUG_COMBO = GetNode<Label>("DEBUG_COMBO_LABEL");
         // Some reason it won't change in Player scene so I do it through code.
         SetCollisionLayerValue(1, false);
+        SetCollisionLayerValue(2, true);
         await showDisplayName(3.5);
     }
 
@@ -132,9 +133,9 @@ public partial class Player : CharacterBody2D
             Math.Abs(p.YPosition - currentPosition.Y) < TILE_SIZE && 
             Math.Abs(p.XPosition - currentPosition.X) < TILE_SIZE);
 
-        GD.Print($"isNewHighestPosition: {isNewHighestPosition}, isSameHeight: {isSameHeight}, isNewHorizontalPosition: {isNewHorizontalPosition}");
-        GD.Print($"currentPosition: {currentPosition}, highestYPosition: {highestYPosition}");
-        GD.Print($"Recent platforms: {string.Join(", ", recentPlatforms.Select(p => $"({p.XPosition}, {p.YPosition})"))}");
+        // GD.Print($"isNewHighestPosition: {isNewHighestPosition}, isSameHeight: {isSameHeight}, isNewHorizontalPosition: {isNewHorizontalPosition}");
+        // GD.Print($"currentPosition: {currentPosition}, highestYPosition: {highestYPosition}");
+        // GD.Print($"Recent platforms: {string.Join(", ", recentPlatforms.Select(p => $"({p.XPosition}, {p.YPosition})"))}");
 
         // Calculate points
         float progressFraction = (levelManager.startMarkerYPos - currentPosition.Y) / levelManager.totalLevelYDistance;
@@ -153,7 +154,7 @@ public partial class Player : CharacterBody2D
             AddScore(pointsGained);
             DEBUG_LABEL.Visible = true;
             DEBUG_LABEL.Text = $"+{pointsGained}";
-            GD.Print($"Points given for Midground platform: {pointsGained}");
+            // GD.Print($"Points given for Midground platform: {pointsGained}");
 
             // Update tracking
             recentPlatforms.Enqueue(new PlatformInfo(newPlatformId, currentPosition.X, currentPosition.Y));
@@ -173,11 +174,11 @@ public partial class Player : CharacterBody2D
         {
             if (pointsGained == 0)
             {
-                GD.Print("No points or combo increase: Calculated points are 0.");
+                // GD.Print("No points or combo increase: Calculated points are 0.");
             }
             else
             {
-                GD.Print("No points or combo increase: Position is not new highest and not a new horizontal position at the same height.");
+                // GD.Print("No points or combo increase: Position is not new highest and not a new horizontal position at the same height.");
             }
         }
     }
@@ -218,7 +219,7 @@ public partial class Player : CharacterBody2D
                             string layerName = tileMap.GetLayerName(layerId);
                             string directionName = direction == Vector2.Down ? "below" : 
                                                 direction.X < 0 ? "down-left of" : "down-right of";
-                            GD.Print($"Platform detected {directionName} player on layer: {layerName} (ID: {layerId}), coordinates: {cellCoords}");
+                            // GD.Print($"Platform detected {directionName} player on layer: {layerName} (ID: {layerId}), coordinates: {cellCoords}");
                             int platformId = layerId * 1000000 + cellCoords.X * 1000 + cellCoords.Y;
                             return (platformId, layerName);
                         }
@@ -317,6 +318,8 @@ public partial class Player : CharacterBody2D
 
     public void AddScore(int points)
     {
+        if (team == null)
+            return;
         this.points += points;
         EmitSignal(SignalName.ScoreUpdated, team.TeamAbbreviation, points);
     }

@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://cbbk6o77cda6m"]
+
+[ext_resource type="Script" path="res://Scenes/LevelCamera.cs" id="1_7qox1"]
+
+[sub_resource type="Curve2D" id="Curve2D_qbqtb"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0)
+}
+point_count = 1
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e8cww"]
+size = Vector2(654, 127)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6grmx"]
+size = Vector2(656, 85)
+
+[node name="LevelCamera" type="Node2D"]
+script = ExtResource("1_7qox1")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(1.95, 1.95)
+
+[node name="Path2D" type="Path2D" parent="."]
+curve = SubResource("Curve2D_qbqtb")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
+
+[node name="UpwardTriggerArea2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UpwardTriggerArea2D"]
+position = Vector2(0, -182.5)
+shape = SubResource("RectangleShape2D_e8cww")
+
+[node name="KillzoneTrigger" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KillzoneTrigger"]
+position = Vector2(0, 230.5)
+shape = SubResource("RectangleShape2D_6grmx")

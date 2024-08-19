@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Godot;
 using Vector2 = Godot.Vector2;
 using UNLTeamJumpQuest.TwitchIntegration;
-using System.Data.Common;
 
 public partial class Player : CharacterBody2D
 {
@@ -148,7 +147,6 @@ public partial class Player : CharacterBody2D
         {
             combo++;
             DEBUG_COMBO.Text = $"combo: {combo}";
-            // GD.Print($"Combo increased: {combo}");
 
             AddScore(pointsGained);
             DEBUG_LABEL.Visible = true;
@@ -221,7 +219,6 @@ public partial class Player : CharacterBody2D
                 }
             }
         }
-
         GD.PrintErr("No valid platform found near player");
         return (-1, string.Empty);
     }

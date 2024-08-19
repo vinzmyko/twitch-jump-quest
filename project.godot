@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="UNLTeamJumpQuest"
-run/main_scene="res://LevelOne.tscn"
+run/main_scene="res://TestLevelOne.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -28,6 +28,7 @@ UiManager="*res://Scripts/ScriptManagers/UIManager.cs"
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
+window/size/always_on_top=true
 window/stretch/mode="viewport"
 
 [dotnet]

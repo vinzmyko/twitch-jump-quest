@@ -26,6 +26,7 @@ public partial class TeamScoresDisplay : Control
     {
         if (!levelManager.teamScores.TeamExists(teamAbbrev))
         {
+            if (teamAbbrev == "DEBUG") { return; }
             GD.PushError("team does not exist in levelmanager, problem if debug player is not spawned");
             return;
         }

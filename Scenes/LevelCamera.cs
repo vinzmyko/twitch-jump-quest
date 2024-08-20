@@ -50,10 +50,9 @@ public partial class LevelCamera : Node2D
         upwardTrigger.BodyEntered += OnPlayerEnterUpwardArea2D;
         upwardTrigger.BodyExited += OnPlayerExitUpwardArea2D;
         killZone.BodyEntered += OnPlayerEnterKillZone;
-
-        //Debug
-        // currentState = CameraState.Moving;
-        // currentPathPointIndex++;
+        var root = GetTree().Root;
+        var levelNode = root.GetChild(root.GetChildCount() - 1);
+        levelNode.GetNode<GameTimer>("CanvasLayer/GameTimer").waitTimeFinished += () => { upwardTrigger.GetNode<CollisionShape2D>("CollisionShape2D").Disabled = false; };
     }
 
     public override void _PhysicsProcess(double delta)
@@ -115,13 +114,11 @@ private void UpdateCameraMovement(double delta)
             currentCameraSpeed = Mathf.MoveToward(currentCameraSpeed, targetSpeed * speedMultiplier, cameraAcceleration * (float)delta);
 
             Vector2 targetPointPosition = ToGlobal(path.Curve.GetPointPosition(currentPathPointIndex));
-            // GD.Print(targetPointPosition);
             GD.Print($"targetPos: {targetPointPosition}, PointIdx[{currentPathPointIndex}]: {path.Curve.GetPointPosition(currentPathPointIndex)}");
             MoveCameraWithArea2Ds(currentCameraSpeed, false);
 
             if (camera.GlobalPosition.Y <= targetPointPosition.Y)
             {
-                // currentPathPointIndex++;
                 upwardTrigger.GlobalPosition = camera.GlobalPosition;
                 currentState = CameraState.Idle;
             }

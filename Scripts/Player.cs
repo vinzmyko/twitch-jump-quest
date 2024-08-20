@@ -33,7 +33,7 @@ public partial class Player : CharacterBody2D
     private Vector2 _jumpVelocity = Vector2.Zero;
 
     public string userID, displayName;
-    private UNL.Team team;
+    public UNL.Team team;
     private Color[] teamColours;
     private DebugTwitchChat debugger;
     private SettingsManager settingsManager;
@@ -41,7 +41,7 @@ public partial class Player : CharacterBody2D
     public int points, combo = 0, comboStreak, numOfFaceplants = 0, distanceOfFurthestFaceplant = 0, idxOfUniqueFeatherColour;
     private const int MAX_TRACKED_PLATFORMS = 10;
     private Queue<PlatformInfo> recentPlatforms = new Queue<PlatformInfo>();
-    private float highestYPosition = float.MaxValue; // Remember, lower Y is higher in Godot
+    public float highestYPosition = float.MaxValue; // Remember, lower Y is higher in Godot
 
     public struct PlatformInfo
     {
@@ -142,7 +142,6 @@ public partial class Player : CharacterBody2D
         float progressFraction = (levelManager.startMarkerYPos - currentPosition.Y) / levelManager.totalLevelYDistance;
         int pointsGained = Mathf.FloorToInt(progressFraction * 100);
 
-        // bool shouldAwardPointsAndIncreaseCombo = (isNewHighestPosition || (isSameHeight && isNewPlatform)) && pointsGained > 0;
         bool shouldAwardPointsAndIncreaseCombo = ((isNewHighestPosition || isSameHeight) && isNewPlatform) && pointsGained > 0;
 
         if (shouldAwardPointsAndIncreaseCombo)
@@ -190,7 +189,7 @@ public partial class Player : CharacterBody2D
         uint collisionMask = 1; // Assuming your jumpable tiles are on collision layer 1
 
         Vector2[] directions = { Vector2.Down, new Vector2(-1, 1), new Vector2(1, 1) };
-        float rayLength = 3f; // Adjust this value as needed
+        float rayLength = 5f;
 
         foreach (var direction in directions)
         {

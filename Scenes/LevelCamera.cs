@@ -68,14 +68,10 @@ public partial class LevelCamera : Node2D
         {
             if (player.IsOnFloor())
             {
-                GD.Print("checking threshold");
                 playersInTriggerArea.Add(player);
-                // CheckPlayerThreshold();
             }
             else
             {
-                // Optional: Start a coroutine to check if the player lands soon
-                GD.Print("Start ground check routine");
                 StartGroundedCheckCoroutine(player);
             }
         }
@@ -93,8 +89,21 @@ public partial class LevelCamera : Node2D
     {
         if (body is Player player)
         {
-            EmitSignal(SignalName.PlayerHitKillZone, player);
+            CallDeferred(nameof(EmitPlayerHitKillzone), player);
+            GD.Print($"{player} has died");
         }
+    }
+
+    private void EmitPlayerHitKillzone(Player player)
+    {
+        // add a timer to see if player has been in the zone for a certain amount of time
+        GD.Print("EmitSignal player hit killzone");
+        var timer = GetTree().CreateTimer(0.5); 
+        timer.Timeout += () =>
+        {
+            EmitSignal(SignalName.PlayerHitKillZone, player);
+            player.QueueFree();
+        };
     }
 
     private void CheckPlayerThreshold()
@@ -114,7 +123,7 @@ private void UpdateCameraMovement(double delta)
             currentCameraSpeed = Mathf.MoveToward(currentCameraSpeed, targetSpeed * speedMultiplier, cameraAcceleration * (float)delta);
 
             Vector2 targetPointPosition = ToGlobal(path.Curve.GetPointPosition(currentPathPointIndex));
-            GD.Print($"targetPos: {targetPointPosition}, PointIdx[{currentPathPointIndex}]: {path.Curve.GetPointPosition(currentPathPointIndex)}");
+            // GD.Print($"targetPos: {targetPointPosition}, PointIdx[{currentPathPointIndex}]: {path.Curve.GetPointPosition(currentPathPointIndex)}");
             MoveCameraWithArea2Ds(currentCameraSpeed, false);
 
             if (camera.GlobalPosition.Y <= targetPointPosition.Y)

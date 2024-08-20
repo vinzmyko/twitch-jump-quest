@@ -23,17 +23,11 @@ public partial class GameManager : Node
     public float gameTime = 300.0f; //In seconds
     public float waitTime = 90.0f;
     public GameTimer gameTimer;
-    private List<PlayerInfo> allPlayerInfo = new List<PlayerInfo>();
+    private List<PlayerInfo> deadPlayerInfo = new List<PlayerInfo>();
 
-    public void AddPlayer(string displayName, string userID, string teamAbbrev)
+    public void AddToDeadPlayerList(Player player)
     {
-        allPlayerInfo.Add(new PlayerInfo(displayName, userID, teamAbbrev));
-        EmitSignal(SignalName.PlayerJoined, displayName, userID, teamAbbrev);
-    }
-
-    public List<PlayerInfo> GetAllPlayerInfo()
-    {
-        return allPlayerInfo;
+        deadPlayerInfo.Add(new PlayerInfo(player));
     }
 
     public override void _Ready()
@@ -56,7 +50,16 @@ public partial class GameManager : Node
         var levelNode = root.GetChild(root.GetChildCount() - 1);
         gameTimer = levelNode.GetNode<GameTimer>("CanvasLayer/GameTimer");
         gameTimer.waitTimeFinished += () => {CurrentGameState = GameState.Playing;};
-        gameTimer.gameTimeFinished += () => {}; // End game screen to congras player
+        gameTimer.gameTimeFinished += () => 
+        {
+            CurrentGameState = GameState.GameOver;
+            // Change scene to game over screen
+        }; 
+        levelNode.GetNode<LevelCamera>("LevelCamera").PlayerHitKillZone += (Player player) =>
+        {
+            GD.Print($"{player} info has been tracked");
+            AddToDeadPlayerList(player);
+        };
 
     }
 

@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://Scenes/GameUI/GameTimer.cs" id="1_l7bcf"]
 
 [node name="GameTimer" type="Control"]
-modulate = Color(1, 1, 1, 0.4)
+modulate = Color(1, 1, 1, 0.352941)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

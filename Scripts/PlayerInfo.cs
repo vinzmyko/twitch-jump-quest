@@ -2,6 +2,7 @@ public class PlayerInfo
     {
     public string DisplayName { get; }
     public string UserID { get; }
+    public UNL.Team team { get; }
     public string TeamAbbrev { get; }
     public float HighestYPos { get; }
     public int ComboStreak { get; }
@@ -9,26 +10,15 @@ public class PlayerInfo
     public int DistanceOfFurthestFaceplant { get; }
     public int IdxOfUniqueFeatherColours { get; }
 
-    public PlayerInfo(string displayName, string userID, string teamAbbrev, float highestYPos, int comboStreak, int numOfFaceplants, int distanceOfFurthestFaceplant, int idxOfUniqueFeatherColours)
+    public PlayerInfo(Player player)
     {
-        DisplayName = displayName;
-        UserID = userID;
-        TeamAbbrev = teamAbbrev;
-        HighestYPos = highestYPos;
-        ComboStreak = comboStreak;
-        NumOfFaceplants = numOfFaceplants;
-        DistanceOfFurthestFaceplant = distanceOfFurthestFaceplant;
-        IdxOfUniqueFeatherColours = idxOfUniqueFeatherColours;
-    }
-    public PlayerInfo(string displayName, string userID, string teamAbbrev)
-    {
-        DisplayName = displayName;
-        UserID = userID;
-        TeamAbbrev = teamAbbrev;
-        HighestYPos = 0.0f; 
-        ComboStreak = 0; 
-        NumOfFaceplants = 0; 
-        DistanceOfFurthestFaceplant = 0; 
-        IdxOfUniqueFeatherColours = -1; 
+        DisplayName = player.displayName;
+        UserID = player.userID;
+        team = player.team;
+        HighestYPos = player.highestYPosition;
+        ComboStreak = player.comboStreak;
+        NumOfFaceplants = player.numOfFaceplants;
+        DistanceOfFurthestFaceplant = player.distanceOfFurthestFaceplant;
+        IdxOfUniqueFeatherColours = player.idxOfUniqueFeatherColour;
     }
 }

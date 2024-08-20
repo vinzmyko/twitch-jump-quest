@@ -22,7 +22,7 @@ public partial class GameTimer : Node
         gameManager = GetNode<GameManager>("/root/GameManager");
 
         // waitTime = gameManager.waitTime;
-        waitTime = 20.0f;
+        waitTime = 40.0f;
         gameTime = gameManager.gameTime;
     }
 
@@ -39,6 +39,7 @@ public partial class GameTimer : Node
             {
                 EmitSignal(SignalName.waitTimeFinished);
                 waitTimeFinishedEmitted = true;
+                SetCTALabelInvisible();
             }
         }
         else if (gameManager.CurrentGameState == GameManager.GameState.Playing)

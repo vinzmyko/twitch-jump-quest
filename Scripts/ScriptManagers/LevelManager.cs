@@ -64,15 +64,19 @@ public partial class LevelManager : Node
         GameManager.Instance.PlayerJoined += SpawnPlayer;
         // GameManager.Instance.PlayerJoined += OnPlayerDied;
 
+        int playerCount = 0;
+        Random random = new Random();
+        int rng = random.Next(0, 10);
         levelNode.GetNode<GameTimer>("CanvasLayer/GameTimer").waitTimeFinished += () => 
         {
             var playerArray = GetTree().GetNodesInGroup("Player");
             foreach (var node in playerArray)
             {
+                // Spread it out so all players use the spawn positions
                 var player = node as Player;
-                Random random = new Random();
-                int rng = random.Next(0, playerArray.Count);
-                Node2D positionToSpawn = spawnPositions.GetChild<Node2D>(rng);
+                int idxPos = ( rng + playerCount ) % playerArray.Count;
+                playerCount++;
+                Node2D positionToSpawn = spawnPositions.GetChild<Node2D>(idxPos);
                 player.GlobalPosition = positionToSpawn.GlobalPosition;
                 player.ResetPlayerState();               
             }
@@ -115,10 +119,8 @@ public partial class LevelManager : Node
 
     private void OnPlayerDied(string displayName, string userID, string teamAbbrev)
     {
-
+        
     }
-
-    // Method to load a specific level
 
     public void LoadLevel(int levelNumber)
     {

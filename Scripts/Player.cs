@@ -21,7 +21,7 @@ public partial class Player : CharacterBody2D
     Label displayLabel;
 
     [Export]
-    public float distanceForHeadOnFloor = 250;
+    public float distanceForHeadOnFloor = 225; // Base jump tiles is 8 or 128px
     public float BaseJumpVelocity = 500.0f;
     public float Gravity = 980.0f; 
     public bool headOnFloor = false;
@@ -41,7 +41,7 @@ public partial class Player : CharacterBody2D
     public int points, combo = 0, comboStreak, numOfFaceplants = 0, distanceOfFurthestFaceplant = 0, idxOfUniqueFeatherColour;
     private const int MAX_TRACKED_PLATFORMS = 10;
     private Queue<PlatformInfo> recentPlatforms = new Queue<PlatformInfo>();
-    public float highestYPosition = float.MaxValue; // Remember, lower Y is higher in Godot
+    public float highestYPosition = float.MaxValue; // lower Y is higher in Godot
 
     public struct PlatformInfo
     {

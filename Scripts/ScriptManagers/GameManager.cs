@@ -91,7 +91,7 @@ public partial class GameManager : Node
 
     public void HandleJoinRequest(string[] messageInfo, UNL.Team team)
     {
-        if (CurrentGameState != GameState.WaitingForPlayers)
+        if (CurrentGameState != GameState.WaitingForPlayers && team != null)
         {
             GD.Print("No in waiting for players state");
             return;
@@ -121,7 +121,7 @@ public partial class GameManager : Node
 
         GD.Print($"{messageInfo[0]} has requested to join the lobby!");
         //Checks if joining is allowed and if player doesn't already exist
-        if (CurrentGameState == GameState.WaitingForPlayers)
+        if (CurrentGameState == GameState.WaitingForPlayers || team == null)
         {
             if (!PlayerExists(userID))
             {

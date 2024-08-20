@@ -1,0 +1,26 @@
+{
+    "Godot Ready Function": {
+        "scope": "csharp",
+        "prefix": "ready",
+        "body": [
+            "public override void _Ready()",
+            "{",
+			"\tbase._Ready();",
+            "\t$0",
+            "}"
+        ],
+        "description": "Godot _Ready() function for C#"
+    },
+    "Godot Physics Process Function": {
+        "scope": "csharp",
+        "prefix": "physpro",
+        "body": [
+            "public override void _PhysicsProcess(double delta)",
+            "{",
+			"\tbase._PhysicsProcess(delta);",
+            "\t$0",
+            "}"
+        ],
+        "description": "Godot _PhysicsProcess(float delta) function for C#"
+    }
+}

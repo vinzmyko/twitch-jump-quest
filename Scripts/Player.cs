@@ -5,11 +5,16 @@ using System.Threading.Tasks;
 using Godot;
 using Vector2 = Godot.Vector2;
 using UNLTeamJumpQuest.TwitchIntegration;
+using TwitchLib.Api.Helix.Models.Games;
 
 public partial class Player : CharacterBody2D
 {
     [Signal]
     public delegate void DiedEventHandler(string displayName, string userID, string teamAbbrev);
+    [Signal]
+    public delegate void FaceplantedEventHandler(Player player, float fallDistance);
+    [Signal]
+    public delegate void ComboStreakingEventHandler(Player player, int comboStreak);
     [Signal]
     public delegate void ScoreUpdatedEventHandler(string teamAbbrev, int points);
 	AnimatedSprite2D animatedSprite;
@@ -20,29 +25,20 @@ public partial class Player : CharacterBody2D
     public float BaseJumpVelocity = 500.0f;
     public float Gravity = 980.0f; 
     public bool headOnFloor = false;
-    private float currentYPos = 0, previousYPos = 0, highestYPos = 0, jumpYPos = 0, personalHighestYPos;
-    // private float previousYPos = 0;
-    // private float highestYPos = 0;
-    // private float jumpYPos = 0;
-    // float personalHighestYPos;
-
+    private float currentYPos = 0, previousYPos = 0, highestYPos = 0, jumpYPos = 0;
     private const float TILE_SIZE = 16f;
-    private const int MIN_SCORE_TILES_HORIZONTAL = 2;
-    private const int MIN_SCORE_TILES_VERTICAL = 1;
     private Vector2 lastScoredPosition;
     private int currentPlatformId = -1;
 
     private Vector2 _jumpVelocity = Vector2.Zero;
 
     public string userID, displayName;
-    // public string displayName;
     private UNL.Team team;
     private Color[] teamColours;
     private DebugTwitchChat debugger;
     private SettingsManager settingsManager;
     private LevelManager levelManager;
-    public int points;
-    public int combo = 0;
+    public int points, combo = 0, comboStreak, numOfFaceplants = 0, distanceOfFurthestFaceplant = 0, idxOfUniqueFeatherColour;
     private const int MAX_TRACKED_PLATFORMS = 10;
     private Queue<PlatformInfo> recentPlatforms = new Queue<PlatformInfo>();
     private float highestYPosition = float.MaxValue; // Remember, lower Y is higher in Godot
@@ -63,6 +59,7 @@ public partial class Player : CharacterBody2D
 
     private Label DEBUG_LABEL;
     private Label DEBUG_COMBO;
+    private GameManager gameManager;
 
     public void Initialize(string _displayName, string _userID, UNL.Team _team)
     {
@@ -83,6 +80,7 @@ public partial class Player : CharacterBody2D
         debugger = GetNodeOrNull<DebugTwitchChat>("/root/Main/CanvasLayer/DebugTwitchChat");
         settingsManager = GetNodeOrNull<SettingsManager>("/root/SettingsManager");
         levelManager = GetNodeOrNull<LevelManager>("/root/LevelManager");
+        gameManager = GetNodeOrNull<GameManager>("/root/GameManager");
         
 
         if (debugger != null)
@@ -107,7 +105,6 @@ public partial class Player : CharacterBody2D
         else
             AddToGroup("Player");
 
-        personalHighestYPos = GlobalPosition.Y;
         DEBUG_LABEL = GetNode<Label>("DEBUG_POINTS_LABEL");
         DEBUG_COMBO = GetNode<Label>("DEBUG_COMBO_LABEL");
         // Some reason it won't change in Player scene so I do it through code.
@@ -118,6 +115,11 @@ public partial class Player : CharacterBody2D
 
     private void CalculateScore()
     {
+        if (gameManager.CurrentGameState != GameManager.GameState.Playing)
+        {
+            return;
+        }
+        
         var (newPlatformId, layerName) = GetCurrentPlatformId();
         Vector2 currentPosition = GlobalPosition;
 
@@ -131,10 +133,10 @@ public partial class Player : CharacterBody2D
         bool isNewPlatform = !recentPlatforms.Any(p => 
             p.PlatformId == newPlatformId);
         
-        GD.Print($"newPlatfromId: {newPlatformId}");
-        GD.Print($"isNewHighestPosition: {isNewHighestPosition}, isSameHeight: {isSameHeight}, isNewPlatform: {isNewPlatform}");
-        GD.Print($"currentPosition: {currentPosition}, highestYPosition: {highestYPosition}");
-        GD.Print($"Recent platforms: {string.Join(", ", recentPlatforms.Select(p => $"(ID:{p.PlatformId},{p.XPosition}, {p.YPosition})"))}");
+        // GD.Print($"newPlatfromId: {newPlatformId}");
+        // GD.Print($"isNewHighestPosition: {isNewHighestPosition}, isSameHeight: {isSameHeight}, isNewPlatform: {isNewPlatform}");
+        // GD.Print($"currentPosition: {currentPosition}, highestYPosition: {highestYPosition}");
+        // GD.Print($"Recent platforms: {string.Join(", ", recentPlatforms.Select(p => $"(ID:{p.PlatformId},{p.XPosition}, {p.YPosition})"))}");
 
         // Calculate points
         float progressFraction = (levelManager.startMarkerYPos - currentPosition.Y) / levelManager.totalLevelYDistance;
@@ -299,6 +301,37 @@ public partial class Player : CharacterBody2D
         MoveAndSlide();
     }
 
+    public void ResetPlayerState()
+    {
+        points = 0;
+        combo = 0;
+        comboStreak = 0;
+        numOfFaceplants = 0;
+        distanceOfFurthestFaceplant = 0;
+        
+        currentYPos = GlobalPosition.Y;
+        previousYPos = GlobalPosition.Y;
+        highestYPos = 0;
+        jumpYPos = GlobalPosition.Y;
+        highestYPosition = float.MaxValue;
+        
+        headOnFloor = false;
+        lastScoredPosition = Vector2.Zero;
+        currentPlatformId = -1;
+        
+        Velocity = Vector2.Zero;
+        _jumpVelocity = Vector2.Zero;
+        
+        recentPlatforms.Clear();
+        
+        DEBUG_LABEL.Visible = false;
+        DEBUG_COMBO.Text = "combo: 0";
+        
+        animatedSprite.Play("Idle");
+        animatedSprite.FlipH = false;
+    }
+
+
     public void Die()
     {
         EmitSignal(SignalName.Died, displayName, userID, team.TeamAbbreviation);
@@ -392,7 +425,8 @@ public partial class Player : CharacterBody2D
             return;
         }
         uniqueMaterial.SetShaderParameter("helmet_feathers_new", 
-            levelManager.uniqueColours[(levelManager.teamScores.GetTeamPlayerCount(team.TeamAbbreviation) - 1) % 15]); 
+            levelManager.uniqueColours[(levelManager.teamScores.GetTeamPlayerCount(team.TeamAbbreviation) - 1) % 15]);
+        idxOfUniqueFeatherColour = ( levelManager.teamScores.GetTeamPlayerCount(team.TeamAbbreviation) - 1 ) % 15;
     }
 
     private void SetColoursArray(UNL.Team team)

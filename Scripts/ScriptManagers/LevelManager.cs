@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Collections.Generic;
 
 public partial class LevelManager : Node
 {
@@ -11,7 +10,6 @@ public partial class LevelManager : Node
     [Signal]
     public delegate void TeamScoreUpdatedEventHandler(string teamAbbrev, int points);
 
-    // public Dictionary<string, UNL.TeamScore> teamScores = new Dictionary<string, UNL.TeamScore>();
     public UNL.TeamScoreManager teamScores = new UNL.TeamScoreManager();
     public Color[] uniqueColours = new Color[15]
     {
@@ -31,8 +29,8 @@ public partial class LevelManager : Node
         Color.FromHtml("#C0C0C0"),  // Silver
         Color.FromHtml("#800000")   // Maroon
     };
-
-    Marker2D spawnPosition;
+    private Marker2D debugSpawnPosition;
+    private Node2D spawnPositions;
     private PackedScene playerScene;
     SettingsManager settingsManager;
     private int currentLevel;
@@ -44,19 +42,21 @@ public partial class LevelManager : Node
     private TileMap tileMap;
     private PlatformIdentifier platformIdentifier;
     public int midgroundLayerId;
+    private Node root;
+    private Node2D levelNode;
 
     public override void _Ready()
     {
         base._Ready();
         settingsManager = GetNodeOrNull<SettingsManager>("/root/SettingsManager");
         playerScene = ResourceLoader.Load<PackedScene>("res://Scenes/Player.tscn");
-
-        var root = GetTree().Root;
-        var levelNode = root.GetChild(root.GetChildCount() - 1);
+        root = GetTree().Root;
+        levelNode = root.GetChild(root.GetChildCount() - 1) as Node2D;
         tileMap = levelNode.GetNode<TileMap>("TileMap"); // Make sure this path is correct
         midgroundLayerId = FindMidgroundLayerId();
         platformIdentifier = new PlatformIdentifier(tileMap, midgroundLayerId);
         platformIdentifier.IdentifyPlatforms();
+        debugSpawnPosition = levelNode.GetNode<Marker2D>("DebugSpawnMarker2D");
 
         // // Debug: Print platform IDs
         // platformIdentifier.PrintPlatformIds();
@@ -64,7 +64,20 @@ public partial class LevelManager : Node
         GameManager.Instance.PlayerJoined += SpawnPlayer;
         // GameManager.Instance.PlayerJoined += OnPlayerDied;
 
-        spawnPosition = GetNodeOrNull<Marker2D>("/root/Main/SpawnMarker2D");
+        levelNode.GetNode<GameTimer>("CanvasLayer/GameTimer").waitTimeFinished += () => 
+        {
+            var playerArray = GetTree().GetNodesInGroup("Player");
+            foreach (var node in playerArray)
+            {
+                var player = node as Player;
+                Random random = new Random();
+                int rng = random.Next(0, playerArray.Count);
+                Node2D positionToSpawn = spawnPositions.GetChild<Node2D>(rng);
+                player.GlobalPosition = positionToSpawn.GlobalPosition;
+                player.ResetPlayerState();               
+            }
+        };
+        spawnPositions = levelNode.GetNode<Node2D>("PlayerSpawns");
         InitLevelMarkers();
     }
 
@@ -155,12 +168,18 @@ public partial class LevelManager : Node
             player.ScoreUpdated += OnPlayerScoreUpdated;
         }
         
-        if (spawnPosition == null)
-        {
+        if (spawnPositions == null)
             GD.PushError("spawnPosition not found");
-        }
         else
-            playerInstance.GlobalPosition = spawnPosition.GlobalPosition;
+        {
+            Random random = new Random();
+            int rng = random.Next(0, spawnPositions.GetChildren().Count);
+            Node2D positionToSpawn = spawnPositions.GetChild<Node2D>(rng);
+            playerInstance.GlobalPosition = positionToSpawn.GlobalPosition;
+        }
+
+        if (playerInstance.displayName == "DEBUG")
+            playerInstance.GlobalPosition = debugSpawnPosition.GlobalPosition;
 
         Node levelScene = GetNode<Node>("/root/Main");
         levelScene.AddChild(playerInstance);

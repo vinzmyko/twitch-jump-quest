@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using TwitchLib.Api.Helix.Models.Games;
 
 public partial class GameManager : Node
 {
@@ -9,15 +10,9 @@ public partial class GameManager : Node
     [Signal]
     public delegate void PlayerDiedEventHandler(string displayName, string userID, string teamAbbrev);
     
-
-    // Singleton instance
+    // I didn't know I made the instance but I've been refference this via GetNode<>()
     public static GameManager Instance { get; private set; }
-    // List to store all active players
     public List<Player> players = new List<Player>();
-
-    private DebugTwitchChat debugger;
-
-    // Game state
     public enum GameState
     {
         WaitingForPlayers,
@@ -25,6 +20,21 @@ public partial class GameManager : Node
         GameOver
     }
     public GameState CurrentGameState { get; private set; }
+    public float gameTime = 300.0f; //In seconds
+    public float waitTime = 90.0f;
+    public GameTimer gameTimer;
+    private List<PlayerInfo> allPlayerInfo = new List<PlayerInfo>();
+
+    public void AddPlayer(string displayName, string userID, string teamAbbrev)
+    {
+        allPlayerInfo.Add(new PlayerInfo(displayName, userID, teamAbbrev));
+        EmitSignal(SignalName.PlayerJoined, displayName, userID, teamAbbrev);
+    }
+
+    public List<PlayerInfo> GetAllPlayerInfo()
+    {
+        return allPlayerInfo;
+    }
 
     public override void _Ready()
     {
@@ -41,14 +51,35 @@ public partial class GameManager : Node
         // Initialize game state
         CurrentGameState = GameState.WaitingForPlayers;
 
-        debugger = GetNodeOrNull<DebugTwitchChat>("/root/Main/CanvasLayer/DebugTwitchChat");
         GetNode<LevelManager>("/root/LevelManager").PlayerSpawned += OnPlayerSpawned;
+        var root = GetTree().Root;
+        var levelNode = root.GetChild(root.GetChildCount() - 1);
+        gameTimer = levelNode.GetNode<GameTimer>("CanvasLayer/GameTimer");
+        gameTimer.waitTimeFinished += () => {CurrentGameState = GameState.Playing;};
+        gameTimer.gameTimeFinished += () => {}; // End game screen to congras player
+
     }
 
     private void OnPlayerSpawned(Player player)
     {
         player.Died += OnPlayerDied;
+        player.Faceplanted += SendPlayerFacePlanted;
+        player.ComboStreaking += SendPlayerComboStreaking;
     }
+
+    private void SendPlayerComboStreaking(Player player, int comboStreak)
+    {
+        throw new NotImplementedException();
+        //Send signals here to alert the UI
+    }
+
+
+    private void SendPlayerFacePlanted(Player player, float fallDistance)
+    {
+        throw new NotImplementedException();
+        //Send signals here to alert the UI manager
+    }
+
 
     private void OnPlayerDied(string displayName, string userID, string teamAbbrev)
     {
@@ -57,6 +88,11 @@ public partial class GameManager : Node
 
     public void HandleJoinRequest(string[] messageInfo, UNL.Team team)
     {
+        if (CurrentGameState != GameState.WaitingForPlayers)
+        {
+            GD.Print("No in waiting for players state");
+            return;
+        }
         UNL.Team targetTeam = team;
 
         if (targetTeam == null)
@@ -136,29 +172,9 @@ public partial class GameManager : Node
         return false;
     }
 
-    // Method to add a new player
-
-    public void AddPlayer(string twitchUsername)
-    {
-        // TODO: Implement player creation and addition logic
-    }
-
-    // Method to update player scores and distances
-    public void UpdatePlayerProgress(string twitchUsername, float distance)
-    {
-        // TODO: Implement player progress update logic
-    }
-
     // Method to change game state
     public void SetGameState(GameState newState)
     {
-        // TODO: Implement game state change logic
-    }
-
-    // Method to get all player scores for UI display
-    public Dictionary<string, float> GetPlayerScores()
-    {
-        // TODO: Implement method to return all player scores
-        return new Dictionary<string, float>();
+        CurrentGameState = newState;
     }
 }

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public partial class UIManager : Node
 {
+    [Signal]
+    public delegate void SetupCompletedEventHandler();
     private InformationDisplay informationDisplay;
     private TeamScoresDisplay teamScoresDisplay;
 
@@ -23,22 +25,9 @@ public partial class UIManager : Node
 
     private void OnTeamScoreUpdated(string teamAbbrev, int teamsTotalScore)
     {
-        // GD.Print($"{teamAbbrev} has {teamsTotalScore}");
         teamScoresDisplay.UpdateTeamScore(teamAbbrev, teamsTotalScore);
     }
 
-
-    public void UpdateTeamScores(IEnumerable<UNL.TeamScore> teamScores)
-    {
-        // Update your UI elements here
-        // For example, updating a scoreboard or team info display
-        foreach (var teamScore in teamScores)
-        {
-            // Update UI for each team
-            // Example:
-            // scoreboardLabel.Text += $"{teamScore.TeamInfo.TeamAbbreviation}: {teamScore.TotalScore} (Players: {teamScore.PlayerCount})\n";
-        }
-    }
     private void OnPlayerJoined(string displayName, string userID, string teamAbbrev)
     {
         informationDisplay.AddJoinMessage(displayName, teamAbbrev);
@@ -48,6 +37,7 @@ public partial class UIManager : Node
     private void OnPlayerDied(string displayName, string userID, string teamAbbrev)
     {
         // Show that the player has died
+        // player has died info display
+        // teamScoresDisplay team--
     }
 }
-

@@ -26,7 +26,7 @@ public partial class TeamScoresDisplay : Control
     {
         if (!levelManager.teamScores.TeamExists(teamAbbrev))
         {
-            GD.PushError("team does not exist in levelmanager");
+            GD.PushError("team does not exist in levelmanager, problem if debug player is not spawned");
             return;
         }
         if (!teamPositionDictionary.ContainsKey(teamAbbrev))
@@ -43,13 +43,13 @@ public partial class TeamScoresDisplay : Control
             teamPositionDictionary[teamAbbrev] = teamPositionDictionary.Count;
         }
         TeamScore teamRichTextLabel = teamsVBoxContainer.GetNode($"TEAM_{teamAbbrev}") as TeamScore;
-        teamRichTextLabel.Text = $"{teamAbbrev}\t[{levelManager.teamScores.GetTeamPlayerCount(teamAbbrev)}] -\t0000";
+        teamRichTextLabel.Text = $"{teamAbbrev}\t[{levelManager.teamScores.GetTeamPlayerCount(teamAbbrev)}] -\t00000";
     }
 
     public void UpdateTeamScore(string teamAbbrev, int teamScore)
     {
         TeamScore teamRichTextLabel = teamsVBoxContainer.GetNode($"TEAM_{teamAbbrev}") as TeamScore;
-        teamRichTextLabel.Text = $"{teamAbbrev}\t[{levelManager.teamScores.GetTeamPlayerCount(teamAbbrev)}] -\t{teamScore:D4}";
+        teamRichTextLabel.Text = $"{teamAbbrev}\t[{levelManager.teamScores.GetTeamPlayerCount(teamAbbrev)}] -\t{teamScore:D5}";
         teamRichTextLabel.teamScore = teamScore;
     
         var teamScores = teamsVBoxContainer.GetChildren()

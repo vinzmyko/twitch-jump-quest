@@ -22,5 +22,14 @@
             "}"
         ],
         "description": "Godot _PhysicsProcess(float delta) function for C#"
+    },
+    "Godot Signal Declaration": {
+        "scope": "csharp",
+        "prefix": "sig",
+        "body": [
+            "[Signal]",
+            "public delegate void $0EventHandler();"
+        ],
+        "description": "Godot Signal declaration"
     }
 }

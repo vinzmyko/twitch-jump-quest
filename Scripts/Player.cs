@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Godot;
 using Vector2 = Godot.Vector2;
 using UNLTeamJumpQuest.TwitchIntegration;
-using TwitchLib.Api.Helix.Models.Games;
 
 public partial class Player : CharacterBody2D
 {
@@ -21,15 +20,14 @@ public partial class Player : CharacterBody2D
     Label displayLabel;
 
     [Export]
-    public float distanceForHeadOnFloor = 225; // Base jump tiles is 8 or 128px
-    public float BaseJumpVelocity = 500.0f;
-    public float Gravity = 980.0f; 
+    private float distanceForHeadOnFloor = 225; // Base jump tiles is 8 or 128px
+    private float BaseJumpVelocity = 500.0f;
+    private float Gravity = 980.0f; 
     public bool headOnFloor = false;
     private float currentYPos = 0, previousYPos = 0, highestYPos = 0, jumpYPos = 0;
     private const float TILE_SIZE = 16f;
     private Vector2 lastScoredPosition;
     private int currentPlatformId = -1;
-
     private Vector2 _jumpVelocity = Vector2.Zero;
 
     public string userID, displayName;
@@ -38,10 +36,11 @@ public partial class Player : CharacterBody2D
     private DebugTwitchChat debugger;
     private SettingsManager settingsManager;
     private LevelManager levelManager;
-    public int points, combo = 0, comboStreak, numOfFaceplants = 0, distanceOfFurthestFaceplant = 0, idxOfUniqueFeatherColour;
+    public int points, combo = 0, comboStreak = 0, numOfFaceplants = 0, distanceOfFurthestFaceplant = 0, idxOfUniqueFeatherColour;
     private const int MAX_TRACKED_PLATFORMS = 10;
     private Queue<PlatformInfo> recentPlatforms = new Queue<PlatformInfo>();
     public float highestYPosition = float.MaxValue; // lower Y is higher in Godot
+    public float startingYpos;
 
     public struct PlatformInfo
     {
@@ -148,6 +147,8 @@ public partial class Player : CharacterBody2D
         {
             combo++;
             DEBUG_COMBO.Text = $"combo: {combo}";
+            if (combo > 3 && combo > comboStreak)
+                comboStreak = combo;
 
             AddScore(pointsGained);
             DEBUG_LABEL.Visible = true;
@@ -214,7 +215,7 @@ public partial class Player : CharacterBody2D
                     if (tileMap.GetCellSourceId(levelManager.midgroundLayerId, cellCoords) != -1)
                     {
                         int platformId = levelManager.GetPlatformId(cellCoords);
-                        GD.Print($"Player at cell {cellCoords}, Platform ID: {platformId}");
+                        // GD.Print($"Player at cell {cellCoords}, Platform ID: {platformId}");
                         return (platformId, layerName);
                     }
                 }
@@ -258,11 +259,13 @@ public partial class Player : CharacterBody2D
             {
                 lastScoredPosition = GlobalPosition;
                 GD.Print($"Initial landing position set: {lastScoredPosition}");
+                startingYpos = lastScoredPosition.Y;
             }
 
             currentYPos = GlobalPosition.Y;
             if (highestYPos != 0)
             {
+                GD.Print($"\tHighestYPos: {highestYPosition}");
                 if (!IsOnCeiling() && !IsOnWall())
                 {
                     CalculateScore();
@@ -272,6 +275,8 @@ public partial class Player : CharacterBody2D
                 if (heightDifference >= distanceForHeadOnFloor)
                 {
                     headOnFloor = true;
+                    numOfFaceplants++;
+                    distanceOfFurthestFaceplant = (int)heightDifference;
                 }
                 highestYPos = 0;
             }

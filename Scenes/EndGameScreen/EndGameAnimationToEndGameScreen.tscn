@@ -1,0 +1,99 @@
+[gd_scene load_steps=6 format=3 uid="uid://dwgembgnu02cw"]
+
+[ext_resource type="Script" path="res://Scenes/EndGameScreen/EndGameAnimationToEndGameScreen.cs" id="1_s6xne"]
+[ext_resource type="FontFile" uid="uid://cfi521s5ll4ld" path="res://Fonts/Retrograde/Retrograde-Bold.otf" id="2_uipc3"]
+
+[sub_resource type="Animation" id="Animation_sl3ya"]
+resource_name = "GG!"
+length = 4.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("GG!:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6, 0.9),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(376, 750), Vector2(376, 213), Vector2(376, 255)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("GG!:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1e-05, 1e-05), Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_jaj6p"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("GG!:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(376, 750)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("GG!:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_emikn"]
+_data = {
+"GG!": SubResource("Animation_sl3ya"),
+"RESET": SubResource("Animation_jaj6p")
+}
+
+[node name="EndGameAnimation" type="Control"]
+modulate = Color(1, 1, 1, 0.352941)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_s6xne")
+
+[node name="GG!" type="Label" parent="."]
+custom_minimum_size = Vector2(100, 23)
+layout_mode = 0
+offset_left = 376.0
+offset_top = 750.0
+offset_right = 905.0
+offset_bottom = 961.001
+pivot_offset = Vector2(264, 105)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 15
+theme_override_constants/shadow_offset_y = 15
+theme_override_constants/outline_size = 20
+theme_override_fonts/font = ExtResource("2_uipc3")
+theme_override_font_sizes/font_size = 175
+text = "gg!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_emikn")
+}

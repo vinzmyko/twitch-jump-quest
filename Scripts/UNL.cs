@@ -135,6 +135,11 @@ namespace UNL
             teamScores = new Dictionary<string, TeamScore>();
         }
 
+        public string GetTeamName(string teamAbbrev)
+        {
+            return teamScores[teamAbbrev].TeamInfo.TeamName;
+        }
+
         public void AddTeam(Team team)
         {
             if (!teamScores.ContainsKey(team.TeamAbbreviation))

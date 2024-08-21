@@ -1,0 +1,57 @@
+[gd_scene load_steps=4 format=3 uid="uid://djtg46hwa08cl"]
+
+[ext_resource type="Script" path="res://Scenes/EndGameScreen/ShowTeamWinner.cs" id="1_cefbk"]
+[ext_resource type="Texture2D" uid="uid://xah2m84vl0ki" path="res://icon.svg" id="1_k2pp4"]
+[ext_resource type="FontFile" uid="uid://hnlque4skbpn" path="res://Fonts/Roboto/Roboto-Bold.ttf" id="2_rr52j"]
+
+[node name="ShowTeamWinner" type="Control" node_paths=PackedStringArray("winningTeamLogoRect", "winningTeamLabel", "winningTeamPointsLabel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_cefbk")
+winningTeamLogoRect = NodePath("MarginContainer/VBoxContainer/TextureRect")
+winningTeamLabel = NodePath("MarginContainer/VBoxContainer/Label")
+winningTeamPointsLabel = NodePath("MarginContainer/VBoxContainer/Label2")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rr52j")
+theme_override_font_sizes/font_size = 35
+text = "set it to have various congratz checks"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(500, 500)
+layout_mode = 2
+texture = ExtResource("1_k2pp4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rr52j")
+theme_override_font_sizes/font_size = 35
+text = "points: 123124"
+horizontal_alignment = 1
+vertical_alignment = 1

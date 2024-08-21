@@ -9,6 +9,8 @@ public partial class GameManager : Node
     public delegate void PlayerJoinedEventHandler(string displayName, string userID, string teamAbbrev);
     [Signal]
     public delegate void PlayerDiedEventHandler(string displayName, string userID, string teamAbbrev);
+    [Signal]
+    public delegate void GameStateChangedEventHandler(int gameState);
     
     // I didn't know I made the instance but I've been refference this via GetNode<>()
     public static GameManager Instance { get; private set; }
@@ -23,11 +25,14 @@ public partial class GameManager : Node
     public float gameTime = 300.0f; //In seconds
     public float waitTime = 90.0f;
     public GameTimer gameTimer;
-    private List<PlayerInfo> deadPlayerInfo = new List<PlayerInfo>();
+    public List<PlayerInfo> playerStatsInfo = new List<PlayerInfo>();
+    private int totalPlayers;
 
-    public void AddToDeadPlayerList(Player player)
+    public void AddToStatTrackingList(Player player)
     {
-        deadPlayerInfo.Add(new PlayerInfo(player));
+        if (playerStatsInfo.Contains(new PlayerInfo(player)))
+            return;
+        playerStatsInfo.Add(new PlayerInfo(player));
     }
 
     public override void _Ready()
@@ -53,13 +58,21 @@ public partial class GameManager : Node
         gameTimer.gameTimeFinished += () => 
         {
             CurrentGameState = GameState.GameOver;
-            // Change scene to game over screen
+            EmitSignal(SignalName.GameStateChanged, (int)CurrentGameState);
         }; 
-        levelNode.GetNode<LevelCamera>("LevelCamera").PlayerHitKillZone += (Player player) =>
+    levelNode.GetNode<LevelCamera>("LevelCamera").PlayerHitKillZone += (Player player) =>
+    {
+        GD.Print($"{player} info has been tracked");
+        AddToStatTrackingList(player);
+        totalPlayers = GetTree().GetNodesInGroup("Player").Count;
+        totalPlayers--;
+        GD.Print($"\nTOTAL_PLAYERS = {totalPlayers}");
+        if (totalPlayers <= 1)
         {
-            GD.Print($"{player} info has been tracked");
-            AddToDeadPlayerList(player);
-        };
+            CurrentGameState = GameState.GameOver;
+            EmitSignal(SignalName.GameStateChanged, (int)CurrentGameState);
+        }
+    };
 
     }
 

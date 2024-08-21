@@ -44,6 +44,7 @@ public partial class LevelManager : Node
     public int midgroundLayerId;
     private Node root;
     private Node2D levelNode;
+    private PackedScene GG;
 
     public override void _Ready()
     {
@@ -61,8 +62,25 @@ public partial class LevelManager : Node
         // // Debug: Print platform IDs
         // platformIdentifier.PrintPlatformIds();
 
+        GG = ResourceLoader.Load<PackedScene>("res://Scenes/EndGameScreen/EndGameAnimationToEndGameScreen.tscn");
+        var ggInstance = GG.Instantiate();
+
         GameManager.Instance.PlayerJoined += SpawnPlayer;
-        // GameManager.Instance.PlayerJoined += OnPlayerDied;
+        // GameManager.Instance.PlayerDied += OnPlayerDied;
+        GameManager.Instance.GameStateChanged += (int gameState) => 
+        {
+            if (gameState == (int)GameManager.GameState.GameOver)
+            { 
+                levelNode.GetNode<CanvasLayer>("CanvasLayer").AddChild(ggInstance);
+                var alivePlayers = GetTree().GetNodesInGroup("Player");
+                GameManager gameManager = GetNode<GameManager>("/root/GameManager");
+                foreach (Player player in alivePlayers)
+                {
+
+                    gameManager.AddToStatTrackingList(player);
+                }
+            }
+        };
 
         int playerCount = 0;
         Random random = new Random();

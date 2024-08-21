@@ -56,6 +56,7 @@ metadata/_edit_lock_ = true
 [node name="GameTimer" parent="CanvasLayer" instance=ExtResource("5_645va")]
 
 [node name="DebugTwitchChat" parent="CanvasLayer" instance=ExtResource("4_h7ohr")]
+visible = false
 metadata/_edit_use_anchors_ = true
 
 [node name="Lights" type="Node2D" parent="."]

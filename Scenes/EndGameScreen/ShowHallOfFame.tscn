@@ -1,0 +1,79 @@
+[gd_scene load_steps=3 format=3 uid="uid://b5cxhrqat1fgc"]
+
+[ext_resource type="Script" path="res://Scenes/EndGameScreen/ShowHallOfFame.cs" id="1_m1r23"]
+[ext_resource type="FontFile" uid="uid://hnlque4skbpn" path="res://Fonts/Roboto/Roboto-Bold.ttf" id="2_2sk6c"]
+
+[node name="ShowHallOfFame" type="Control" node_paths=PackedStringArray("leastPoints", "leastDistanceTravelled", "highestDistanceTravelled", "highestComboStreak", "mostFacePlants", "longestDistanceOfFaceplant")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_m1r23")
+leastPoints = NodePath("MarginContainer/VBoxContainer/LeastPoints")
+leastDistanceTravelled = NodePath("MarginContainer/VBoxContainer/LeastDistanceTravelled")
+highestDistanceTravelled = NodePath("MarginContainer/VBoxContainer/HighestDistanceTravelled")
+highestComboStreak = NodePath("MarginContainer/VBoxContainer/HighestCombo")
+mostFacePlants = NodePath("MarginContainer/VBoxContainer/MostFacePlants")
+longestDistanceOfFaceplant = NodePath("MarginContainer/VBoxContainer/LongestDistanceFaceplant")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_2sk6c")
+theme_override_font_sizes/font_size = 38
+text = "Hall of Stats"
+horizontal_alignment = 1
+
+[node name="LeastPoints" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_2sk6c")
+theme_override_font_sizes/font_size = 38
+text = "Least points: needs to be > 0"
+
+[node name="HighestDistanceTravelled" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_2sk6c")
+theme_override_font_sizes/font_size = 38
+text = "most ditance travelled"
+
+[node name="LeastDistanceTravelled" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_2sk6c")
+theme_override_font_sizes/font_size = 38
+text = "Least distance travelled"
+
+[node name="HighestCombo" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_2sk6c")
+theme_override_font_sizes/font_size = 38
+text = "highest combo streak"
+
+[node name="MostFacePlants" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_2sk6c")
+theme_override_font_sizes/font_size = 38
+text = "most faceplants"
+
+[node name="LongestDistanceFaceplant" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_2sk6c")
+theme_override_font_sizes/font_size = 38
+text = "longest distance for face plant"

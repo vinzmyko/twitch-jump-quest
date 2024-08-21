@@ -1,0 +1,235 @@
+[gd_scene load_steps=20 format=3 uid="uid://4vmpiuecga2s"]
+
+[ext_resource type="Script" path="res://Scenes/EndGameScreen/ShowMVP.cs" id="1_kv2ae"]
+[ext_resource type="Shader" path="res://Shaders/PlayerColour.gdshader" id="1_on1ov"]
+[ext_resource type="Texture2D" uid="uid://cv2vci5bnwdjd" path="res://Sprites/knight.png" id="2_2jwow"]
+[ext_resource type="FontFile" uid="uid://hnlque4skbpn" path="res://Fonts/Roboto/Roboto-Bold.ttf" id="2_se3g4"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dbpm1"]
+shader = ExtResource("1_on1ov")
+shader_parameter/cape1_color_original = Color(0.0392157, 0.439216, 0.188235, 1)
+shader_parameter/cape1_color_new = Color(0.431314, 0.122515, 0.633638, 1)
+shader_parameter/cape2_color_original = Color(0.921569, 0.654902, 0.141176, 1)
+shader_parameter/cape2_color_new = Color(0.711569, 0.00151689, 0.8582, 1)
+shader_parameter/helmet_feathers_original = Color(0.823529, 0.12549, 0.172549, 1)
+shader_parameter/helmet_feathers_new = Color(0.431373, 0.121569, 0.635294, 1)
+shader_parameter/armour_dark_original = Color(0.486275, 0.466667, 0.435294, 1)
+shader_parameter/armour_dark_new = Color(0.800823, 0.786129, 0.762658, 1)
+shader_parameter/armour_med_original = Color(0.701961, 0.666667, 0.631373, 1)
+shader_parameter/armour_med_new = Color(0.891177, 0.874928, 0.858775, 1)
+shader_parameter/armour_light_original = Color(0.917647, 0.87451, 0.819608, 1)
+shader_parameter/armour_light_new = Color(1, 1, 1, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r2mwx"]
+atlas = ExtResource("2_2jwow")
+region = Rect2(96, 224, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_00bd3"]
+atlas = ExtResource("2_2jwow")
+region = Rect2(64, 224, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kagw6"]
+atlas = ExtResource("2_2jwow")
+region = Rect2(32, 224, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5gw62"]
+atlas = ExtResource("2_2jwow")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_imnct"]
+atlas = ExtResource("2_2jwow")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8ydis"]
+atlas = ExtResource("2_2jwow")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j2jj0"]
+atlas = ExtResource("2_2jwow")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yupyy"]
+atlas = ExtResource("2_2jwow")
+region = Rect2(0, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jqcsh"]
+atlas = ExtResource("2_2jwow")
+region = Rect2(128, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yhx5i"]
+atlas = ExtResource("2_2jwow")
+region = Rect2(224, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tjsdp"]
+atlas = ExtResource("2_2jwow")
+region = Rect2(64, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kflvy"]
+atlas = ExtResource("2_2jwow")
+region = Rect2(64, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_phuae"]
+atlas = ExtResource("2_2jwow")
+region = Rect2(224, 160, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_028e7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r2mwx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r2mwx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r2mwx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_00bd3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kagw6")
+}],
+"loop": false,
+"name": &"HeadOnFloor",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5gw62")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_imnct")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8ydis")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j2jj0")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yupyy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jqcsh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yhx5i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tjsdp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kflvy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_phuae")
+}],
+"loop": false,
+"name": &"Jump",
+"speed": 8.0
+}]
+
+[node name="ShowMVP" type="Control" node_paths=PackedStringArray("mvpDisplayName", "mvpPlayerPoints", "mvpDistanceTravelled", "mvpNumOfFaceplants", "mvpLongestFaceplantDistance", "mvpComboStreak")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kv2ae")
+mvpDisplayName = NodePath("MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer/DisplayName")
+mvpPlayerPoints = NodePath("MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer/MVPPoints")
+mvpDistanceTravelled = NodePath("MarginContainer/HBoxContainer/MarginContainer/VBoxContainer2/DistanceTravelled")
+mvpNumOfFaceplants = NodePath("MarginContainer/HBoxContainer/MarginContainer/VBoxContainer2/NoOfFaceplants")
+mvpLongestFaceplantDistance = NodePath("MarginContainer/HBoxContainer/MarginContainer/VBoxContainer2/LongestFaceplantDistance")
+mvpComboStreak = NodePath("MarginContainer/HBoxContainer/MarginContainer/VBoxContainer2/ComboStreak")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/MarginContainer2"]
+custom_minimum_size = Vector2(540, 0)
+layout_mode = 2
+
+[node name="MVP" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_se3g4")
+theme_override_font_sizes/font_size = 30
+text = "MVP"
+horizontal_alignment = 1
+
+[node name="DisplayName" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_se3g4")
+theme_override_font_sizes/font_size = 30
+text = "mvp displayName"
+horizontal_alignment = 1
+
+[node name="MVPPoints" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_se3g4")
+theme_override_font_sizes/font_size = 30
+text = "player points"
+horizontal_alignment = 1
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer"]
+material = SubResource("ShaderMaterial_dbpm1")
+position = Vector2(294, 306)
+scale = Vector2(14.9687, 14.9687)
+sprite_frames = SubResource("SpriteFrames_028e7")
+animation = &"Idle"
+autoplay = "Idle"
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="DistanceTravelled" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_se3g4")
+theme_override_font_sizes/font_size = 30
+text = "distance travelled"
+
+[node name="ComboStreak" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_se3g4")
+theme_override_font_sizes/font_size = 30
+text = "combo streak"
+
+[node name="NoOfFaceplants" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_se3g4")
+theme_override_font_sizes/font_size = 30
+text = "number of face plants"
+
+[node name="LongestFaceplantDistance" type="Label" parent="MarginContainer/HBoxContainer/MarginContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_se3g4")
+theme_override_font_sizes/font_size = 30
+text = "longest face plant distance"

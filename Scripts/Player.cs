@@ -20,8 +20,7 @@ public partial class Player : CharacterBody2D
     Label displayLabel;
 
     [Export]
-    // private float distanceForHeadOnFloor = 225; // Base jump tiles is 8 or 128px
-    private float distanceForHeadOnFloor = 140; // Base jump tiles is 8 or 128px
+    private float distanceForHeadOnFloor = 225; // Base jump tiles is 8 or 128px
     private float BaseJumpVelocity = 500.0f;
     private float Gravity = 980.0f; 
     public bool headOnFloor = false;
@@ -142,9 +141,7 @@ public partial class Player : CharacterBody2D
         if (shouldAwardPointsAndIncreaseCombo)
         {
             combo++;
-            GD.Print($"\n\t{combo} comboSterak:{comboStreak}");
-            // if (combo >= 5 && combo > comboStreak)
-            if (combo > 1)
+            if (combo >= 5 && combo > comboStreak)
             {
                 comboStreak = combo;
                 EmitSignal(SignalName.ComboStreaking, this, comboStreak);

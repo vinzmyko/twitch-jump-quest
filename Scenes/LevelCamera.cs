@@ -102,6 +102,7 @@ public partial class LevelCamera : Node2D
         timer.Timeout += () =>
         {
             EmitSignal(SignalName.PlayerHitKillZone, player);
+            player.Die();
             player.QueueFree();
         };
     }

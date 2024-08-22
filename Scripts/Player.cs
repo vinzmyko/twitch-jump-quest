@@ -55,9 +55,6 @@ public partial class Player : CharacterBody2D
             YPosition = y;
         }
     }
-
-    private Label DEBUG_LABEL;
-    private Label DEBUG_COMBO;
     private GameManager gameManager;
 
     public void Initialize(string _displayName, string _userID, UNL.Team _team)
@@ -104,8 +101,6 @@ public partial class Player : CharacterBody2D
         else
             AddToGroup("Player");
 
-        DEBUG_LABEL = GetNode<Label>("DEBUG_POINTS_LABEL");
-        DEBUG_COMBO = GetNode<Label>("DEBUG_COMBO_LABEL");
         // Some reason it won't change in Player scene so I do it through code.
         SetCollisionLayerValue(1, false);
         SetCollisionLayerValue(2, true);
@@ -146,13 +141,10 @@ public partial class Player : CharacterBody2D
         if (shouldAwardPointsAndIncreaseCombo)
         {
             combo++;
-            DEBUG_COMBO.Text = $"combo: {combo}";
             if (combo > 3 && combo > comboStreak)
                 comboStreak = combo;
 
-            AddScore(pointsGained);
-            DEBUG_LABEL.Visible = true;
-            DEBUG_LABEL.Text = $"+{pointsGained}";
+            AddScore(pointsGained * (int)(1.0 + (combo / 100)));
             // GD.Print($"Points given for Midground platform: {pointsGained}");
 
             recentPlatforms.Enqueue(new PlatformInfo(newPlatformId, currentPosition.X, currentPosition.Y));
@@ -180,7 +172,6 @@ public partial class Player : CharacterBody2D
         else
         {
             combo = 0;
-            DEBUG_COMBO.Text = $"combo: {combo}";
         }
     }
 
@@ -265,18 +256,19 @@ public partial class Player : CharacterBody2D
             currentYPos = GlobalPosition.Y;
             if (highestYPos != 0)
             {
-                GD.Print($"\tHighestYPos: {highestYPosition}");
                 if (!IsOnCeiling() && !IsOnWall())
                 {
                     CalculateScore();
                 }
                 
                 float heightDifference = Math.Abs(currentYPos) - Math.Abs(highestYPos);
+                GD.Print($"\nHeightDifference: {heightDifference}");
                 if (heightDifference >= distanceForHeadOnFloor)
                 {
                     headOnFloor = true;
                     numOfFaceplants++;
                     distanceOfFurthestFaceplant = (int)heightDifference;
+                    EmitSignal(SignalName.Faceplanted, this, heightDifference);
                 }
                 highestYPos = 0;
             }
@@ -327,9 +319,6 @@ public partial class Player : CharacterBody2D
         _jumpVelocity = Vector2.Zero;
         
         recentPlatforms.Clear();
-        
-        DEBUG_LABEL.Visible = false;
-        DEBUG_COMBO.Text = "combo: 0";
         
         animatedSprite.Play("Idle");
         animatedSprite.FlipH = false;
@@ -418,7 +407,6 @@ public partial class Player : CharacterBody2D
 
     public void SetTeamColours(Color[] colourArray, ShaderMaterial uniqueMaterial)
     {
-        // int teamPlayerCount = levelManager.teamScores.GetTeamPlayerCount(team.TeamAbbreviation);
         uniqueMaterial.SetShaderParameter("cape1_color_new", colourArray[0]);
         uniqueMaterial.SetShaderParameter("cape2_color_new", colourArray[1]); 
         uniqueMaterial.SetShaderParameter("armour_dark_new", colourArray[2]);

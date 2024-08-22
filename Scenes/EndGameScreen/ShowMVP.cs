@@ -51,7 +51,5 @@ public partial class ShowMVP : Control
         shader.SetShaderParameter("armour_med_new", settingsManager.UNLTeams.GetTeam(mvp.team).TeamColours.ArmourMedium);
         shader.SetShaderParameter("armour_dark_new", settingsManager.UNLTeams.GetTeam(mvp.team).TeamColours.ArmourDark);
         shader.SetShaderParameter("helmet_feathers_new", levelManager.uniqueColours[mvp.IdxOfUniqueFeatherColours]);
-        // GD.Print($"levelManager = {levelManager != null}");
-        // GD.Print($"levelManager.")
     }
 }

@@ -21,7 +21,22 @@ public partial class UIManager : Node
         gameManager.PlayerDied += OnPlayerDied;
         LevelManager levelManager = GetNode<LevelManager>("/root/LevelManager");
         levelManager.TeamScoreUpdated += OnTeamScoreUpdated;
+
+        gameManager.PlayerFaceplanted += OnPlayerFaceplanted;
+        gameManager.PlayerComboStreak += OnPlayerComboStreaking;
     }
+
+    private void OnPlayerComboStreaking(Player player, int comboStreak)
+    {
+        informationDisplay.AddComboStreakMessage(player, comboStreak);
+    }
+
+
+    private void OnPlayerFaceplanted(Player player, float distance)
+    {
+        informationDisplay.AddFaceplantMessage(player, distance);
+    }
+
 
     private void OnTeamScoreUpdated(string teamAbbrev, int teamsTotalScore)
     {
@@ -36,8 +51,6 @@ public partial class UIManager : Node
 
     private void OnPlayerDied(string displayName, string userID, string teamAbbrev)
     {
-        // Show that the player has died
-        // player has died info display
-        // teamScoresDisplay team--
+        informationDisplay.AddDiedMessage(displayName, teamAbbrev);
     }
 }

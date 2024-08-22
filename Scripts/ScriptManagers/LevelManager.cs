@@ -5,8 +5,6 @@ public partial class LevelManager : Node
 {
     [Signal]
     public delegate void PlayerSpawnedEventHandler(Player player);
-    // [Signal]
-    // public delegate void TeamScoresUpdatedEventHandler();
     [Signal]
     public delegate void TeamScoreUpdatedEventHandler(string teamAbbrev, int points);
 

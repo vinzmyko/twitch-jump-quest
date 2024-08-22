@@ -10,6 +10,10 @@ public partial class GameManager : Node
     [Signal]
     public delegate void PlayerDiedEventHandler(string displayName, string userID, string teamAbbrev);
     [Signal]
+    public delegate void PlayerFaceplantedEventHandler(Player player, float distance);
+    [Signal]
+    public delegate void PlayerComboStreakEventHandler(Player player, int comboStreak);
+    [Signal]
     public delegate void GameStateChangedEventHandler(int gameState);
     
     // I didn't know I made the instance but I've been refference this via GetNode<>()
@@ -85,8 +89,9 @@ public partial class GameManager : Node
 
     private void SendPlayerComboStreaking(Player player, int comboStreak)
     {
-        throw new NotImplementedException();
         //Send signals here to alert the UI
+        GD.Print("combostreaking");
+        throw new NotImplementedException();
     }
 
 

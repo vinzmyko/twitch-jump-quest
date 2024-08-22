@@ -7,6 +7,10 @@ public partial class LevelManager : Node
     public delegate void PlayerSpawnedEventHandler(Player player);
     [Signal]
     public delegate void TeamScoreUpdatedEventHandler(string teamAbbrev, int points);
+    [Signal]
+    public delegate void PlayerComboStreakingToUIEventHandler(Player player, int comboStreak);
+    [Signal]
+    public delegate void PlayerFaceplantToUIEventHandler(Player player, float distance);
 
     public UNL.TeamScoreManager teamScores = new UNL.TeamScoreManager();
     public Color[] uniqueColours = new Color[15]
@@ -184,6 +188,9 @@ public partial class LevelManager : Node
         if (playerInstance is Player player)
         {
             player.ScoreUpdated += OnPlayerScoreUpdated;
+            player.Died += (string name, string userid, string teamAbbrev) => {};
+            player.ComboStreaking += (Player player, int comboStreak) => {EmitSignal(SignalName.PlayerComboStreakingToUI, player, comboStreak);};
+            player.Faceplanted += (Player player, float distance) => {EmitSignal(SignalName.PlayerFaceplantToUI, player, distance);};
         }
         
         if (spawnPositions == null)

@@ -22,8 +22,8 @@ public partial class UIManager : Node
         LevelManager levelManager = GetNode<LevelManager>("/root/LevelManager");
         levelManager.TeamScoreUpdated += OnTeamScoreUpdated;
 
-        gameManager.PlayerFaceplanted += OnPlayerFaceplanted;
-        gameManager.PlayerComboStreak += OnPlayerComboStreaking;
+        levelManager.PlayerComboStreakingToUI += OnPlayerComboStreaking;
+        levelManager.PlayerFaceplantToUI += OnPlayerFaceplanted;
     }
 
     private void OnPlayerComboStreaking(Player player, int comboStreak)
@@ -36,7 +36,6 @@ public partial class UIManager : Node
     {
         informationDisplay.AddFaceplantMessage(player, distance);
     }
-
 
     private void OnTeamScoreUpdated(string teamAbbrev, int teamsTotalScore)
     {

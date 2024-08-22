@@ -37,14 +37,14 @@ public partial class InformationDisplay: Control
         "{0} from {1} just kissed the ground after {2}m!",
         "{1}'s {0} hit the ground hard after {2}m!",
         "Gravity wins! {0} from {1} faceplants after {2}m.",
-        "That’s gonna leave a mark! {0} of {1} lands face-first after {2}m.",
+        "That's gonna leave a mark! {0} of {1} lands face-first after {2}m.",
         "{0} of {1} just invented a new move: the {2}m faceplant!",
         "Hope {1} {0} likes the taste of dirt after that {2}m dive.",
         "That was a rough landing! {1}'s {0} faceplants after {2}m.",
         "{1}'s {0} went for a {2}m dive and found the ground the hard way!"
     };
     // 0 - displayName, 1 = teamAbbrev, 2 = combo
-    private string[] playerComboSterakMessages = new string[]
+    private string[] playerComboStreakMessages = new string[]
     {
         "ZoowieMAMA {1} {0} is here with a {2} combo.",
         "{1} {0} back at it again with that {2} streak.",
@@ -53,11 +53,9 @@ public partial class InformationDisplay: Control
         "{0} from {1} is defying gravity with a {2}-platform streak!",
         "Unbelievable! {0} of {1} just conquered {2} platforms in a row!",
         "{1}'s {0} is on a jumping spree with a {2}-platform combo!",
-        "Platform after platform, {0} from {1} can't be stopped! {2} in a row!",
         "Impressive! {0} from {1} just leaped to a {2}-platform streak!",
         "Like a pro, {0} from {1} lands a flawless {2}-platform combo!",
         "No stopping now! {1}'s {0} is on a {2}-platform rampage!",
-        "Astonishing! {0} from {1} just cleared {2} platforms without missing a beat!",
         "{1}'s {0} is on a hot streak, hitting {2} platforms consecutively!",
         "{0} from {1} is showing off with a seamless {2}-platform combo!"
     };

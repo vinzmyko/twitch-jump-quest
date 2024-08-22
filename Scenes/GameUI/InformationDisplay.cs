@@ -7,12 +7,14 @@ public partial class InformationDisplay : Control
     private PackedScene sentence;
     private VBoxContainer sentenceContainer;
     private Random random;
+    private SettingsManager settingsManager;
 
     public override void _Ready()
     {
         base._Ready();
         sentenceContainer = GetNode<VBoxContainer>("MarginContainer/PanelContainer/MarginContainer/SentenceContainer");
         random = new Random();
+        settingsManager = GetNode<SettingsManager>("/root/SettingsManager");
     }
 
     public void SetSentenceVisibleSize(int size)
@@ -35,8 +37,7 @@ public partial class InformationDisplay : Control
         }
 
         newSentence.Name = $"{playerName}_{teamAbbrev}_Sentence";
-        string template = playerJoinMessages[random.Next(playerJoinMessages.Length)];
-        newSentence.Text = string.Format(template, playerName, teamAbbrev);
+        newSentence.Text = FormatJoinMessage(playerName, teamAbbrev);
                 
         sentenceContainer.AddChild(newSentence);
     }
@@ -53,8 +54,7 @@ public partial class InformationDisplay : Control
         }
 
         newSentence.Name = $"{playerName}_{teamAbbrev}_Died_Sentence";
-        string template = playerDiedMessages[random.Next(playerJoinMessages.Length)];
-        newSentence.Text = string.Format(template, playerName, teamAbbrev);
+        newSentence.Text = FormatDeathMessage(playerName, teamAbbrev);
 
         sentenceContainer.AddChild(newSentence);
     }
@@ -72,8 +72,7 @@ public partial class InformationDisplay : Control
 
         int convertedDistance = (int)distance / 16;
         newSentence.Name = $"{player.displayName}_{player.team.TeamAbbreviation}_faceplant_Sentence";
-        string template = playerFaceplantMessages[random.Next(playerJoinMessages.Length)];
-        newSentence.Text = string.Format(template, player.displayName, player.team.TeamAbbreviation, convertedDistance);
+        newSentence.Text = FormatFaceplantMessage(player.displayName, player.team.TeamAbbreviation, convertedDistance);
 
         sentenceContainer.AddChild(newSentence);
     }
@@ -90,8 +89,7 @@ public partial class InformationDisplay : Control
         }
 
         newSentence.Name = $"{player.displayName}_{player.team.TeamAbbreviation}_combostreak_Sentence";
-        string template = playerComboSterakMessages[random.Next(playerJoinMessages.Length)];
-        newSentence.Text = string.Format(template, player.displayName, player.team.TeamAbbreviation, comboStreak);
+        newSentence.Text = FormatComboStreakMessage(player.displayName, player.team.TeamAbbreviation, comboStreak);
 
         sentenceContainer.AddChild(newSentence);
     }

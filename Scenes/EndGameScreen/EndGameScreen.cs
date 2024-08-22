@@ -30,6 +30,19 @@ public partial class EndGameScreen : Control
         settingsManager = GetNode<SettingsManager>("/root/SettingsManager");
         levelManager = GetNode<LevelManager>("/root/LevelManager");
         gameManager = GetNode<GameManager>("/root/GameManager");
+        if (gameManager != null)
+        {
+            stats = gameManager.playerStatsInfo;
+            if (stats == null || stats.Count == 0)
+            {
+                GD.PrintErr("No player stats available in EndGameScreen!");
+                // Consider adding a fallback or error message display here
+            }
+        }
+        else
+        {
+            GD.PrintErr("GameManager not found in EndGameScreen!");
+        }
 
         stats = gameManager.playerStatsInfo;
 

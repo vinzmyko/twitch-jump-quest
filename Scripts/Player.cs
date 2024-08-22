@@ -41,6 +41,7 @@ public partial class Player : CharacterBody2D
     private Queue<PlatformInfo> recentPlatforms = new Queue<PlatformInfo>();
     public float highestYPosition = float.MaxValue; // lower Y is higher in Godot
     public float startingYpos;
+    private AudioStreamPlayer2D audioPlayer;
 
     public struct PlatformInfo
     {
@@ -84,6 +85,7 @@ public partial class Player : CharacterBody2D
             debugger.DebuggerDeleteSelf += OnDeleteSelf;
         }
 
+        audioPlayer = GetNodeOrNull<AudioStreamPlayer2D>("AudioStreamPlayer2D");
 		animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         displayLabel = GetNode<Label>("DisplayNameLabel");
         displayLabel.Text = displayName;
@@ -114,7 +116,8 @@ public partial class Player : CharacterBody2D
             return;
         }
         
-        var (newPlatformId, layerName) = GetCurrentPlatformId();
+        // tileSetAtlasID is what image texture image the tile originates from
+        var (newPlatformId, layerName, tileSetAtlasID) = GetCurrentPlatformId();
         Vector2 currentPosition = GlobalPosition;
 
         if (newPlatformId == -1 || layerName != "Midground")
@@ -126,11 +129,6 @@ public partial class Player : CharacterBody2D
         bool isSameHeight = Math.Abs(currentPosition.Y - highestYPosition) < TILE_SIZE;
         bool isNewPlatform = !recentPlatforms.Any(p => 
             p.PlatformId == newPlatformId);
-        
-        // GD.Print($"newPlatfromId: {newPlatformId}");
-        // GD.Print($"isNewHighestPosition: {isNewHighestPosition}, isSameHeight: {isSameHeight}, isNewPlatform: {isNewPlatform}");
-        // GD.Print($"currentPosition: {currentPosition}, highestYPosition: {highestYPosition}");
-        // GD.Print($"Recent platforms: {string.Join(", ", recentPlatforms.Select(p => $"(ID:{p.PlatformId},{p.XPosition}, {p.YPosition})"))}");
 
         // Calculate points
         float progressFraction = (levelManager.startMarkerYPos - currentPosition.Y) / levelManager.totalLevelYDistance;
@@ -141,18 +139,15 @@ public partial class Player : CharacterBody2D
         if (shouldAwardPointsAndIncreaseCombo)
         {
             combo++;
+            float comboMultiplier = 1.0f;
             if (combo >= 5 && combo > comboStreak)
             {
                 comboStreak = combo;
                 EmitSignal(SignalName.ComboStreaking, this, comboStreak);
-                GD.Print($"Emitted ComboStreaking signal with comboStreak: {comboStreak}");
+                comboMultiplier = 1.0f + (combo / 100.0f);
             }
 
-            float comboMultiplier = 1.0f + (combo / 100.0f);
-            int totalPointsGained = (int)(pointsGained * comboMultiplier);
-            AddScore(totalPointsGained);
-            // GD.Print($"Points given for Midground platform: {pointsGained}");
-
+            int totalPointsGained = (int)(pointsGained * comboMultiplier); AddScore(totalPointsGained); // GD.Print($"Points given for Midground platform: {pointsGained}");
             recentPlatforms.Enqueue(new PlatformInfo(newPlatformId, currentPosition.X, currentPosition.Y));
             if (recentPlatforms.Count > MAX_TRACKED_PLATFORMS)
             {
@@ -179,46 +174,47 @@ public partial class Player : CharacterBody2D
             combo = 0;
     }
 
-    private (int platformId, string layerName) GetCurrentPlatformId()
+private (int platformId, string layerName, int tileSetAtlasId) GetCurrentPlatformId()
+{
+    var spaceState = GetWorld2D().DirectSpaceState;
+    uint collisionMask = 1; // Assuming your jumpable tiles are on collision layer 1
+
+    Vector2[] directions = { Vector2.Down, new Vector2(-1, 1), new Vector2(1, 1) };
+    float rayLength = 5f;
+
+    foreach (var direction in directions)
     {
-        var spaceState = GetWorld2D().DirectSpaceState;
-        uint collisionMask = 1; // Assuming your jumpable tiles are on collision layer 1
+        var query = PhysicsRayQueryParameters2D.Create(
+            GlobalPosition,
+            GlobalPosition + direction * rayLength,
+            collisionMask,
+            new Godot.Collections.Array<Rid> { GetRid() } // Exclude the player's own collision
+        );
 
-        Vector2[] directions = { Vector2.Down, new Vector2(-1, 1), new Vector2(1, 1) };
-        float rayLength = 5f;
+        var result = spaceState.IntersectRay(query);
 
-        foreach (var direction in directions)
+        if (result.Count > 0)
         {
-            var query = PhysicsRayQueryParameters2D.Create(
-                GlobalPosition,
-                GlobalPosition + direction * rayLength,
-                collisionMask,
-                new Godot.Collections.Array<Rid> { GetRid() } // Exclude the player's own collision
-            );
-
-            var result = spaceState.IntersectRay(query);
-
-            if (result.Count > 0)
+            var collider = result["collider"].As<Node2D>();
+            if (collider is TileMap tileMap)
             {
-                var collider = result["collider"].As<Node2D>();
-                if (collider is TileMap tileMap)
+                Vector2 collisionPoint = (Vector2)result["position"];
+                Vector2I cellCoords = tileMap.LocalToMap(tileMap.ToLocal(collisionPoint));
+                
+                string layerName = tileMap.GetLayerName(levelManager.midgroundLayerId);
+                int sourceId = tileMap.GetCellSourceId(levelManager.midgroundLayerId, cellCoords);
+                if (sourceId != -1)
                 {
-                    Vector2 collisionPoint = (Vector2)result["position"];
-                    Vector2I cellCoords = tileMap.LocalToMap(tileMap.ToLocal(collisionPoint));
-                    
-                    string layerName = tileMap.GetLayerName(levelManager.midgroundLayerId);
-                    if (tileMap.GetCellSourceId(levelManager.midgroundLayerId, cellCoords) != -1)
-                    {
-                        int platformId = levelManager.GetPlatformId(cellCoords);
-                        // GD.Print($"Player at cell {cellCoords}, Platform ID: {platformId}");
-                        return (platformId, layerName);
-                    }
+                    int platformId = levelManager.GetPlatformId(cellCoords);
+                    // GD.Print($"Player at cell {cellCoords}, Platform ID: {platformId}, TileSet Atlas ID: {sourceId}");
+                    return (platformId, layerName, sourceId);
                 }
             }
         }
-        GD.PrintErr("No valid platform found near player");
-        return (-1, string.Empty);
     }
+    GD.PrintErr("No valid platform found near player");
+    return (-1, string.Empty, -1);
+}
 
     public override void _PhysicsProcess(double delta)
     {

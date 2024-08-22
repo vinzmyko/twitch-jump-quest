@@ -22,7 +22,8 @@ public partial class GameManager : Node
         GameOver
     }
     public GameState CurrentGameState { get; private set; }
-    public float gameTime = 300.0f; //In seconds
+    // public float gameTime = 300.0f; //In seconds
+    public float gameTime = 10.0f; //In seconds
     public float waitTime = 90.0f;
     public GameTimer gameTimer;
     public List<PlayerInfo> playerStatsInfo = new List<PlayerInfo>();
@@ -34,6 +35,7 @@ public partial class GameManager : Node
             return;
         playerStatsInfo.Add(new PlayerInfo(player));
     }
+
 
     public override void _Ready()
     {
@@ -55,25 +57,41 @@ public partial class GameManager : Node
         var levelNode = root.GetChild(root.GetChildCount() - 1);
         gameTimer = levelNode.GetNode<GameTimer>("CanvasLayer/GameTimer");
         gameTimer.waitTimeFinished += () => {CurrentGameState = GameState.Playing;};
-        gameTimer.gameTimeFinished += () => 
+        gameTimer.gameTimeFinished += EndGame;
+        levelNode.GetNode<LevelCamera>("LevelCamera").PlayerHitKillZone += (Player player) =>
         {
-            CurrentGameState = GameState.GameOver;
-            EmitSignal(SignalName.GameStateChanged, (int)CurrentGameState);
-        }; 
-    levelNode.GetNode<LevelCamera>("LevelCamera").PlayerHitKillZone += (Player player) =>
+            GD.Print($"{player} info has been tracked");
+            AddToStatTrackingList(player);
+            totalPlayers = GetTree().GetNodesInGroup("Player").Count;
+            totalPlayers--;
+            if (totalPlayers <= 1)
+            {
+                EndGame();
+            }
+        };
+
+    }
+    public void EndGame()
     {
-        GD.Print($"{player} info has been tracked");
-        AddToStatTrackingList(player);
-        totalPlayers = GetTree().GetNodesInGroup("Player").Count;
-        totalPlayers--;
-        GD.Print($"\nTOTAL_PLAYERS = {totalPlayers}");
-        if (totalPlayers <= 1)
+        if (CurrentGameState != GameState.GameOver)
         {
             CurrentGameState = GameState.GameOver;
+            
+            // Collect data for all remaining players
+            var remainingPlayers = GetTree().GetNodesInGroup("Player");
+            foreach (Player player in remainingPlayers)
+            {
+                AddToStatTrackingList(player);
+            }
+
+            // Ensure playerStatsInfo is not empty
+            if (playerStatsInfo.Count == 0)
+            {
+                GD.PrintErr("No player stats collected at end of game!");
+            }
+
             EmitSignal(SignalName.GameStateChanged, (int)CurrentGameState);
         }
-    };
-
     }
 
     private void OnPlayerSpawned(Player player)

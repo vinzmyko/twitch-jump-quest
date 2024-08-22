@@ -18,7 +18,6 @@ public partial class InformationDisplay: Control
 
         if (team != null)
         {
-            GD.Print($"\n\t Colour is {team.HexColourCode}");
             return team.HexColourCode;
         }
         else

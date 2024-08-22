@@ -78,7 +78,6 @@ public partial class LevelManager : Node
                 GameManager gameManager = GetNode<GameManager>("/root/GameManager");
                 foreach (Player player in alivePlayers)
                 {
-
                     gameManager.AddToStatTrackingList(player);
                 }
             }

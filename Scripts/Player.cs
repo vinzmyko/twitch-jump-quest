@@ -148,7 +148,9 @@ public partial class Player : CharacterBody2D
                 GD.Print($"Emitted ComboStreaking signal with comboStreak: {comboStreak}");
             }
 
-            AddScore(pointsGained * (int)(1.0 + (combo / 100)));
+            float comboMultiplier = 1.0f + (combo / 100.0f);
+            int totalPointsGained = (int)(pointsGained * comboMultiplier);
+            AddScore(totalPointsGained);
             // GD.Print($"Points given for Midground platform: {pointsGained}");
 
             recentPlatforms.Enqueue(new PlatformInfo(newPlatformId, currentPosition.X, currentPosition.Y));
@@ -157,7 +159,7 @@ public partial class Player : CharacterBody2D
                 recentPlatforms.Dequeue();
             }
 
-    if (isNewPlatform)
+            if (isNewPlatform)
             {
                 recentPlatforms.Enqueue(new PlatformInfo(newPlatformId, currentPosition.X, currentPosition.Y));
                 if (recentPlatforms.Count > MAX_TRACKED_PLATFORMS)
@@ -170,13 +172,11 @@ public partial class Player : CharacterBody2D
             {
                 highestYPosition = currentPosition.Y;
             }
-
             lastScoredPosition = currentPosition;
         }
+        // shouldAwardPointsAndIncreaseCombo == false
         else
-        {
             combo = 0;
-        }
     }
 
     private (int platformId, string layerName) GetCurrentPlatformId()

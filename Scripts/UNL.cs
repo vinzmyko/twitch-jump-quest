@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace UNL
 {
@@ -80,6 +81,17 @@ namespace UNL
         public void RemoveTeam(Team team)
         {
             Teams.Remove(team);
+        }
+
+        // public Team GetTeam(string teamAbbrev)
+        // {
+        //     Team team = Teams.FirstOrDefault(team => team.TeamAbbreviation.ToLower() == teamAbbrev.ToLower());
+        //     return team;
+        // }
+        public Team GetTeam(UNL.Team team)
+        {
+            Team hasTeam = Teams.FirstOrDefault(team => team.TeamAbbreviation.ToLower() == team.TeamAbbreviation);
+            return team;
         }
     }
     public class ColorJsonConverter : JsonConverter<Color>

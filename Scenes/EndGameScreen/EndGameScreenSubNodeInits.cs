@@ -13,6 +13,7 @@ public partial class EndGameScreen : Control
     public void SetShowMVPNodes()
     {
         showMVP.SetMVPControlNodeInfo(MVP);
+        showMVP.SetShaderAnimatedSprite(MVP);
     }
 
     public void SetShowHallOfFameNodes()

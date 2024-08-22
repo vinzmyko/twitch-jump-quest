@@ -135,7 +135,7 @@ animations = [{
 "speed": 8.0
 }]
 
-[node name="ShowMVP" type="Control" node_paths=PackedStringArray("mvpDisplayName", "mvpPlayerPoints", "mvpDistanceTravelled", "mvpNumOfFaceplants", "mvpLongestFaceplantDistance", "mvpComboStreak")]
+[node name="ShowMVP" type="Control" node_paths=PackedStringArray("mvpDisplayName", "mvpPlayerPoints", "mvpDistanceTravelled", "mvpNumOfFaceplants", "mvpLongestFaceplantDistance", "mvpComboStreak", "animatedSprite")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -149,6 +149,7 @@ mvpDistanceTravelled = NodePath("MarginContainer/HBoxContainer/MarginContainer/V
 mvpNumOfFaceplants = NodePath("MarginContainer/HBoxContainer/MarginContainer/VBoxContainer2/NoOfFaceplants")
 mvpLongestFaceplantDistance = NodePath("MarginContainer/HBoxContainer/MarginContainer/VBoxContainer2/LongestFaceplantDistance")
 mvpComboStreak = NodePath("MarginContainer/HBoxContainer/MarginContainer/VBoxContainer2/ComboStreak")
+animatedSprite = NodePath("MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer/AnimatedSprite2D")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1

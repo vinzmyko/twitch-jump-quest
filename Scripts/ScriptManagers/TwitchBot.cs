@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using Godot;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
@@ -14,13 +12,13 @@ namespace UNLTeamJumpQuest.TwitchIntegration
         public delegate void MessageReceivedEventHandler(string[] messageInfo);
         [Signal]
         public delegate void TwitchClientSuccessfullyConnectedEventHandler();
-
         private const string TWITCH_CHANNEL_NAME = "praepollens_sub_caelum";
         private const string TWITCH_ACCESS_TOKEN = "knljbxajr6dcbk4b4jq5zzcyjepsjs";
         private bool isConnected = false;
         private bool DEBUG = true;
         TwitchClient client;
         SettingsManager settingsManager;
+        public bool botConnected = false;
 
         public static TwitchBot Instance { get; private set;}
 
@@ -120,6 +118,7 @@ namespace UNLTeamJumpQuest.TwitchIntegration
         private void client_OnConnected(object sender, OnConnectedArgs e)
         {
             CallDeferred(nameof(OnTwitchClientSuccessDeffered));
+            botConnected = true;
             GD.Print("[Bot]: Connected");
         }
 

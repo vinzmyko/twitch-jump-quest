@@ -51,18 +51,10 @@ public partial class LevelManager : Node
     public override void _Ready()
     {
         base._Ready();
+        GetNode<SceneManager>("/root/SceneManager").LevelReady += InitLevelDependencies;
+        
         settingsManager = GetNodeOrNull<SettingsManager>("/root/SettingsManager");
         playerScene = ResourceLoader.Load<PackedScene>("res://Scenes/Player.tscn");
-        root = GetTree().Root;
-        levelNode = root.GetChild(root.GetChildCount() - 1) as Node2D;
-        tileMap = levelNode.GetNode<TileMap>("TileMap"); // Make sure this path is correct
-        midgroundLayerId = FindMidgroundLayerId();
-        platformIdentifier = new PlatformIdentifier(tileMap, midgroundLayerId);
-        platformIdentifier.IdentifyPlatforms();
-        debugSpawnPosition = levelNode.GetNode<Marker2D>("DebugSpawnMarker2D");
-
-        // // Debug: Print platform IDs
-        // platformIdentifier.PrintPlatformIds();
 
         GG = ResourceLoader.Load<PackedScene>("res://Scenes/EndGameScreen/EndGameAnimationToEndGameScreen.tscn");
         var ggInstance = GG.Instantiate();
@@ -82,6 +74,20 @@ public partial class LevelManager : Node
                 }
             }
         };
+
+    }
+
+    private void InitLevelDependencies(string levelName)
+    {
+        root = GetTree().Root;
+        levelNode = root.GetChild(root.GetChildCount() - 1) as Node2D;
+
+        debugSpawnPosition = levelNode.GetNode<Marker2D>("DebugSpawnMarker2D");
+
+        tileMap = levelNode.GetNode<TileMap>("TileMap"); // Make sure this path is correct
+        midgroundLayerId = FindMidgroundLayerId();
+        platformIdentifier = new PlatformIdentifier(tileMap, midgroundLayerId);
+        platformIdentifier.IdentifyPlatforms();
 
         int playerCount = 0;
         Random random = new Random();
@@ -104,7 +110,7 @@ public partial class LevelManager : Node
         InitLevelMarkers();
     }
 
-     private int FindMidgroundLayerId()
+    private int FindMidgroundLayerId()
     {
         for (int i = 0; i < tileMap.GetLayersCount(); i++)
         {

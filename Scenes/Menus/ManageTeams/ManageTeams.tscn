@@ -147,7 +147,7 @@ animations = [{
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5p8pp"]
 
-[node name="ManageTeams" type="Control"]
+[node name="ManageTeams" type="Control" node_paths=PackedStringArray("toMenu")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -155,6 +155,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_sfcuu")
+toMenu = NodePath("Button")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 custom_minimum_size = Vector2(1000, 600)
@@ -554,3 +555,12 @@ dialog_hide_on_ok = true
 access = 2
 filters = PackedStringArray("*.json")
 use_native_dialog = true
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 128.0
+offset_bottom = 128.0
+icon = ExtResource("5_e07ie")
+expand_icon = true

@@ -13,6 +13,8 @@ public partial class Settings : Control
     private AudioStreamPlayer musicStreamPlayer;
     private AudioStreamPlayer sfxStreamPlayer;
     private SettingsManager settingsManager;
+    [Export]
+    private Button toMainMenu;
 
     public override void _Ready()
     {
@@ -65,6 +67,7 @@ public partial class Settings : Control
             SetAudioBusSlider(valueChange, AudioServer.GetBusIndex("SFX"), sfxSlider);
             sfxStreamPlayer.Play();
         };
+        toMainMenu.ButtonDown += () => {SceneManager.Instance.ChangeScene("MainMenu");};
 
         LoadExistingTwitchInfo();
         LoadExistingVolume();

@@ -11,7 +11,6 @@ public partial class SettingsManager : Node
     private const string KEY_FILE = "user://encryption.key";
     
     private PackedScene floatingMessageScene;
-
     public TeamManager UNLTeams {get; private set;}
     public TeamPageManager TeamPages { get; private set; }
     private const string TEAMS_FILE = "user://teams.json";
@@ -36,7 +35,7 @@ public partial class SettingsManager : Node
 
         TwitchBot.Instance.TwitchClientSuccessfullyConnected += () => 
         {
-                ShowFloatingMessage("Sucessfully Connected!", true);
+            ShowFloatingMessage("Sucessfully Connected!", true);
         };
 
         TeamPages = new TeamPageManager();

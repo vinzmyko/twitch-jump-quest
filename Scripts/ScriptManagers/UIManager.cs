@@ -11,10 +11,7 @@ public partial class UIManager : Node
 
     public override void _Ready()
     {
-        var rootNode = GetTree().Root;
-        var levelNodesCanvasLayer = rootNode.GetChild(rootNode.GetChildCount() - 1).FindChild("CanvasLayer");
-        informationDisplay = levelNodesCanvasLayer.FindChild("InformationDisplay") as InformationDisplay;
-        teamScoresDisplay = levelNodesCanvasLayer.FindChild("TeamScoresDisplay") as TeamScoresDisplay;
+        GetNode<SceneManager>("/root/SceneManager").LevelReady += InitLevelDependencies;
 
         GameManager gameManager = GetNode<GameManager>("/root/GameManager");
         gameManager.PlayerJoined += OnPlayerJoined;
@@ -25,6 +22,15 @@ public partial class UIManager : Node
         levelManager.PlayerComboStreakingToUI += OnPlayerComboStreaking;
         levelManager.PlayerFaceplantToUI += OnPlayerFaceplanted;
     }
+
+    private void InitLevelDependencies(string levelName)
+    {
+        var rootNode = GetTree().Root;
+        var levelNodesCanvasLayer = rootNode.GetChild(rootNode.GetChildCount() - 1).FindChild("CanvasLayer");
+        informationDisplay = levelNodesCanvasLayer.FindChild("InformationDisplay") as InformationDisplay;
+        teamScoresDisplay = levelNodesCanvasLayer.FindChild("TeamScoresDisplay") as TeamScoresDisplay;
+    }
+
 
     private void OnPlayerComboStreaking(Player player, int comboStreak)
     {

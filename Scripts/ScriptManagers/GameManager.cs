@@ -35,7 +35,6 @@ public partial class GameManager : Node
         playerStatsInfo.Add(new PlayerInfo(player));
     }
 
-
     public override void _Ready()
     {
         if (Instance == null)
@@ -52,6 +51,12 @@ public partial class GameManager : Node
         CurrentGameState = GameState.WaitingForPlayers;
 
         GetNode<LevelManager>("/root/LevelManager").PlayerSpawned += OnPlayerSpawned;
+        GetNode<SceneManager>("/root/SceneManager").LevelReady += InitLevelDependecies;
+
+    }
+
+    private void InitLevelDependecies(string levelName)
+    {
         var root = GetTree().Root;
         var levelNode = root.GetChild(root.GetChildCount() - 1);
         gameTimer = levelNode.GetNode<GameTimer>("CanvasLayer/GameTimer");
@@ -68,8 +73,9 @@ public partial class GameManager : Node
                 EndGame();
             }
         };
-
     }
+
+
     public void EndGame()
     {
         if (CurrentGameState != GameState.GameOver)

@@ -4,6 +4,8 @@ using Godot;
 
 public partial class ManageTeams : Control
 {
+    [Export]
+    private Button toMenu;
     private AnimatedSprite2D animatedSprite;
     private Button idlePreviewButton, jumpPreviewButton, facePlantPreviewButton;
     private Button teamNavigationLeft, teamNavigationRight;
@@ -19,6 +21,7 @@ public partial class ManageTeams : Control
     public override void _Ready()
     {
         base._Ready();
+        toMenu.ButtonDown += () => {SceneManager.Instance.ChangeScene("MainMenu");};
 
         animatedSprite = GetNode<AnimatedSprite2D>("MarginContainer/HBoxContainer/LeftVBox/Panel/AnimatedSprite2D2");
 

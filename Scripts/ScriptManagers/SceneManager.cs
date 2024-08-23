@@ -3,8 +3,11 @@ using System.Collections.Generic;
 
 public partial class SceneManager : Node
 {
+    [Signal]
+    public delegate void LevelReadyEventHandler(string levelName);
     public static SceneManager Instance { get; private set; }
     private Dictionary<string, string> scenePaths = new Dictionary<string, string>();
+    private GameManager gameManager;
 
     public override void _Ready()
     {
@@ -19,11 +22,14 @@ public partial class SceneManager : Node
             return;
         }
 
+        gameManager = GetNode<GameManager>("/root/GameManager");
+
         scenePaths.Add("MainMenu", "res://Scenes/Menus/MainMenu.tscn");
-        scenePaths.Add("Settings", "res://Scenes/Settings.tscn");
-        scenePaths.Add("ManageTeams", "res://Scenes/Menus/Settings.tscn");
+        scenePaths.Add("Settings", "res://Scenes/Menus/Settings.tscn");
+        scenePaths.Add("ManageTeams", "res://Scenes/Menus/ManageTeams/ManageTeams.tscn");
         scenePaths.Add("EndGameScreen", "res://Scenes/EndGameScreen/EndGameScreen.tscn");
-        scenePaths.Add("LevelOne", "");
+        scenePaths.Add("SelectLevel", "res://Scenes/Menus/SelectLevel.tscn");
+        scenePaths.Add("LevelOne", "res://Levels/TestLevelOne.tscn");
     }
 
     public void ChangeScene(string sceneName)
@@ -36,5 +42,10 @@ public partial class SceneManager : Node
         {
             GD.PushError($"Scene '{sceneName}' not found.");
         }
+    }
+
+    public void LevelReadySignal(string levelName)
+    {
+        EmitSignal(SignalName.LevelReady, levelName);
     }
 }

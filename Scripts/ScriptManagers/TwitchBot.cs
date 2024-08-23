@@ -15,7 +15,7 @@ namespace UNLTeamJumpQuest.TwitchIntegration
         private const string TWITCH_CHANNEL_NAME = "praepollens_sub_caelum";
         private const string TWITCH_ACCESS_TOKEN = "knljbxajr6dcbk4b4jq5zzcyjepsjs";
         private bool isConnected = false;
-        private bool DEBUG = true;
+        private bool DEBUG = false;
         TwitchClient client;
         SettingsManager settingsManager;
         public bool botConnected = false;
@@ -109,6 +109,7 @@ namespace UNLTeamJumpQuest.TwitchIntegration
 
             client.OnError += Client_OnError;
             client.OnMessageReceived += Client_OnMessageReceived;
+            client.OnChatCommandReceived += Client_OnChatCommandReceived;
             client.OnConnected += client_OnConnected;
 
             client.Connect();
@@ -125,15 +126,26 @@ namespace UNLTeamJumpQuest.TwitchIntegration
         // Command starts with !
         private void Client_OnChatCommandReceived(object sender, OnChatCommandReceivedArgs e)
         {
-
             string command = e.Command.CommandText.ToLower();
             switch (command)
             {
-                case "test":
-                    client.SendMessage(settingsManager.GetTwitchUserName(), "wassup");
+                case "controls":
+                    client.SendMessage(settingsManager.GetTwitchUserName(), 
+                        "tldr: https://imgur.com/a/controls-TMPwPqw " +
+                        "<command> <degrees> <power>, if power is ommited it will be defaulted as 100%.\n " +
+                        "Degrees are from 0 - 90 using 'l' & 'r' or -90 to 90 using 'j', power is 0 to 100. Values will be clamped to follow this rule.\n" +
+                        "Example commands:\n" +
+                        "Jump straight up: 'u', 'j0', 'l0', 'r0'\n" +
+                        "45 degrees to the left: 'l45', 'j-45'\n" +
+                        "45 degress to the right: 'r45', 'j45'");
+                    break;
+                case "teams":
+                    client.SendMessage(settingsManager.GetTwitchUserName(), "T4T, GGEL, CHD, BIS, ICW, HVC, AST, FF, CB");
+                    break;
+                case "help":
+                    client.SendMessage(settingsManager.GetTwitchUserName(), "Commands: !controls, !teams");
                     break;
             }
-
             // only works for the bot owner
             if (e.Command.ChatMessage.DisplayName == settingsManager.GetTwitchUserName())
             {

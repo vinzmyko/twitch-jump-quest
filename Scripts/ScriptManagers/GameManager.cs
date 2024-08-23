@@ -28,6 +28,12 @@ public partial class GameManager : Node
     public List<PlayerInfo> playerStatsInfo = new List<PlayerInfo>();
     private int totalPlayers;
 
+    public void ResetPlayers()
+    {
+        playerStatsInfo.Clear();
+        players.Clear();
+        CurrentGameState = GameState.WaitingForPlayers;
+    }
     public void AddToStatTrackingList(Player player)
     {
         if (playerStatsInfo.Contains(new PlayerInfo(player)))

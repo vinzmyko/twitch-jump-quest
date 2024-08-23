@@ -42,6 +42,8 @@ public partial class ShowHallOfFame : Control
     {
         if (player == null)
             mostFacePlants.Text = "Most Faceplants: N/A";
+        else if (player.NumOfFaceplants == 0)
+            mostFacePlants.Text = "Most FacePlants: N/A";
         else
             mostFacePlants.Text = $"Most Faceplants: {player.DisplayName} ({player.NumOfFaceplants})";
     }
@@ -50,6 +52,8 @@ public partial class ShowHallOfFame : Control
     {
         if (player == null)
             longestDistanceOfFaceplant.Text = "Longest Faceplant Distance: N/A";
+        else if (player.NumOfFaceplants == 0)
+            mostFacePlants.Text = "Longest Faceplant Distance: N/A";
         else
             longestDistanceOfFaceplant.Text = $"Longest Faceplant Distance: {player.DisplayName} ({player.DistanceOfFurthestFaceplant})";
     }

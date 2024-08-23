@@ -293,6 +293,8 @@ public partial class SettingsManager : Node
     private void LoadSettings()
     {
         Error err = config.Load(CONFIG_FILE);
+        if (( GetTwitchAccessToken() != null || GetTwitchAccessToken() != string.Empty ) && (GetTwitchUserName != null || GetTwitchUserName() != string.Empty))
+            TwitchBot.Instance.ConnectFailSafe(false);
         if (err != Error.Ok)
             GD.PushError($"Failed to load settings: {err}");
     }

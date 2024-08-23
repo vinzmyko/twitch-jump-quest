@@ -36,7 +36,6 @@ public partial class EndGameScreen : Control
             if (stats == null || stats.Count == 0)
             {
                 GD.PrintErr("No player stats available in EndGameScreen!");
-                // Consider adding a fallback or error message display here
             }
         }
         else
@@ -54,10 +53,15 @@ public partial class EndGameScreen : Control
         SetShowHallOfFameNodes();
 
         animPlayer.Play("EndGameScreen");
-        
-        // UNL.TeamScore teamThatWon = WinningTeam();
+        animPlayer.AnimationFinished += OnAnimationFinished;
+    }
 
-    }    
+    private void OnAnimationFinished(StringName animName)
+    {
+        gameManager.ResetPlayers();
+        SceneManager.Instance.ChangeScene("MainMenu");
+    }
+
 
     private UNL.TeamScore WinningTeam()
     {

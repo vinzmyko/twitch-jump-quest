@@ -151,7 +151,7 @@ public partial class Player : CharacterBody2D
         {
             combo++;
             float comboMultiplier = 1.0f;
-            if (combo >= 5 && combo > comboStreak)
+            if (combo >= 10 && combo > comboStreak)
             {
                 comboStreak = combo;
                 EmitSignal(SignalName.ComboStreaking, this, comboStreak);

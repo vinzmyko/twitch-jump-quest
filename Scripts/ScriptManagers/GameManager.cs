@@ -22,8 +22,7 @@ public partial class GameManager : Node
         GameOver
     }
     public GameState CurrentGameState { get; private set; }
-    // public float gameTime = 300.0f; //In seconds
-    public float gameTime = 10.0f; //In seconds
+    public float gameTime = 1000.0f; //In seconds
     public float waitTime = 90.0f;
     public GameTimer gameTimer;
     public List<PlayerInfo> playerStatsInfo = new List<PlayerInfo>();

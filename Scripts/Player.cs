@@ -42,6 +42,8 @@ public partial class Player : CharacterBody2D
     public float highestYPosition = float.MaxValue; // lower Y is higher in Godot
     public float startingYpos;
     private AudioStreamPlayer2D audioPlayer;
+    private AudioStream jumpSFX;
+    private AudioStream faceplantSFX;
 
     public struct PlatformInfo
     {
@@ -86,6 +88,8 @@ public partial class Player : CharacterBody2D
         }
 
         audioPlayer = GetNodeOrNull<AudioStreamPlayer2D>("AudioStreamPlayer2D");
+        jumpSFX = ResourceLoader.Load<AudioStream>("res://Audio/JumpSounds/JumpSFX.ogg");
+        faceplantSFX = ResourceLoader.Load<AudioStream>("res://Audio/JumpSounds/Faceplant.ogg");
 		animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         displayLabel = GetNode<Label>("DisplayNameLabel");
         displayLabel.Text = displayName;
@@ -107,6 +111,13 @@ public partial class Player : CharacterBody2D
         SetCollisionLayerValue(1, false);
         SetCollisionLayerValue(2, true);
         await showDisplayName(3.5);
+    }
+
+    private void playJumpAudio(AudioStream audio)
+    {
+        audioPlayer.Stop();
+        audioPlayer.Stream = audio;
+        audioPlayer.Play();
     }
 
     private void CalculateScore()
@@ -256,6 +267,7 @@ private (int platformId, string layerName, int tileSetAtlasId) GetCurrentPlatfor
             currentYPos = GlobalPosition.Y;
             if (highestYPos != 0)
             {
+                playJumpAudio(jumpSFX);
                 if (!IsOnCeiling() && !IsOnWall())
                 {
                     CalculateScore();
@@ -268,6 +280,7 @@ private (int platformId, string layerName, int tileSetAtlasId) GetCurrentPlatfor
                     headOnFloor = true;
                     numOfFaceplants++;
                     distanceOfFurthestFaceplant = (int)heightDifference;
+                    playJumpAudio(faceplantSFX);
                     EmitSignal(SignalName.Faceplanted, this, heightDifference);
                 }
                 highestYPos = 0;

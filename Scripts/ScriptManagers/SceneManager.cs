@@ -29,7 +29,7 @@ public partial class SceneManager : Node
         scenePaths.Add("ManageTeams", "res://Scenes/Menus/ManageTeams/ManageTeams.tscn");
         scenePaths.Add("EndGameScreen", "res://Scenes/EndGameScreen/EndGameScreen.tscn");
         scenePaths.Add("SelectLevel", "res://Scenes/Menus/SelectLevel.tscn");
-        scenePaths.Add("LevelOne", "res://Levels/TestLevelOne.tscn");
+        scenePaths.Add("LevelOne", "res://Levels/LevelOne.tscn");
     }
 
     public void ChangeScene(string sceneName)

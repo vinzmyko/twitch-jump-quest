@@ -34,6 +34,8 @@ public partial class ShowHallOfFame : Control
     {
         if (player == null)
             highestComboStreak.Text = "Highest Combo Streak: N/A";
+        else if (player.ComboStreak == 0)
+            mostFacePlants.Text = "Highest Combo Streak: N/A";
         else
             highestComboStreak.Text = $"Highest Combo Streak: {player.DisplayName} ({player.ComboStreak})";
     }

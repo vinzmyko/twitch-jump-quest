@@ -59,6 +59,7 @@ public partial class EndGameScreen : Control
     private void OnAnimationFinished(StringName animName)
     {
         gameManager.ResetPlayers();
+        levelManager.teamScores.ClearTeams();
         SceneManager.Instance.ChangeScene("MainMenu");
     }
 

@@ -83,11 +83,6 @@ namespace UNL
             Teams.Remove(team);
         }
 
-        // public Team GetTeam(string teamAbbrev)
-        // {
-        //     Team team = Teams.FirstOrDefault(team => team.TeamAbbreviation.ToLower() == teamAbbrev.ToLower());
-        //     return team;
-        // }
         public Team GetTeam(UNL.Team team)
         {
             Team hasTeam = Teams.FirstOrDefault(team => team.TeamAbbreviation.ToLower() == team.TeamAbbreviation);
@@ -192,6 +187,11 @@ namespace UNL
         public IEnumerable<TeamScore> GetAllTeamScores()
         {
             return teamScores.Values;
+        }
+
+        public void ClearTeams()
+        {
+            teamScores.Clear();
         }
 
         public bool TeamExists(string teamAbbreviation)

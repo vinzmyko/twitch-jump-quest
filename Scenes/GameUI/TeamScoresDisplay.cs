@@ -17,6 +17,7 @@ public partial class TeamScoresDisplay : Control
         base._Ready();
 
         levelManager = GetNode<LevelManager>("/root/LevelManager");
+        GD.Print($"TeamScoresDisplay: LevelManager reference obtained: {(levelManager != null ? "Yes" : "No")}");
         settingsManager = GetNode<SettingsManager>("/root/SettingsManager");
 
         teamsVBoxContainer = GetNode<VBoxContainer>("PanelContainer/VBoxContainer");
@@ -24,6 +25,33 @@ public partial class TeamScoresDisplay : Control
 
     public void AddTeamIfNotExists(string teamAbbrev)
     {
+        GD.Print($"TeamScoresDisplay: Attempting to add team {teamAbbrev}");
+        if (levelManager == null)
+        {
+            GD.PrintErr("TeamScoresDisplay: levelManager is null");
+            return;
+        }
+        if (levelManager.teamScores == null)
+        {
+            GD.PrintErr("TeamScoresDisplay: levelManager.teamScores is null");
+            return;
+        }
+        
+        var allTeams = levelManager.teamScores.GetAllTeamScores().Select(ts => ts.TeamInfo.TeamAbbreviation).ToList();
+        GD.Print($"TeamScoresDisplay: All teams in LevelManager: {string.Join(", ", allTeams)}");
+        
+        bool teamExists = levelManager.teamScores.TeamExists(teamAbbrev);
+        GD.Print($"TeamScoresDisplay: TeamExists method returns {teamExists} for team {teamAbbrev}");
+
+        if (!teamExists)
+        {
+            GD.PrintErr($"TeamScoresDisplay: Team {teamAbbrev} does not exist in LevelManager");
+            // You might want to add logic here to handle this case, such as creating the team
+        }
+        else
+        {
+            GD.Print($"TeamScoresDisplay: Team {teamAbbrev} exists in LevelManager");
+        }
         if (!levelManager.teamScores.TeamExists(teamAbbrev))
         {
             if (teamAbbrev == "DEBUG") { return; }

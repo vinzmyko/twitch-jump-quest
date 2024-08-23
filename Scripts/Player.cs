@@ -420,36 +420,105 @@ private (int platformId, string layerName, int tileSetAtlasId) GetCurrentPlatfor
 
     public void SetTeamColours(Color[] colourArray, ShaderMaterial uniqueMaterial)
     {
-        uniqueMaterial.SetShaderParameter("cape1_color_new", colourArray[0]);
-        uniqueMaterial.SetShaderParameter("cape2_color_new", colourArray[1]); 
-        uniqueMaterial.SetShaderParameter("armour_dark_new", colourArray[2]);
-        uniqueMaterial.SetShaderParameter("armour_med_new", colourArray[3]);
-        uniqueMaterial.SetShaderParameter("armour_light_new", colourArray[4]);
-        if (displayName == "DEBUG")
+        GD.Print($"Player: Setting team colours for {displayName}");
+        GD.Print($"Player: colourArray length: {colourArray?.Length ?? 0}");
+        GD.Print($"Player: uniqueMaterial is null: {uniqueMaterial == null}");
+
+        if (colourArray == null || colourArray.Length < 5)
         {
+            GD.PrintErr($"Player: Invalid colourArray for {displayName}. Length: {colourArray?.Length ?? 0}");
             return;
         }
-        uniqueMaterial.SetShaderParameter("helmet_feathers_new", 
-            levelManager.uniqueColours[(levelManager.teamScores.GetTeamPlayerCount(team.TeamAbbreviation) - 1) % 15]);
-        idxOfUniqueFeatherColour = ( levelManager.teamScores.GetTeamPlayerCount(team.TeamAbbreviation) - 1 ) % 15;
+
+        if (uniqueMaterial == null)
+        {
+            GD.PrintErr($"Player: uniqueMaterial is null for {displayName}");
+            return;
+        }
+
+        try
+        {
+            uniqueMaterial.SetShaderParameter("cape1_color_new", colourArray[0]);
+            uniqueMaterial.SetShaderParameter("cape2_color_new", colourArray[1]); 
+            uniqueMaterial.SetShaderParameter("armour_dark_new", colourArray[2]);
+            uniqueMaterial.SetShaderParameter("armour_med_new", colourArray[3]);
+            uniqueMaterial.SetShaderParameter("armour_light_new", colourArray[4]);
+
+            if (displayName == "DEBUG")
+            {
+                GD.Print("Player: DEBUG player, skipping helmet feathers");
+                return;
+            }
+
+            if (levelManager == null)
+            {
+                GD.PrintErr($"Player: levelManager is null for {displayName}");
+                return;
+            }
+
+            if (levelManager.teamScores == null)
+            {
+                GD.PrintErr($"Player: levelManager.teamScores is null for {displayName}");
+                return;
+            }
+
+            if (team == null)
+            {
+                GD.PrintErr($"Player: team is null for {displayName}");
+                return;
+            }
+
+            int playerCount = levelManager.teamScores.GetTeamPlayerCount(team.TeamAbbreviation);
+            GD.Print($"Player: Team {team.TeamAbbreviation} player count: {playerCount}");
+
+            if (levelManager.uniqueColours == null)
+            {
+                GD.PrintErr($"Player: levelManager.uniqueColours is null for {displayName}");
+                return;
+            }
+
+            GD.Print($"Player: levelManager.uniqueColours length: {levelManager.uniqueColours.Length}");
+
+            if (playerCount > 0 && levelManager.uniqueColours.Length > 0)
+            {
+                int colorIndex = (playerCount - 1) % levelManager.uniqueColours.Length;
+                uniqueMaterial.SetShaderParameter("helmet_feathers_new", levelManager.uniqueColours[colorIndex]);
+                idxOfUniqueFeatherColour = colorIndex;
+                GD.Print($"Player: Set helmet feather color index to {colorIndex}");
+            }
+            else
+            {
+                GD.PrintErr($"Player: Unable to set helmet feather color. PlayerCount: {playerCount}, UniqueColours length: {levelManager.uniqueColours.Length}");
+            }
+        }
+        catch (Exception e)
+        {
+            GD.PrintErr($"Player: Error in SetTeamColours for {displayName} - {e.Message}\n{e.StackTrace}");
+        }
     }
 
     private void SetColoursArray(UNL.Team team)
     {
+        GD.Print($"Player: Setting colours array for {displayName}");
         teamColours = new Color[5];
         if (team == null)
         {
+            GD.Print("Player: Team is null, using default colors");
             teamColours[0] = Color.FromHtml("#fff");
             teamColours[1] = Color.FromHtml("#eba724");
             teamColours[2] = Color.FromHtml("#d2202c");
             teamColours[3] = Color.FromHtml("#7c776f");
             teamColours[4] = Color.FromHtml("#eadfd1");
-            return;
         }
-        teamColours[0] = team.TeamColours.CapeMain;
-        teamColours[1] = team.TeamColours.CapeTrim;
-        teamColours[2] = team.TeamColours.ArmourLight;
-        teamColours[3] = team.TeamColours.ArmourMedium;
-        teamColours[4] = team.TeamColours.ArmourDark;
+        else
+        {
+            GD.Print($"Player: Using team colors for {team.TeamName}");
+            teamColours[0] = team.TeamColours.CapeMain;
+            teamColours[1] = team.TeamColours.CapeTrim;
+            teamColours[2] = team.TeamColours.ArmourLight;
+            teamColours[3] = team.TeamColours.ArmourMedium;
+            teamColours[4] = team.TeamColours.ArmourDark;
+        }
+        GD.Print($"Player: teamColours array length: {teamColours.Length}");
     }
 }

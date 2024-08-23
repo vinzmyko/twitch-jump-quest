@@ -147,11 +147,19 @@ namespace UNL
             return teamScores[teamAbbrev].TeamInfo.TeamName;
         }
 
-        public void AddTeam(Team team)
+
+        public void AddTeam(UNL.Team team)
         {
-            if (!teamScores.ContainsKey(team.TeamAbbreviation))
+            string key = team.TeamAbbreviation.ToUpper();
+            GD.Print($"TeamScoreManager: Adding team {key}");
+            if (!teamScores.ContainsKey(key))
             {
-                teamScores[team.TeamAbbreviation] = new TeamScore(team);
+                teamScores[key] = new TeamScore(team);
+                GD.Print($"TeamScoreManager: Team {key} added successfully");
+            }
+            else
+            {
+                GD.Print($"TeamScoreManager: Team {key} already exists");
             }
         }
 
@@ -186,6 +194,7 @@ namespace UNL
 
         public IEnumerable<TeamScore> GetAllTeamScores()
         {
+            GD.Print($"TeamScoreManager: GetAllTeamScores called. Teams: {string.Join(", ", teamScores.Keys)}");
             return teamScores.Values;
         }
 
@@ -194,10 +203,14 @@ namespace UNL
             teamScores.Clear();
         }
 
-        public bool TeamExists(string teamAbbreviation)
+
+        public bool TeamExists(string teamAbbrev)
         {
-            string normalizedAbbrev = teamAbbreviation.ToUpper();
-            return teamScores.ContainsKey(normalizedAbbrev);
+            string key = teamAbbrev.ToUpper();
+            bool exists = teamScores.ContainsKey(key);
+            GD.Print($"TeamScoreManager: TeamExists check for {key} - Result: {exists}");
+            GD.Print($"TeamScoreManager: Current teams: {string.Join(", ", teamScores.Keys)}");
+            return exists;
         }
 
         public int GetTeamPlayerCount(string teamAbbrev)

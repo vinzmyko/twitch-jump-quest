@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 
 public partial class LevelManager : Node
 {
@@ -74,7 +75,6 @@ public partial class LevelManager : Node
                 }
             }
         };
-
     }
 
     private void InitLevelDependencies(string levelName)
@@ -155,9 +155,11 @@ public partial class LevelManager : Node
     // Method to spawn a player in the current level
     public void SpawnPlayer(string displayName, string userID, string teamAbbrev)
     {
+        GD.Print($"LevelManager: Attempting to spawn player - Name: {displayName}, ID: {userID}, Team: {teamAbbrev}");
+
         if (playerScene == null)
         {
-            GD.PushError("Player scene is not set in the LevelManager");
+            GD.PushError("LevelManager: Player scene is not set in the LevelManager");
             return;
         }
 
@@ -165,30 +167,49 @@ public partial class LevelManager : Node
 
         if (instance is not Player playerInstance)
         {
-            GD.PrintErr("Failed to instantiate Player");
+            GD.PrintErr("LevelManager: Failed to instantiate Player");
             return;
         }
 
+        GD.Print("LevelManager: Player instance created successfully");
+
         UNL.Team targetTeam = null;
+        GD.Print($"LevelManager: Number of teams in settingsManager: {settingsManager.UNLTeams.Teams.Count}");
         foreach (UNL.Team team in settingsManager.UNLTeams.Teams)
         {
+            GD.Print($"LevelManager: Checking team {team.TeamAbbreviation}");
             if (team.TeamAbbreviation.ToLower() == teamAbbrev.ToLower())
             {
                 targetTeam = team;
+                GD.Print($"LevelManager: Matched team found: {team.TeamAbbreviation}");
                 break;
             }
+        }
+
+        if (targetTeam == null)
+        {
+            GD.PrintErr($"LevelManager: No matching team found for abbreviation {teamAbbrev}");
         }
 
         UNL.Team isATeam = IsATeam(teamAbbrev);
         if (isATeam != null)
         {
+            GD.Print($"LevelManager: IsATeam returned non-null for {teamAbbrev}");
+            GD.Print($"LevelManager: Team details - Name: {isATeam.TeamName}, Abbreviation: {isATeam.TeamAbbreviation}");
             // Does check for dupe teams
             teamScores.AddTeam(isATeam);
             teamScores.AddPlayerToTeam(isATeam.TeamAbbreviation);
-            GD.Print("added team and player to the team");
+            GD.Print($"LevelManager: Added team {isATeam.TeamAbbreviation} and player to the team");
+            PrintTeamScoresState();
         }
+        else
+        {
+            GD.PrintErr($"LevelManager: IsATeam returned null for {teamAbbrev}");
+        }
+
         playerInstance.Initialize(displayName, userID, targetTeam);
         playerInstance.Name = $"Player_{userID}";
+        GD.Print($"LevelManager: Player initialized with name {playerInstance.Name}");
 
         if (playerInstance is Player player)
         {
@@ -196,26 +217,51 @@ public partial class LevelManager : Node
             player.Died += (string name, string userid, string teamAbbrev) => {};
             player.ComboStreaking += (Player player, int comboStreak) => {EmitSignal(SignalName.PlayerComboStreakingToUI, player, comboStreak);};
             player.Faceplanted += (Player player, float distance) => {EmitSignal(SignalName.PlayerFaceplantToUI, player, distance);};
+            GD.Print("LevelManager: Player events connected");
         }
         
         if (spawnPositions == null)
-            GD.PushError("spawnPosition not found");
+        {
+            GD.PushError("LevelManager: spawnPosition not found");
+        }
         else
         {
             Random random = new Random();
             int rng = random.Next(0, spawnPositions.GetChildren().Count);
             Node2D positionToSpawn = spawnPositions.GetChild<Node2D>(rng);
             playerInstance.GlobalPosition = positionToSpawn.GlobalPosition;
+            GD.Print($"LevelManager: Player spawned at position {playerInstance.GlobalPosition}");
         }
 
         if (playerInstance.displayName == "DEBUG")
+        {
             playerInstance.GlobalPosition = debugSpawnPosition.GlobalPosition;
+            GD.Print($"LevelManager: DEBUG player spawned at position {playerInstance.GlobalPosition}");
+        }
 
         Node levelScene = GetNode<Node>("/root/Main");
         levelScene.AddChild(playerInstance);
+        GD.Print($"LevelManager: Player added to scene {levelScene.Name}");
 
         EmitSignal(SignalName.PlayerSpawned, playerInstance);
+        GD.Print("LevelManager: PlayerSpawned signal emitted");
     }
+
+    private void PrintTeamScoresState()
+    {
+        GD.Print("LevelManager: Printing teamScores state");
+        GD.Print($"LevelManager: teamScores is null: {teamScores == null}");
+        if (teamScores != null)
+        {
+            var allTeams = teamScores.GetAllTeamScores().Select(ts => ts.TeamInfo.TeamAbbreviation).ToList();
+            GD.Print($"LevelManager: All teams in teamScores: {string.Join(", ", allTeams)}");
+            foreach (var team in allTeams)
+            {
+                GD.Print($"LevelManager: Team {team} exists: {teamScores.TeamExists(team)}");
+            }
+        }
+    }
+
 
     private void OnPlayerScoreUpdated(string teamAbbrev, int playerAdditionalPoints)
     {

@@ -33,6 +33,8 @@ public partial class SettingsManager : Node
 
         floatingMessageScene = ResourceLoader.Load<PackedScene>("res://Scenes/FloatingMessage.tscn");
 
+        AttemptTwitchConnectionIfCredentialsExist();
+
         TwitchBot.Instance.TwitchClientSuccessfullyConnected += () => 
         {
             ShowFloatingMessage("Sucessfully Connected!", true);
@@ -42,6 +44,26 @@ public partial class SettingsManager : Node
         InitialiseTeams();
         EnsureTeamImagesDirectoryExists();
         SetAudioFromMemory();
+    }
+    private void AttemptTwitchConnectionIfCredentialsExist()
+    {
+        string twitchUserName = GetTwitchUserName();
+        string twitchAccessToken = GetTwitchAccessToken();
+
+        if (!string.IsNullOrEmpty(twitchUserName) && !string.IsNullOrEmpty(twitchAccessToken))
+        {
+            GD.Print("Credentials found. Attempting to connect to Twitch...");
+            bool isConnected = TwitchBot.Instance.ConnectFailSafe(false);
+            
+            if (!isConnected)
+            {
+                GD.PushError("Failed to connect to Twitch with the provided credentials.");
+            }
+        }
+        else
+        {
+            GD.Print("Twitch credentials not found or incomplete. Skipping Twitch connection.");
+        }
     }
     
     private void SetAudioFromMemory()

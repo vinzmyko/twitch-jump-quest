@@ -46,34 +46,34 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_2sk6c")
 theme_override_font_sizes/font_size = 38
-text = "Least points: needs to be > 0"
+text = "Lowest Points Gained: N/A"
 
 [node name="HighestDistanceTravelled" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_2sk6c")
 theme_override_font_sizes/font_size = 38
-text = "most ditance travelled"
+text = "Highest Distance Travlled: N/A"
 
 [node name="LeastDistanceTravelled" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_2sk6c")
 theme_override_font_sizes/font_size = 38
-text = "Least distance travelled"
+text = "Lowest Distance Travelled: N/A"
 
 [node name="HighestCombo" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_2sk6c")
 theme_override_font_sizes/font_size = 38
-text = "highest combo streak"
+text = "Highest Combo Streak: N/A"
 
 [node name="MostFacePlants" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_2sk6c")
 theme_override_font_sizes/font_size = 38
-text = "most faceplants"
+text = "Most Faceplants: N/A"
 
 [node name="LongestDistanceFaceplant" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_2sk6c")
 theme_override_font_sizes/font_size = 38
-text = "longest distance for face plant"
+text = "Longest Faceplant Distance: N/A"

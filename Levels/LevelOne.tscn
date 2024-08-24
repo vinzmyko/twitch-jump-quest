@@ -414,6 +414,7 @@ color = Color(0.340339, 0.340339, 0.340339, 1)
 [node name="GameTimer" parent="CanvasLayer" instance=ExtResource("6_h8v0c")]
 
 [node name="DebugTwitchChat" parent="CanvasLayer" instance=ExtResource("2_q4lgv")]
+visible = false
 metadata/_edit_use_anchors_ = true
 
 [node name="LevelMarkers" type="Node2D" parent="."]

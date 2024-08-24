@@ -69,7 +69,7 @@ public partial class TeamScoresDisplay : Control
         UpdateTeamScoreDisplay(upperTeamAbbrev, teamScore);
     }
 
-        private void UpdateTeamScoreDisplay(string upperTeamAbbrev, int teamScore)
+    private void UpdateTeamScoreDisplay(string upperTeamAbbrev, int teamScore)
     {
         TeamScore teamScoreLabel = teamsVBoxContainer.GetNodeOrNull($"TEAM_{upperTeamAbbrev}") as TeamScore;
         if (teamScoreLabel == null)
@@ -79,7 +79,7 @@ public partial class TeamScoresDisplay : Control
         }
 
         int playerCount = levelManager.teamScores.GetTeamPlayerCount(upperTeamAbbrev);
-        teamScoreLabel.Text = $"{upperTeamAbbrev}\t[{playerCount}] -\t{teamScore:D5}";
+        teamScoreLabel.Text = $"{upperTeamAbbrev}\t[{playerCount}] -\t{teamScore:D6}";
         teamScoreLabel.teamScore = teamScore;
 
         SortTeamScores();

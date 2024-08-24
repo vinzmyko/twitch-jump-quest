@@ -11,7 +11,7 @@
 
 [sub_resource type="Curve2D" id="Curve2D_52ic3"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -272, 0, 0, 0, 0, 1, -538, 0, 0, 0, 0, 0, -810, 0, 0, 0, 0, -3, -1027, 0, 0, 0, 0, 0, -1300, 0, 0, 0, 0, -2, -1513, 0, 0, 0, 0, -4, -1760, 0, 0, 0, 0, 0, -2000, 0, 0, 0, 0, -3, -2229, 0, 0, 0, 0, -6, -2485, 0, 0, 0, 0, -1, -2762, 0, 0, 0, 0, -2, -2969, 0, 0, 0, 0, -5, -3200, 0, 0, 0, 0, -4, -3393, 0, 0, 0, 0, -4, -3596)
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -272, 0, 0, 0, 0, 1, -538, 0, 0, 0, 0, 0, -810, 0, 0, 0, 0, -3, -1027, 0, 0, 0, 0, -2, -1275, 0, 0, 0, 0, -4, -1494, 0, 0, 0, 0, -4, -1737, 0, 0, 0, 0, 1, -1983, 0, 0, 0, 0, -4, -2214, 0, 0, 0, 0, -4, -2462, 0, 0, 0, 0, 1, -2737, 0, 0, 0, 0, 0, -2953, 0, 0, 0, 0, 1, -3179, 0, 0, 0, 0, 0, -3385, 0, 0, 0, 0, -4, -3596)
 }
 point_count = 16
 
@@ -414,7 +414,6 @@ color = Color(0.340339, 0.340339, 0.340339, 1)
 [node name="GameTimer" parent="CanvasLayer" instance=ExtResource("6_h8v0c")]
 
 [node name="DebugTwitchChat" parent="CanvasLayer" instance=ExtResource("2_q4lgv")]
-visible = false
 metadata/_edit_use_anchors_ = true
 
 [node name="LevelMarkers" type="Node2D" parent="."]
@@ -426,7 +425,7 @@ position = Vector2(364, 558)
 position = Vector2(337, -3276)
 
 [node name="DebugSpawnMarker2D" type="Marker2D" parent="."]
-position = Vector2(731, -3155)
+position = Vector2(521, -3159)
 
 [node name="LevelCamera" type="Node2D" parent="."]
 position = Vector2(580, 387)

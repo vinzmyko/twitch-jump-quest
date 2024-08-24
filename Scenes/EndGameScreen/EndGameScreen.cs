@@ -61,11 +61,8 @@ public partial class EndGameScreen : Control
     {
         gameManager.ResetPlayers();
         levelManager.teamScores.ClearTeams();
+        gameManager.StartNewGame();
         
-        // Ensure we're disconnecting any remaining signals
-        // TwitchBot.Instance.MessageReceived -= OnMessageReceived;
-        
-        // Use CallDeferred to change the scene after this frame
         CallDeferred(nameof(ChangeToMainMenu));
     }
 

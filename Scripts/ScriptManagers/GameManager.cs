@@ -48,6 +48,12 @@ public partial class GameManager : Node
             // TwitchBot.Instance.MessageReceived -= OnMessageReceived;
         }
     }
+    public void StartNewGame()
+    {
+        ResetPlayers();
+        CurrentGameState = GameState.WaitingForPlayers;
+        // Reset any other necessary game state variables
+    }
     public void AddToStatTrackingList(Player player)
     {
         if (playerStatsInfo.Contains(new PlayerInfo(player)))
@@ -95,28 +101,29 @@ public partial class GameManager : Node
         };
     }
 
-
     public void EndGame()
     {
-        if (CurrentGameState != GameState.GameOver)
+        if (CurrentGameState == GameState.GameOver)
         {
-            CurrentGameState = GameState.GameOver;
-            
-            // Collect data for all remaining players
-            var remainingPlayers = GetTree().GetNodesInGroup("Player");
-            foreach (Player player in remainingPlayers)
-            {
-                AddToStatTrackingList(player);
-            }
-
-            // Ensure playerStatsInfo is not empty
-            if (playerStatsInfo.Count == 0)
-            {
-                GD.PrintErr("No player stats collected at end of game!");
-            }
-
-            EmitSignal(SignalName.GameStateChanged, (int)CurrentGameState);
+            return; // Game is already over, no need to end it again
         }
+
+        CurrentGameState = GameState.GameOver;
+        
+        // Collect data for all remaining players
+        var remainingPlayers = GetTree().GetNodesInGroup("Player");
+        foreach (Player player in remainingPlayers)
+        {
+            AddToStatTrackingList(player);
+        }
+
+        // Ensure playerStatsInfo is not empty
+        if (playerStatsInfo.Count == 0)
+        {
+            GD.PrintErr("No player stats collected at end of game!");
+        }
+
+        EmitSignal(SignalName.GameStateChanged, (int)CurrentGameState);
     }
 
     private void OnPlayerSpawned(Player player)

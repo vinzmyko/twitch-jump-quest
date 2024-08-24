@@ -47,7 +47,8 @@ public partial class LevelManager : Node
     public int midgroundLayerId;
     private Node root;
     private Node2D levelNode;
-    private PackedScene GG;
+    private PackedScene GGScene;
+    private EndGameAnimationToEndGameScreen ggInstance;
 
     public override void _Ready()
     {
@@ -57,24 +58,76 @@ public partial class LevelManager : Node
         settingsManager = GetNodeOrNull<SettingsManager>("/root/SettingsManager");
         playerScene = ResourceLoader.Load<PackedScene>("res://Scenes/Player.tscn");
 
-        GG = ResourceLoader.Load<PackedScene>("res://Scenes/EndGameScreen/EndGameAnimationToEndGameScreen.tscn");
-        var ggInstance = GG.Instantiate();
+        GGScene = ResourceLoader.Load<PackedScene>("res://Scenes/EndGameScreen/EndGameAnimationToEndGameScreen.tscn");
 
         GameManager.Instance.PlayerJoined += SpawnPlayer;
-        // GameManager.Instance.PlayerDied += OnPlayerDied;
-        GameManager.Instance.GameStateChanged += (int gameState) => 
+        GameManager.Instance.GameStateChanged += OnGameStateChanged;
+    }
+
+    private void OnGameStateChanged(int gameState)
+    {
+        if (gameState == (int)GameManager.GameState.GameOver)
         {
-            if (gameState == (int)GameManager.GameState.GameOver)
-            { 
-                levelNode.GetNode<CanvasLayer>("CanvasLayer").AddChild(ggInstance);
-                var alivePlayers = GetTree().GetNodesInGroup("Player");
-                GameManager gameManager = GetNode<GameManager>("/root/GameManager");
-                foreach (Player player in alivePlayers)
-                {
-                    gameManager.AddToStatTrackingList(player);
-                }
+            ShowEndGameAnimation();
+
+            var alivePlayers = GetTree().GetNodesInGroup("Player");
+            foreach (Player player in alivePlayers)
+            {
+                GameManager.Instance.AddToStatTrackingList(player);
             }
-        };
+        }
+    }
+
+    private void OnEndGameAnimationFinished()
+    {
+        if (ggInstance != null && IsInstanceValid(ggInstance))
+        {
+            // Remove the instance from its parent
+            if (ggInstance.GetParent() != null)
+            {
+                ggInstance.GetParent().RemoveChild(ggInstance);
+            }
+            ggInstance.Cleanup();
+            ggInstance = null;
+        }
+        SceneManager.Instance.ChangeScene("EndGameScreen");
+    }
+
+    private void ShowEndGameAnimation()
+    {
+        if (ggInstance != null && IsInstanceValid(ggInstance))
+        {
+            // If the instance already exists, remove it from its current parent
+            if (ggInstance.GetParent() != null)
+            {
+                ggInstance.GetParent().RemoveChild(ggInstance);
+            }
+        }
+        else
+        {
+            // If the instance doesn't exist or is invalid, create a new one
+            ggInstance = GGScene.Instantiate<EndGameAnimationToEndGameScreen>();
+            ggInstance.AnimationFinished += OnEndGameAnimationFinished;
+        }
+
+        if (levelNode != null && IsInstanceValid(levelNode))
+        {
+            var canvasLayer = levelNode.GetNodeOrNull<CanvasLayer>("CanvasLayer");
+            if (canvasLayer != null && IsInstanceValid(canvasLayer))
+            {
+                canvasLayer.AddChild(ggInstance);
+                ggInstance.PlayAnimation();
+                GD.Print("EndGameAnimation added to CanvasLayer and started playing");
+            }
+            else
+            {
+                GD.PrintErr("CanvasLayer not found or not valid");
+            }
+        }
+        else
+        {
+            GD.PrintErr("LevelNode not found or not valid");
+        }
     }
 
     private void InitLevelDependencies(string levelName)

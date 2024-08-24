@@ -147,11 +147,9 @@ namespace UNL
             return teamScores[teamAbbrev].TeamInfo.TeamName;
         }
 
-
         public void AddTeam(UNL.Team team)
         {
             string key = team.TeamAbbreviation.ToUpper();
-            GD.Print($"TeamScoreManager: Adding team {key}");
             if (!teamScores.ContainsKey(key))
             {
                 teamScores[key] = new TeamScore(team);
@@ -165,9 +163,15 @@ namespace UNL
 
         public void AddPlayerToTeam(string teamAbbrev)
         {
-            if (teamScores.TryGetValue(teamAbbrev, out TeamScore teamScore))
+            string key = teamAbbrev.ToUpper();
+            if (teamScores.TryGetValue(key, out TeamScore teamScore))
             {
                 teamScore.AddPlayer();
+                GD.Print($"TeamScoreManager: Player added to team {key}. New player count: {teamScore.PlayerCount}");
+            }
+            else
+            {
+                GD.PrintErr($"TeamScoreManager: Attempted to add player to non-existent team {key}");
             }
         }
 
@@ -181,15 +185,27 @@ namespace UNL
 
         public void AddScoreToTeam(string teamAbbrev, int score)
         {
-            if (teamScores.TryGetValue(teamAbbrev, out TeamScore teamScore))
+            string key = teamAbbrev.ToUpper();
+            if (teamScores.TryGetValue(key, out TeamScore teamScore))
             {
                 teamScore.AddScore(score);
+                GD.Print($"TeamScoreManager: Added score {score} to team {key}. New total: {teamScore.TotalScore}");
+            }
+            else
+            {
+                GD.PrintErr($"TeamScoreManager: Attempted to add score to non-existent team {key}");
             }
         }
 
         public TeamScore GetTeamScore(string teamAbbrev)
         {
-            return teamScores.TryGetValue(teamAbbrev, out TeamScore teamScore) ? teamScore : null;
+            string key = teamAbbrev.ToUpper();
+            if (teamScores.TryGetValue(key, out TeamScore teamScore))
+            {
+                return teamScore;
+            }
+            GD.PrintErr($"TeamScoreManager: No team score found for team {key}");
+            return null;
         }
 
         public IEnumerable<TeamScore> GetAllTeamScores()
@@ -203,13 +219,11 @@ namespace UNL
             teamScores.Clear();
         }
 
-
         public bool TeamExists(string teamAbbrev)
         {
             string key = teamAbbrev.ToUpper();
             bool exists = teamScores.ContainsKey(key);
             GD.Print($"TeamScoreManager: TeamExists check for {key} - Result: {exists}");
-            GD.Print($"TeamScoreManager: Current teams: {string.Join(", ", teamScores.Keys)}");
             return exists;
         }
 

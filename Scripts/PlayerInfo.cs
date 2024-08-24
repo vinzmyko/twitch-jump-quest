@@ -24,10 +24,11 @@ public class PlayerInfo : IEquatable<PlayerInfo>
         points = player.points;
         ComboStreak = player.comboStreak;
         NumOfFaceplants = player.numOfFaceplants;
-        DistanceOfFurthestFaceplant = player.distanceOfFurthestFaceplant;
+        // DistanceOfFurthestFaceplant = player.distanceOfFurthestFaceplant;
         IdxOfUniqueFeatherColours = player.idxOfUniqueFeatherColour;
 
         HighestYPos = (int)Mathf.Abs(player.startingYpos - player.highestYPosition) / 16;
+        DistanceOfFurthestFaceplant = player.distanceOfFurthestFaceplant / 16;
     }
     public override bool Equals(object obj)
     {

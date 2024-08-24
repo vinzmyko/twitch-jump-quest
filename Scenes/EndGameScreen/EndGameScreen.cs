@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UNLTeamJumpQuest.TwitchIntegration;
 
 public partial class EndGameScreen : Control
 {
@@ -60,6 +61,16 @@ public partial class EndGameScreen : Control
     {
         gameManager.ResetPlayers();
         levelManager.teamScores.ClearTeams();
+        
+        // Ensure we're disconnecting any remaining signals
+        // TwitchBot.Instance.MessageReceived -= OnMessageReceived;
+        
+        // Use CallDeferred to change the scene after this frame
+        CallDeferred(nameof(ChangeToMainMenu));
+    }
+
+    private void ChangeToMainMenu()
+    {
         SceneManager.Instance.ChangeScene("MainMenu");
     }
 

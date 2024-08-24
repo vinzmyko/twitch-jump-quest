@@ -26,57 +26,67 @@ public partial class TeamScoresDisplay : Control
     public void AddTeamIfNotExists(string teamAbbrev)
     {
         GD.Print($"TeamScoresDisplay: Attempting to add team {teamAbbrev}");
-        if (levelManager == null)
+        if (levelManager == null || levelManager.teamScores == null)
         {
-            GD.PrintErr("TeamScoresDisplay: levelManager is null");
+            GD.PrintErr($"TeamScoresDisplay: levelManager or teamScores is null for team {teamAbbrev}");
             return;
         }
-        if (levelManager.teamScores == null)
-        {
-            GD.PrintErr("TeamScoresDisplay: levelManager.teamScores is null");
-            return;
-        }
-        
-        var allTeams = levelManager.teamScores.GetAllTeamScores().Select(ts => ts.TeamInfo.TeamAbbreviation).ToList();
-        GD.Print($"TeamScoresDisplay: All teams in LevelManager: {string.Join(", ", allTeams)}");
-        
-        bool teamExists = levelManager.teamScores.TeamExists(teamAbbrev);
-        GD.Print($"TeamScoresDisplay: TeamExists method returns {teamExists} for team {teamAbbrev}");
 
-        if (!teamExists)
+        string upperTeamAbbrev = teamAbbrev.ToUpper();
+        if (!levelManager.teamScores.TeamExists(upperTeamAbbrev))
         {
-            GD.PrintErr($"TeamScoresDisplay: Team {teamAbbrev} does not exist in LevelManager");
-            // You might want to add logic here to handle this case, such as creating the team
-        }
-        else
-        {
-            GD.Print($"TeamScoresDisplay: Team {teamAbbrev} exists in LevelManager");
-        }
-        if (!levelManager.teamScores.TeamExists(teamAbbrev))
-        {
-            if (teamAbbrev == "DEBUG") { return; }
-            GD.PushError("team does not exist in levelmanager, problem if debug player is not spawned");
+            if (upperTeamAbbrev == "DEBUG") { return; }
+            GD.PushError($"Team {upperTeamAbbrev} does not exist in levelmanager");
             return;
         }
-        if (!teamPositionDictionary.ContainsKey(teamAbbrev))
+
+        if (!teamPositionDictionary.ContainsKey(upperTeamAbbrev))
         {
             TeamScore teamScoreInstance = teamScoreScene.Instantiate<TeamScore>();
-            teamScoreInstance.Name = $"TEAM_{teamAbbrev}";
+            teamScoreInstance.Name = $"TEAM_{upperTeamAbbrev}";
             teamsVBoxContainer.AddChild(teamScoreInstance);
-            teamScoreInstance.Initialise(teamAbbrev);
+            teamScoreInstance.Initialise(upperTeamAbbrev);
 
-            teamPositionDictionary[teamAbbrev] = teamPositionDictionary.Count;
+            teamPositionDictionary[upperTeamAbbrev] = teamPositionDictionary.Count;
+            GD.Print($"TeamScoresDisplay: Added new team score display for {upperTeamAbbrev}");
         }
-        TeamScore teamRichTextLabel = teamsVBoxContainer.GetNode($"TEAM_{teamAbbrev}") as TeamScore;
-        teamRichTextLabel.Text = $"{teamAbbrev}\t[{levelManager.teamScores.GetTeamPlayerCount(teamAbbrev)}] -\t00000";
+
+        UpdateTeamScoreDisplay(upperTeamAbbrev, 0);
     }
+
 
     public void UpdateTeamScore(string teamAbbrev, int teamScore)
     {
-        TeamScore teamRichTextLabel = teamsVBoxContainer.GetNode($"TEAM_{teamAbbrev}") as TeamScore;
-        teamRichTextLabel.Text = $"{teamAbbrev}\t[{levelManager.teamScores.GetTeamPlayerCount(teamAbbrev)}] -\t{teamScore:D5}";
-        teamRichTextLabel.teamScore = teamScore;
-    
+        string upperTeamAbbrev = teamAbbrev.ToUpper();
+        GD.Print($"TeamScoresDisplay: Updating score for team {upperTeamAbbrev} to {teamScore}");
+
+        if (!teamPositionDictionary.ContainsKey(upperTeamAbbrev))
+        {
+            GD.PrintErr($"TeamScoresDisplay: Team {upperTeamAbbrev} not found in teamPositionDictionary. Adding it now.");
+            AddTeamIfNotExists(upperTeamAbbrev);
+        }
+
+        UpdateTeamScoreDisplay(upperTeamAbbrev, teamScore);
+    }
+
+        private void UpdateTeamScoreDisplay(string upperTeamAbbrev, int teamScore)
+    {
+        TeamScore teamScoreLabel = teamsVBoxContainer.GetNodeOrNull($"TEAM_{upperTeamAbbrev}") as TeamScore;
+        if (teamScoreLabel == null)
+        {
+            GD.PrintErr($"TeamScoresDisplay: TeamScore node for {upperTeamAbbrev} not found");
+            return;
+        }
+
+        int playerCount = levelManager.teamScores.GetTeamPlayerCount(upperTeamAbbrev);
+        teamScoreLabel.Text = $"{upperTeamAbbrev}\t[{playerCount}] -\t{teamScore:D5}";
+        teamScoreLabel.teamScore = teamScore;
+
+        SortTeamScores();
+    }
+
+    private void SortTeamScores()
+    {
         var teamScores = teamsVBoxContainer.GetChildren()
             .Cast<TeamScore>()
             .OrderByDescending(team => team.teamScore)
@@ -86,11 +96,5 @@ public partial class TeamScoresDisplay : Control
         {
             teamsVBoxContainer.MoveChild(teamScores[i], i);
         }
-
-        // Debug
-        // foreach (var team in teamScores)
-        // {
-        //     GD.Print($"{team.Name}: {team.teamScore}");
-        // }
     }
 }

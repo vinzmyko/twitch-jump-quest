@@ -67,11 +67,15 @@ public partial class Player : CharacterBody2D
         points = 0;
         team = _team;
         SetColoursArray(_team);
-        if (_team == null)
-        {
-            return;
-        }
     }
+
+    public void SetupPlayerColors()
+    {
+        ShaderMaterial uniqueMaterial = (ShaderMaterial)animatedSprite.Material.Duplicate();
+        SetTeamColours(teamColours, uniqueMaterial);
+        animatedSprite.Material = uniqueMaterial;
+    }
+
     public override async void _Ready()
     {
         base._Ready();
@@ -93,9 +97,10 @@ public partial class Player : CharacterBody2D
 		animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         displayLabel = GetNode<Label>("DisplayNameLabel");
         displayLabel.Text = displayName;
-        ShaderMaterial uniqueMaterial = (ShaderMaterial)animatedSprite.Material.Duplicate();
-        SetTeamColours(teamColours, uniqueMaterial);
-        animatedSprite.Material = uniqueMaterial;
+
+        // ShaderMaterial uniqueMaterial = (ShaderMaterial)animatedSprite.Material.Duplicate();
+        // SetTeamColours(teamColours, uniqueMaterial);
+        // animatedSprite.Material = uniqueMaterial;
 
         TwitchBot.Instance.MessageReceived += OnMessageReceived;
         animatedSprite.AnimationFinished += OnHeadOnFloorAnimationFinished;
@@ -151,9 +156,12 @@ public partial class Player : CharacterBody2D
         {
             combo++;
             float comboMultiplier = 1.0f;
-            if (combo >= 10 && combo > comboStreak)
+            if (combo > comboStreak)
             {
                 comboStreak = combo;
+            }
+            if (combo >= 7 && combo > comboStreak)
+            {
                 EmitSignal(SignalName.ComboStreaking, this, comboStreak);
                 comboMultiplier = 1.0f + (combo / 100.0f);
             }
@@ -185,47 +193,47 @@ public partial class Player : CharacterBody2D
             combo = 0;
     }
 
-private (int platformId, string layerName, int tileSetAtlasId) GetCurrentPlatformId()
-{
-    var spaceState = GetWorld2D().DirectSpaceState;
-    uint collisionMask = 1; // Assuming your jumpable tiles are on collision layer 1
-
-    Vector2[] directions = { Vector2.Down, new Vector2(-1, 1), new Vector2(1, 1) };
-    float rayLength = 5f;
-
-    foreach (var direction in directions)
+    private (int platformId, string layerName, int tileSetAtlasId) GetCurrentPlatformId()
     {
-        var query = PhysicsRayQueryParameters2D.Create(
-            GlobalPosition,
-            GlobalPosition + direction * rayLength,
-            collisionMask,
-            new Godot.Collections.Array<Rid> { GetRid() } // Exclude the player's own collision
-        );
+        var spaceState = GetWorld2D().DirectSpaceState;
+        uint collisionMask = 1; // Assuming your jumpable tiles are on collision layer 1
 
-        var result = spaceState.IntersectRay(query);
+        Vector2[] directions = { Vector2.Down, new Vector2(-1, 1), new Vector2(1, 1) };
+        float rayLength = 5f;
 
-        if (result.Count > 0)
+        foreach (var direction in directions)
         {
-            var collider = result["collider"].As<Node2D>();
-            if (collider is TileMap tileMap)
+            var query = PhysicsRayQueryParameters2D.Create(
+                GlobalPosition,
+                GlobalPosition + direction * rayLength,
+                collisionMask,
+                new Godot.Collections.Array<Rid> { GetRid() } // Exclude the player's own collision
+            );
+
+            var result = spaceState.IntersectRay(query);
+
+            if (result.Count > 0)
             {
-                Vector2 collisionPoint = (Vector2)result["position"];
-                Vector2I cellCoords = tileMap.LocalToMap(tileMap.ToLocal(collisionPoint));
-                
-                string layerName = tileMap.GetLayerName(levelManager.midgroundLayerId);
-                int sourceId = tileMap.GetCellSourceId(levelManager.midgroundLayerId, cellCoords);
-                if (sourceId != -1)
+                var collider = result["collider"].As<Node2D>();
+                if (collider is TileMap tileMap)
                 {
-                    int platformId = levelManager.GetPlatformId(cellCoords);
-                    // GD.Print($"Player at cell {cellCoords}, Platform ID: {platformId}, TileSet Atlas ID: {sourceId}");
-                    return (platformId, layerName, sourceId);
+                    Vector2 collisionPoint = (Vector2)result["position"];
+                    Vector2I cellCoords = tileMap.LocalToMap(tileMap.ToLocal(collisionPoint));
+                    
+                    string layerName = tileMap.GetLayerName(levelManager.midgroundLayerId);
+                    int sourceId = tileMap.GetCellSourceId(levelManager.midgroundLayerId, cellCoords);
+                    if (sourceId != -1)
+                    {
+                        int platformId = levelManager.GetPlatformId(cellCoords);
+                        // GD.Print($"Player at cell {cellCoords}, Platform ID: {platformId}, TileSet Atlas ID: {sourceId}");
+                        return (platformId, layerName, sourceId);
+                    }
                 }
             }
         }
+        GD.PrintErr("No valid platform found near player");
+        return (-1, string.Empty, -1);
     }
-    GD.PrintErr("No valid platform found near player");
-    return (-1, string.Empty, -1);
-}
 
     public override void _PhysicsProcess(double delta)
     {
@@ -274,7 +282,6 @@ private (int platformId, string layerName, int tileSetAtlasId) GetCurrentPlatfor
                 }
                 
                 float heightDifference = Math.Abs(currentYPos) - Math.Abs(highestYPos);
-                GD.Print($"\nHeightDifference: {heightDifference}");
                 if (heightDifference >= distanceForHeadOnFloor)
                 {
                     headOnFloor = true;
@@ -347,9 +354,13 @@ private (int platformId, string layerName, int tileSetAtlasId) GetCurrentPlatfor
     public void AddScore(int points)
     {
         if (team == null)
+        {
+            GD.PrintErr($"Player: Cannot add score for {displayName}. Team is null.");
             return;
+        }
         this.points += points;
-        EmitSignal(SignalName.ScoreUpdated, team.TeamAbbreviation, points);
+        GD.Print($"Player: {displayName} scored {points} points. New total: {this.points}");
+        EmitSignal(SignalName.ScoreUpdated, team.TeamAbbreviation.ToUpper(), points);
     }
 
     private void OnHeadOnFloorAnimationFinished()
@@ -394,6 +405,7 @@ private (int platformId, string layerName, int tileSetAtlasId) GetCurrentPlatfor
 
     private void OnMessageReceived(string[] messageInfo)
     {
+        if (!IsInstanceValid(this)) return; // Early return if this Player instance is no longer valid
         if (!IsOnFloor()) return; // Only process jump commands when on the floor
 
         if (messageInfo[1] != userID)
@@ -470,6 +482,26 @@ private (int platformId, string layerName, int tileSetAtlasId) GetCurrentPlatfor
 
             int playerCount = levelManager.teamScores.GetTeamPlayerCount(team.TeamAbbreviation);
             GD.Print($"Player: Team {team.TeamAbbreviation} player count: {playerCount}");
+
+            if (levelManager.uniqueColours == null)
+            {
+                GD.PrintErr($"Player: levelManager.uniqueColours is null for {displayName}");
+                return;
+            }
+
+            GD.Print($"Player: levelManager.uniqueColours length: {levelManager.uniqueColours.Length}");
+
+            if (playerCount >= 0 && levelManager.uniqueColours.Length > 0)
+            {
+                int colorIndex = playerCount % levelManager.uniqueColours.Length;
+                uniqueMaterial.SetShaderParameter("helmet_feathers_new", levelManager.uniqueColours[colorIndex]);
+                idxOfUniqueFeatherColour = colorIndex;
+                GD.Print($"Player: Set helmet feather color index to {colorIndex}");
+            }
+            else
+            {
+                GD.PrintErr($"Player: Unable to set helmet feather color. PlayerCount: {playerCount}, UniqueColours length: {levelManager.uniqueColours.Length}");
+            }
 
             if (levelManager.uniqueColours == null)
             {

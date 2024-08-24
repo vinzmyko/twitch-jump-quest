@@ -196,7 +196,6 @@ public partial class LevelManager : Node
         {
             GD.Print($"LevelManager: IsATeam returned non-null for {teamAbbrev}");
             GD.Print($"LevelManager: Team details - Name: {isATeam.TeamName}, Abbreviation: {isATeam.TeamAbbreviation}");
-            // Does check for dupe teams
             teamScores.AddTeam(isATeam);
             teamScores.AddPlayerToTeam(isATeam.TeamAbbreviation);
             GD.Print($"LevelManager: Added team {isATeam.TeamAbbreviation} and player to the team");
@@ -206,6 +205,7 @@ public partial class LevelManager : Node
         {
             GD.PrintErr($"LevelManager: IsATeam returned null for {teamAbbrev}");
         }
+
 
         playerInstance.Initialize(displayName, userID, targetTeam);
         playerInstance.Name = $"Player_{userID}";
@@ -239,10 +239,14 @@ public partial class LevelManager : Node
             GD.Print($"LevelManager: DEBUG player spawned at position {playerInstance.GlobalPosition}");
         }
 
+
         Node levelScene = GetNode<Node>("/root/Main");
         levelScene.AddChild(playerInstance);
         GD.Print($"LevelManager: Player added to scene {levelScene.Name}");
 
+        // Set up player colors after adding to the scene
+        playerInstance.SetupPlayerColors();
+        
         EmitSignal(SignalName.PlayerSpawned, playerInstance);
         GD.Print("LevelManager: PlayerSpawned signal emitted");
     }
@@ -265,9 +269,29 @@ public partial class LevelManager : Node
 
     private void OnPlayerScoreUpdated(string teamAbbrev, int playerAdditionalPoints)
     {
-        teamScores.AddScoreToTeam(teamAbbrev, playerAdditionalPoints);
-        UNL.TeamScore teamsScore = teamScores.GetTeamScore(teamAbbrev);
-        EmitSignal(SignalName.TeamScoreUpdated, teamAbbrev, teamsScore.TotalScore);
+        if (string.IsNullOrEmpty(teamAbbrev))
+        {
+            GD.PrintErr("LevelManager: OnPlayerScoreUpdated received null or empty teamAbbrev");
+            return;
+        }
+
+        if (teamScores == null)
+        {
+            GD.PrintErr("LevelManager: teamScores is null in OnPlayerScoreUpdated");
+            return;
+        }
+
+        string key = teamAbbrev.ToUpper();
+        UNL.TeamScore teamScore = teamScores.GetTeamScore(key);
+        if (teamScore == null)
+        {
+            GD.PrintErr($"LevelManager: No team score found for team {key}");
+            return;
+        }
+
+        teamScores.AddScoreToTeam(key, playerAdditionalPoints);
+        EmitSignal(SignalName.TeamScoreUpdated, key, teamScore.TotalScore);
+        GD.Print($"LevelManager: Updated score for team {key}. New total: {teamScore.TotalScore}");
     }
 
 

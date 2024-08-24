@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using TwitchLib.Api.Helix.Models.Games;
+using UNLTeamJumpQuest.TwitchIntegration;
 
 public partial class GameManager : Node
 {
@@ -30,9 +31,22 @@ public partial class GameManager : Node
 
     public void ResetPlayers()
     {
+        foreach (var player in players)
+        {
+            if (IsInstanceValid(player))
+            {
+                player.QueueFree();
+            }
+        }
         playerStatsInfo.Clear();
         players.Clear();
         CurrentGameState = GameState.WaitingForPlayers;
+        
+        // Disconnect all TwitchBot message handlers
+        if (TwitchBot.Instance != null)
+        {
+            // TwitchBot.Instance.MessageReceived -= OnMessageReceived;
+        }
     }
     public void AddToStatTrackingList(Player player)
     {

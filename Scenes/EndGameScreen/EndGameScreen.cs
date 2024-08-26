@@ -59,7 +59,7 @@ public partial class EndGameScreen : Control
 
     private void OnAnimationFinished(StringName animName)
     {
-        gameManager.ResetPlayers();
+        // gameManager.ResetPlayers();
         levelManager.teamScores.ClearTeams();
         gameManager.StartNewGame();
         

@@ -226,5 +226,7 @@ public partial class GameManager : Node
     public void SetGameState(GameState newState)
     {
         CurrentGameState = newState;
+        EmitSignal(nameof(GameStateChanged), (int)newState);
+        GD.Print($"Game state changed to {newState}");
     }
 }

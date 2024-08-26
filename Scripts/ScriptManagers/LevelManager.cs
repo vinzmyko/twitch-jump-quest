@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Linq;
+using System.Numerics;
 
 public partial class LevelManager : Node
 {
@@ -49,6 +50,8 @@ public partial class LevelManager : Node
     private Node2D levelNode;
     private PackedScene GGScene;
     private EndGameAnimationToEndGameScreen ggInstance;
+    int rng;
+
 
     public override void _Ready()
     {
@@ -62,6 +65,8 @@ public partial class LevelManager : Node
 
         GameManager.Instance.PlayerJoined += SpawnPlayer;
         GameManager.Instance.GameStateChanged += OnGameStateChanged;
+        Random random = new Random();
+        rng = random.Next();
     }
 
     private void OnGameStateChanged(int gameState)
@@ -137,30 +142,49 @@ public partial class LevelManager : Node
 
         debugSpawnPosition = levelNode.GetNode<Marker2D>("DebugSpawnMarker2D");
 
-        tileMap = levelNode.GetNode<TileMap>("TileMap"); // Make sure this path is correct
+        tileMap = levelNode.GetNode<TileMap>("TileMap");
         midgroundLayerId = FindMidgroundLayerId();
         platformIdentifier = new PlatformIdentifier(tileMap, midgroundLayerId);
         platformIdentifier.IdentifyPlatforms();
 
-        int playerCount = 0;
-        Random random = new Random();
-        int rng = random.Next(0, 10);
-        levelNode.GetNode<GameTimer>("CanvasLayer/GameTimer").waitTimeFinished += () => 
-        {
-            var playerArray = GetTree().GetNodesInGroup("Player");
-            foreach (var node in playerArray)
-            {
-                // Spread it out so all players use the spawn positions
-                var player = node as Player;
-                int idxPos = ( rng + playerCount ) % playerArray.Count;
-                playerCount++;
-                Node2D positionToSpawn = spawnPositions.GetChild<Node2D>(idxPos);
-                player.GlobalPosition = positionToSpawn.GlobalPosition;
-                player.ResetPlayerState();               
-            }
-        };
         spawnPositions = levelNode.GetNode<Node2D>("PlayerSpawns");
         InitLevelMarkers();
+
+        var gameTimer = levelNode.GetNode<GameTimer>("CanvasLayer/GameTimer");
+        gameTimer.waitTimeFinished += OnWaitTimeFinished;
+    }
+
+    private void OnWaitTimeFinished()
+    {
+        CallDeferred(nameof(MovePlayersToSpawnPositions));
+    }
+
+    private void MovePlayersToSpawnPositions()
+    {
+        var playerArray = GetTree().GetNodesInGroup("Player");
+        var spawnPositionsArray = spawnPositions.GetChildren().Cast<Node2D>().ToArray();
+
+        Random random = new Random();
+        var shuffledSpawnPositions = spawnPositionsArray.OrderBy(x => random.Next()).ToList();
+
+        GD.Print($"Number of players: {playerArray.Count}");
+        for (int i = 0; i < playerArray.Count; i++)
+        {
+            if (playerArray[i] is Player player)
+            {
+                int smallDisplacementRng = random.Next(-10, 11);
+                Godot.Vector2 smallDisplacement = new Godot.Vector2(smallDisplacementRng, 0);
+
+                int spawnIndex = i % shuffledSpawnPositions.Count;
+                player.GlobalPosition = shuffledSpawnPositions[spawnIndex].GlobalPosition + smallDisplacement;
+                player.ResetPlayerState();
+                GD.Print($"Moved player {player.Name} to position {player.GlobalPosition}");
+            }
+            else
+            {
+                GD.PrintErr($"Node in 'Player' group is not a Player: {playerArray[i].Name}");
+            }
+        }
     }
 
     private int FindMidgroundLayerId()
@@ -279,9 +303,13 @@ public partial class LevelManager : Node
         else
         {
             Random random = new Random();
-            int rng = random.Next(0, spawnPositions.GetChildren().Count);
-            Node2D positionToSpawn = spawnPositions.GetChild<Node2D>(rng);
-            playerInstance.GlobalPosition = positionToSpawn.GlobalPosition;
+
+            var spawnPositionsArray = spawnPositions.GetChildren().Cast<Node2D>().ToArray();
+            GameManager gameManager = GetNode<GameManager>("/root/GameManager");
+
+            int spawnIndex = ( rng + gameManager.players.Count ) % spawnPositionsArray.Length;
+            playerInstance.GlobalPosition = spawnPositionsArray[spawnIndex].GlobalPosition;
+
             GD.Print($"LevelManager: Player spawned at position {playerInstance.GlobalPosition}");
         }
 

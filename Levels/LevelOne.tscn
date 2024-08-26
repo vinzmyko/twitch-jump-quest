@@ -418,6 +418,7 @@ visible = false
 metadata/_edit_use_anchors_ = true
 
 [node name="LevelMarkers" type="Node2D" parent="."]
+visible = false
 
 [node name="StartingMarker" type="Marker2D" parent="LevelMarkers"]
 position = Vector2(364, 558)
@@ -462,13 +463,16 @@ shape = SubResource("RectangleShape2D_f3ugb")
 position = Vector2(580, 387)
 
 [node name="Marker2D" type="Marker2D" parent="PlayerSpawns"]
-position = Vector2(-310, 131)
+position = Vector2(-303, 132)
+
+[node name="Marker2D7" type="Marker2D" parent="PlayerSpawns"]
+position = Vector2(-249, 132)
 
 [node name="Marker2D6" type="Marker2D" parent="PlayerSpawns"]
-position = Vector2(233, 99)
+position = Vector2(-190, 136)
 
 [node name="Marker2D5" type="Marker2D" parent="PlayerSpawns"]
-position = Vector2(-202, 134)
+position = Vector2(-103, 139)
 
 [node name="Marker2D4" type="Marker2D" parent="PlayerSpawns"]
 position = Vector2(-26, 140)
@@ -478,3 +482,9 @@ position = Vector2(44, 137)
 
 [node name="Marker2D3" type="Marker2D" parent="PlayerSpawns"]
 position = Vector2(111, 136)
+
+[node name="Marker2D8" type="Marker2D" parent="PlayerSpawns"]
+position = Vector2(153, 133)
+
+[node name="Marker2D9" type="Marker2D" parent="PlayerSpawns"]
+position = Vector2(210, 121)

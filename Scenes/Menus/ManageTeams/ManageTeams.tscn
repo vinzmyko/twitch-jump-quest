@@ -328,6 +328,7 @@ layout_mode = 2
 theme_override_fonts/font = ExtResource("2_bdm7f")
 theme_override_font_sizes/font_size = 35
 placeholder_text = "Team Abbreviation"
+max_length = 4
 
 [node name="HexColourLineEdit" type="LineEdit" parent="MarginContainer/HBoxContainer/RightVBox"]
 custom_minimum_size = Vector2(160, 64)

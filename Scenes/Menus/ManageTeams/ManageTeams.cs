@@ -223,7 +223,6 @@ public partial class ManageTeams : Control
         UpdateTeamDisplay();
     }
 
-
     public override void _Input(InputEvent @event)
     {
         if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)

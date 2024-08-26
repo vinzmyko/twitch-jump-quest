@@ -54,7 +54,6 @@ public partial class TeamScoresDisplay : Control
         UpdateTeamScoreDisplay(upperTeamAbbrev, 0);
     }
 
-
     public void UpdateTeamScore(string teamAbbrev, int teamScore)
     {
         string upperTeamAbbrev = teamAbbrev.ToUpper();
@@ -79,12 +78,11 @@ public partial class TeamScoresDisplay : Control
         }
 
         int playerCount = levelManager.teamScores.GetTeamPlayerCount(upperTeamAbbrev);
-        teamScoreLabel.Text = $"{upperTeamAbbrev}\t[{playerCount}] -\t{teamScore:D6}";
+        teamScoreLabel.Text = $"{upperTeamAbbrev.PadRight(4)}\t[{playerCount}] -\t{teamScore:D6}";
         teamScoreLabel.teamScore = teamScore;
 
         SortTeamScores();
     }
-
     private void SortTeamScores()
     {
         var teamScores = teamsVBoxContainer.GetChildren()

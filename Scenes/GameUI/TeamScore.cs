@@ -24,12 +24,12 @@ public partial class TeamScore : RichTextLabel
             }
             team = teamAbbrevTeam;
             AddThemeColorOverride("font_outline_color", Color.FromHtml(team.HexColourCode));
-            Text = $"{team.TeamAbbreviation} [{levelManager.teamScores.GetTeamPlayerCount(team.TeamAbbreviation)}] - 0000";
-}
+            // Text = $"{team.TeamAbbreviation} [{levelManager.teamScores.GetTeamPlayerCount(team.TeamAbbreviation)}] - 000000";
+            Text = $"{team.TeamAbbreviation.PadRight(4)}\t[{levelManager.teamScores.GetTeamPlayerCount(team.TeamAbbreviation)}] -\t000000";
+    }
 
     public void UpdateScore(int score, int playerCount)
     {
-        // Text = $"{TeamAbbrev}[color=yellow][{playerCount}][/color]: [b]{score}[/b]";
         Text = $"{team.TeamAbbreviation} [{playerCount}] - {score}";
         teamScore = score;
     }

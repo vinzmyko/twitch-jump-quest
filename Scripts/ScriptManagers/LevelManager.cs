@@ -208,7 +208,7 @@ public partial class LevelManager : Node
     // Method to spawn a player in the current level
     public void SpawnPlayer(string displayName, string userID, string teamAbbrev)
     {
-        GD.Print($"LevelManager: Attempting to spawn player - Name: {displayName}, ID: {userID}, Team: {teamAbbrev}");
+        // GD.Print($"LevelManager: Attempting to spawn player - Name: {displayName}, ID: {userID}, Team: {teamAbbrev}");
 
         if (playerScene == null)
         {
@@ -224,17 +224,17 @@ public partial class LevelManager : Node
             return;
         }
 
-        GD.Print("LevelManager: Player instance created successfully");
+        // GD.Print("LevelManager: Player instance created successfully");
 
         UNL.Team targetTeam = null;
         GD.Print($"LevelManager: Number of teams in settingsManager: {settingsManager.UNLTeams.Teams.Count}");
         foreach (UNL.Team team in settingsManager.UNLTeams.Teams)
         {
-            GD.Print($"LevelManager: Checking team {team.TeamAbbreviation}");
+            // GD.Print($"LevelManager: Checking team {team.TeamAbbreviation}");
             if (team.TeamAbbreviation.ToLower() == teamAbbrev.ToLower())
             {
                 targetTeam = team;
-                GD.Print($"LevelManager: Matched team found: {team.TeamAbbreviation}");
+                // GD.Print($"LevelManager: Matched team found: {team.TeamAbbreviation}");
                 break;
             }
         }
@@ -247,18 +247,17 @@ public partial class LevelManager : Node
         UNL.Team isATeam = IsATeam(teamAbbrev);
         if (isATeam != null)
         {
-            GD.Print($"LevelManager: IsATeam returned non-null for {teamAbbrev}");
-            GD.Print($"LevelManager: Team details - Name: {isATeam.TeamName}, Abbreviation: {isATeam.TeamAbbreviation}");
+            // GD.Print($"LevelManager: IsATeam returned non-null for {teamAbbrev}");
+            // GD.Print($"LevelManager: Team details - Name: {isATeam.TeamName}, Abbreviation: {isATeam.TeamAbbreviation}");
             teamScores.AddTeam(isATeam);
             teamScores.AddPlayerToTeam(isATeam.TeamAbbreviation);
-            GD.Print($"LevelManager: Added team {isATeam.TeamAbbreviation} and player to the team");
-            PrintTeamScoresState();
+            // GD.Print($"LevelManager: Added team {isATeam.TeamAbbreviation} and player to the team");
+            // PrintTeamScoresState();
         }
         else
         {
             GD.PrintErr($"LevelManager: IsATeam returned null for {teamAbbrev}");
         }
-
 
         playerInstance.Initialize(displayName, userID, targetTeam);
         playerInstance.Name = $"Player_{userID}";
@@ -295,30 +294,11 @@ public partial class LevelManager : Node
 
         Node levelScene = GetNode<Node>("/root/Main");
         levelScene.AddChild(playerInstance);
-        GD.Print($"LevelManager: Player added to scene {levelScene.Name}");
 
-        // Set up player colors after adding to the scene
         playerInstance.SetupPlayerColors();
         
         EmitSignal(SignalName.PlayerSpawned, playerInstance);
-        GD.Print("LevelManager: PlayerSpawned signal emitted");
     }
-
-    private void PrintTeamScoresState()
-    {
-        GD.Print("LevelManager: Printing teamScores state");
-        GD.Print($"LevelManager: teamScores is null: {teamScores == null}");
-        if (teamScores != null)
-        {
-            var allTeams = teamScores.GetAllTeamScores().Select(ts => ts.TeamInfo.TeamAbbreviation).ToList();
-            GD.Print($"LevelManager: All teams in teamScores: {string.Join(", ", allTeams)}");
-            foreach (var team in allTeams)
-            {
-                GD.Print($"LevelManager: Team {team} exists: {teamScores.TeamExists(team)}");
-            }
-        }
-    }
-
 
     private void OnPlayerScoreUpdated(string teamAbbrev, int playerAdditionalPoints)
     {
@@ -344,9 +324,8 @@ public partial class LevelManager : Node
 
         teamScores.AddScoreToTeam(key, playerAdditionalPoints);
         EmitSignal(SignalName.TeamScoreUpdated, key, teamScore.TotalScore);
-        GD.Print($"LevelManager: Updated score for team {key}. New total: {teamScore.TotalScore}");
+        // GD.Print($"LevelManager: Updated score for team {key}. New total: {teamScore.TotalScore}");
     }
-
 
     private UNL.Team IsATeam(string teamAbbrev)
     {
@@ -365,18 +344,5 @@ public partial class LevelManager : Node
             returnTeam = teamAbbrevTeam;
         }
         return returnTeam;
-    }
-
-    // Method to update level state (e.g., obstacles, challenges)
-    public void UpdateLevelState()
-    {
-        // TODO: Implement level state update logic
-    }
-
-    // Method to check if a player has completed the level
-    public bool IsLevelComplete(Player player)
-    {
-        // TODO: Implement level completion check
-        return false;
     }
 }

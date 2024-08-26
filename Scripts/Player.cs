@@ -355,11 +355,11 @@ public partial class Player : CharacterBody2D
     {
         if (team == null)
         {
-            GD.PrintErr($"Player: Cannot add score for {displayName}. Team is null.");
+            // GD.PrintErr($"Player: Cannot add score for {displayName}. Team is null.");
             return;
         }
         this.points += points;
-        GD.Print($"Player: {displayName} scored {points} points. New total: {this.points}");
+        // GD.Print($"Player: {displayName} scored {points} points. New total: {this.points}");
         EmitSignal(SignalName.ScoreUpdated, team.TeamAbbreviation.ToUpper(), points);
     }
 
@@ -432,9 +432,9 @@ public partial class Player : CharacterBody2D
 
     public void SetTeamColours(Color[] colourArray, ShaderMaterial uniqueMaterial)
     {
-        GD.Print($"Player: Setting team colours for {displayName}");
-        GD.Print($"Player: colourArray length: {colourArray?.Length ?? 0}");
-        GD.Print($"Player: uniqueMaterial is null: {uniqueMaterial == null}");
+        // GD.Print($"Player: Setting team colours for {displayName}");
+        // GD.Print($"Player: colourArray length: {colourArray?.Length ?? 0}");
+        // GD.Print($"Player: uniqueMaterial is null: {uniqueMaterial == null}");
 
         if (colourArray == null || colourArray.Length < 5)
         {
@@ -481,7 +481,7 @@ public partial class Player : CharacterBody2D
             }
 
             int playerCount = levelManager.teamScores.GetTeamPlayerCount(team.TeamAbbreviation);
-            GD.Print($"Player: Team {team.TeamAbbreviation} player count: {playerCount}");
+            // GD.Print($"Player: Team {team.TeamAbbreviation} player count: {playerCount}");
 
             if (levelManager.uniqueColours == null)
             {
@@ -489,14 +489,13 @@ public partial class Player : CharacterBody2D
                 return;
             }
 
-            GD.Print($"Player: levelManager.uniqueColours length: {levelManager.uniqueColours.Length}");
+            // GD.Print($"Player: levelManager.uniqueColours length: {levelManager.uniqueColours.Length}");
 
             if (playerCount >= 0 && levelManager.uniqueColours.Length > 0)
             {
                 int colorIndex = playerCount % levelManager.uniqueColours.Length;
                 uniqueMaterial.SetShaderParameter("helmet_feathers_new", levelManager.uniqueColours[colorIndex]);
                 idxOfUniqueFeatherColour = colorIndex;
-                GD.Print($"Player: Set helmet feather color index to {colorIndex}");
             }
             else
             {
@@ -509,14 +508,11 @@ public partial class Player : CharacterBody2D
                 return;
             }
 
-            GD.Print($"Player: levelManager.uniqueColours length: {levelManager.uniqueColours.Length}");
-
             if (playerCount > 0 && levelManager.uniqueColours.Length > 0)
             {
                 int colorIndex = (playerCount - 1) % levelManager.uniqueColours.Length;
                 uniqueMaterial.SetShaderParameter("helmet_feathers_new", levelManager.uniqueColours[colorIndex]);
                 idxOfUniqueFeatherColour = colorIndex;
-                GD.Print($"Player: Set helmet feather color index to {colorIndex}");
             }
             else
             {
@@ -531,7 +527,6 @@ public partial class Player : CharacterBody2D
 
     private void SetColoursArray(UNL.Team team)
     {
-        GD.Print($"Player: Setting colours array for {displayName}");
         teamColours = new Color[5];
         if (team == null)
         {
@@ -544,13 +539,11 @@ public partial class Player : CharacterBody2D
         }
         else
         {
-            GD.Print($"Player: Using team colors for {team.TeamName}");
             teamColours[0] = team.TeamColours.CapeMain;
             teamColours[1] = team.TeamColours.CapeTrim;
             teamColours[2] = team.TeamColours.ArmourLight;
             teamColours[3] = team.TeamColours.ArmourMedium;
             teamColours[4] = team.TeamColours.ArmourDark;
         }
-        GD.Print($"Player: teamColours array length: {teamColours.Length}");
     }
 }

@@ -153,11 +153,6 @@ namespace UNL
             if (!teamScores.ContainsKey(key))
             {
                 teamScores[key] = new TeamScore(team);
-                GD.Print($"TeamScoreManager: Team {key} added successfully");
-            }
-            else
-            {
-                GD.Print($"TeamScoreManager: Team {key} already exists");
             }
         }
 
@@ -167,11 +162,6 @@ namespace UNL
             if (teamScores.TryGetValue(key, out TeamScore teamScore))
             {
                 teamScore.AddPlayer();
-                GD.Print($"TeamScoreManager: Player added to team {key}. New player count: {teamScore.PlayerCount}");
-            }
-            else
-            {
-                GD.PrintErr($"TeamScoreManager: Attempted to add player to non-existent team {key}");
             }
         }
 
@@ -189,11 +179,6 @@ namespace UNL
             if (teamScores.TryGetValue(key, out TeamScore teamScore))
             {
                 teamScore.AddScore(score);
-                GD.Print($"TeamScoreManager: Added score {score} to team {key}. New total: {teamScore.TotalScore}");
-            }
-            else
-            {
-                GD.PrintErr($"TeamScoreManager: Attempted to add score to non-existent team {key}");
             }
         }
 
@@ -210,7 +195,6 @@ namespace UNL
 
         public IEnumerable<TeamScore> GetAllTeamScores()
         {
-            GD.Print($"TeamScoreManager: GetAllTeamScores called. Teams: {string.Join(", ", teamScores.Keys)}");
             return teamScores.Values;
         }
 
@@ -223,7 +207,6 @@ namespace UNL
         {
             string key = teamAbbrev.ToUpper();
             bool exists = teamScores.ContainsKey(key);
-            GD.Print($"TeamScoreManager: TeamExists check for {key} - Result: {exists}");
             return exists;
         }
 

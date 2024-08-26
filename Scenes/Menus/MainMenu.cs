@@ -33,7 +33,7 @@ public partial class MainMenu : Control
 
     private void OnExitDown()
     {
-        throw new NotImplementedException();
+        GetTree().Quit();
     }
 
     private void OnManageTeamsDown()

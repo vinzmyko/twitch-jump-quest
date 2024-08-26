@@ -207,8 +207,13 @@ public partial class LevelCamera : Node2D
     private float CalculateTargetSpeed()
     {
         int playersInTrigger = playersInTriggerArea.Count;
-        // int playersInTrigger = DEBUGPLAYERCOUNT;
-        float playerRatio = (float)playersInTrigger / gameManager.UpdateTotalPlayers();
+        int totalPlayers = gameManager.UpdateTotalPlayers();
+        
+        float playerRatio = (float)playersInTrigger / totalPlayers;
+        
+        float minPlayerRatio = 0.3f;
+        float maxPlayerRatio = 0.95f;
+        playerRatio = Mathf.Clamp(playerRatio, minPlayerRatio, maxPlayerRatio);
         
         float speedFactor = 1 - Mathf.Exp(-speedCurve * (1 - playerRatio));
         

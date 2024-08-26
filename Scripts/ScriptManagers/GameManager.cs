@@ -27,7 +27,8 @@ public partial class GameManager : Node
     public float waitTime = 90.0f;
     public GameTimer gameTimer;
     public List<PlayerInfo> playerStatsInfo = new List<PlayerInfo>();
-    private int totalPlayers;
+    public int totalPlayers;
+    public bool easyMode = false;
 
     public void ResetPlayers()
     {
@@ -48,11 +49,13 @@ public partial class GameManager : Node
             // TwitchBot.Instance.MessageReceived -= OnMessageReceived;
         }
     }
+
     public void StartNewGame()
     {
         ResetPlayers();
         CurrentGameState = GameState.WaitingForPlayers;
-        // Reset any other necessary game state variables
+        gameTimer.waitTimeFinishedEmitted = false;
+        gameTimer.gameTimeFinishedEmitted = false;
     }
     public void AddToStatTrackingList(Player player)
     {
@@ -90,15 +93,23 @@ public partial class GameManager : Node
         gameTimer.gameTimeFinished += EndGame;
         levelNode.GetNode<LevelCamera>("LevelCamera").PlayerHitKillZone += (Player player) =>
         {
+            player.QueueFree();
+            player.Die();
             GD.Print($"{player} info has been tracked");
             AddToStatTrackingList(player);
-            totalPlayers = GetTree().GetNodesInGroup("Player").Count;
+            UpdateTotalPlayers();
             totalPlayers--;
             if (totalPlayers <= 1)
             {
                 EndGame();
             }
         };
+    }
+
+    public int UpdateTotalPlayers()
+    {
+        totalPlayers = GetTree().GetNodesInGroup("Player").Count;
+        return totalPlayers;
     }
 
     public void EndGame()

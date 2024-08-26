@@ -19,8 +19,6 @@ public partial class LevelCamera : Node2D
     private float speedCurve = 5f;
 
     [Export(PropertyHint.Range, "1,100,1")]
-    private int totalPlayers = 1;
-    [Export(PropertyHint.Range, "1,100,1")]
     private int DEBUGPLAYERCOUNT = 1;
     
     private Camera2D camera;
@@ -35,6 +33,8 @@ public partial class LevelCamera : Node2D
     private enum CameraState { Idle, Moving }
     private CameraState currentState = CameraState.Idle;
     private GameManager gameManager;
+    private EasyModeComponent easyModeComponent;
+    private GameTimer gameTimer;
 
     public override void _Ready()
     {
@@ -46,13 +46,42 @@ public partial class LevelCamera : Node2D
         killZone = GetNode<Area2D>("KillzoneTrigger");
 
         gameManager = GetNode<GameManager>("/root/GameManager");
+        gameManager.PlayerDied += OnPlayerDied;
 
         upwardTrigger.BodyEntered += OnPlayerEnterUpwardArea2D;
         upwardTrigger.BodyExited += OnPlayerExitUpwardArea2D;
         killZone.BodyEntered += OnPlayerEnterKillZone;
         var root = GetTree().Root;
         var levelNode = root.GetChild(root.GetChildCount() - 1);
-        levelNode.GetNode<GameTimer>("CanvasLayer/GameTimer").waitTimeFinished += () => { upwardTrigger.GetNode<CollisionShape2D>("CollisionShape2D").Disabled = false; };
+        gameTimer = levelNode.GetNode<GameTimer>("CanvasLayer/GameTimer");
+        gameTimer.waitTimeFinished += () => 
+        { 
+            upwardTrigger.GetNode<CollisionShape2D>("CollisionShape2D").Disabled = false;
+            if (gameManager.easyMode)
+            {
+                gameTimer.EasyModeActivated();
+                gameManager.UpdateTotalPlayers();
+                UpdateEasyModeRequiredPlayersTextLabel();
+                GD.Print($"total players: {gameManager.UpdateTotalPlayers}");
+            }
+        };
+
+        if (gameManager.easyMode)
+        {
+            easyModeComponent = GetNode<Node>("Components").GetNode<EasyModeComponent>("EasyModeComponent");
+
+            if (easyModeComponent == null)
+                GD.Print("EasyModeComponent not found, while easyMode = true.");
+            
+            easyModeComponent.ToggleEasyMode(true);
+        }
+
+    }
+
+    private void OnPlayerDied(string displayName, string userID, string teamAbbrev)
+    {
+        gameManager.UpdateTotalPlayers();
+        GD.Print("player has died from signal from levelcamera");
     }
 
     public override void _PhysicsProcess(double delta)
@@ -63,7 +92,6 @@ public partial class LevelCamera : Node2D
 
     private void OnPlayerEnterUpwardArea2D(Node2D body)
     {
-        totalPlayers = Mathf.Max(1, gameManager.players.Count);
         if (body is Player player && !playersInTriggerArea.Contains(player))
         {
             if (player.IsOnFloor())
@@ -77,11 +105,30 @@ public partial class LevelCamera : Node2D
         }
     }
 
+    private void UpdateEasyModeRequiredPlayersTextLabel()
+    {
+        if (gameManager.easyMode && easyModeComponent != null)
+        {
+            int threshold = easyModeComponent.CalculatePlayerThreshold(gameManager.UpdateTotalPlayers(), currentPathPointIndex);
+            gameTimer.ChangeRequiredPlayersLabelText($"{playersInTriggerArea.Count} / {threshold}");
+            // GD.Print($"Updated label: {playersInTriggerArea.Count} / {threshold} (Total players: {totalPlayers})");
+        }
+    }
+
+    public void CheckPlayerInTriggerArea()
+    {
+        if (upwardTrigger.OverlapsBody(this))
+        {
+            OnPlayerEnterUpwardArea2D(this);
+        }
+    }
+
     private void OnPlayerExitUpwardArea2D(Node2D body)
     {
         if (body is Player player)
         {
             playersInTriggerArea.Remove(player);
+            UpdateEasyModeRequiredPlayersTextLabel();
         }
     }
 
@@ -97,26 +144,42 @@ public partial class LevelCamera : Node2D
     private void EmitPlayerHitKillzone(Player player)
     {
         // add a timer to see if player has been in the zone for a certain amount of time
-        GD.Print("EmitSignal player hit killzone");
         var timer = GetTree().CreateTimer(0.5); 
         timer.Timeout += () =>
         {
             EmitSignal(SignalName.PlayerHitKillZone, player);
-            player.Die();
-            player.QueueFree();
         };
     }
 
-    private void CheckPlayerThreshold()
+   private void CheckPlayerThreshold()
     {
         if (currentState == CameraState.Idle)
         {
-            currentState = CameraState.Moving;
-            currentPathPointIndex++;
+            if(easyModeComponent == null)
+            {
+                StartCameraMovement();
+                GD.Print("Moving camera when easycompoent is null");
+                return;
+            }
+
+            // If the amount of playersInTriggerArea is greater then the threshold then start cam movement
+
+            if (easyModeComponent.ShouldTriggerCameraMovement(playersInTriggerArea.Count, currentPathPointIndex,
+            gameManager.UpdateTotalPlayers()))
+            {
+                GD.Print($"\t\tplayers in trigger area: {playersInTriggerArea.Count}");
+                StartCameraMovement();
+            }
         }
     }
 
-private void UpdateCameraMovement(double delta)
+    private void StartCameraMovement()
+    {
+        currentState = CameraState.Moving;
+        currentPathPointIndex++;
+    }
+
+    private void UpdateCameraMovement(double delta)
     {
         if (currentState == CameraState.Moving)
         {
@@ -124,16 +187,20 @@ private void UpdateCameraMovement(double delta)
             currentCameraSpeed = Mathf.MoveToward(currentCameraSpeed, targetSpeed * speedMultiplier, cameraAcceleration * (float)delta);
 
             Vector2 targetPointPosition = ToGlobal(path.Curve.GetPointPosition(currentPathPointIndex));
-            // GD.Print($"targetPos: {targetPointPosition}, PointIdx[{currentPathPointIndex}]: {path.Curve.GetPointPosition(currentPathPointIndex)}");
             MoveCameraWithArea2Ds(currentCameraSpeed, false);
 
             if (camera.GlobalPosition.Y <= targetPointPosition.Y)
             {
                 upwardTrigger.GlobalPosition = camera.GlobalPosition;
                 currentState = CameraState.Idle;
+                
+                // Clear the players in trigger area list and update the label
+                playersInTriggerArea.Clear();
+                UpdateEasyModeRequiredPlayersTextLabel();
+                
+                // Check for players in the new trigger area position
+                GetTree().CallGroup("players", nameof(CheckPlayerInTriggerArea));
             }
-
-            // GD.Print($"Players: {playersInTriggerArea.Count}/{totalPlayers}, Speed: {currentCameraSpeed:F2}");
         }
     }
 
@@ -141,14 +208,14 @@ private void UpdateCameraMovement(double delta)
     {
         int playersInTrigger = playersInTriggerArea.Count;
         // int playersInTrigger = DEBUGPLAYERCOUNT;
-        float playerRatio = (float)playersInTrigger / totalPlayers;
+        float playerRatio = (float)playersInTrigger / gameManager.UpdateTotalPlayers();
         
         float speedFactor = 1 - Mathf.Exp(-speedCurve * (1 - playerRatio));
         
         return Mathf.Lerp(maxSpeed, minSpeed, speedFactor);
     }
 
-        private async void StartGroundedCheckCoroutine(Player player)
+    private async void StartGroundedCheckCoroutine(Player player)
     {
         const float maxWaitTime = 1.0f; // Maximum time to wait for grounding
         float elapsedTime = 0f;
@@ -159,6 +226,7 @@ private void UpdateCameraMovement(double delta)
             {
                 playersInTriggerArea.Add(player);
                 CheckPlayerThreshold();
+                UpdateEasyModeRequiredPlayersTextLabel();
                 return;
             }
 

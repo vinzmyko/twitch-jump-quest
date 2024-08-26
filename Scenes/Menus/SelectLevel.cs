@@ -10,6 +10,8 @@ public partial class SelectLevel : Control
     private Button tenMinutes;
     [Export]
     private LineEdit customTime;
+    [Export]
+    private CheckButton EasyModeToggleButton;
     private GameManager gameManager;
 
     public override void _Ready()
@@ -28,5 +30,6 @@ public partial class SelectLevel : Control
                 SceneManager.Instance.ChangeScene("LevelOne");
             }
         };
+        EasyModeToggleButton.Toggled += (bool toggledOn) => {gameManager.easyMode = toggledOn;};
     }
 }

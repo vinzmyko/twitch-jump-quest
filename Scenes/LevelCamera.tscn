@@ -1,12 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://cbbk6o77cda6m"]
 
 [ext_resource type="Script" path="res://Scenes/LevelCamera.cs" id="1_7qox1"]
-
-[sub_resource type="Curve2D" id="Curve2D_qbqtb"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 0, 0)
-}
-point_count = 1
+[ext_resource type="Script" path="res://Scenes/EasyModeComponent.cs" id="2_576wg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e8cww"]
 size = Vector2(654, 304)
@@ -19,11 +14,6 @@ script = ExtResource("1_7qox1")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(1.95, 1.95)
-
-[node name="Path2D" type="Path2D" parent="."]
-curve = SubResource("Curve2D_qbqtb")
-
-[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
 
 [node name="UpwardTriggerArea2D" type="Area2D" parent="."]
 collision_layer = 0
@@ -41,3 +31,8 @@ collision_mask = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="KillzoneTrigger"]
 position = Vector2(0, 230.5)
 shape = SubResource("RectangleShape2D_6grmx")
+
+[node name="Components" type="Node" parent="."]
+
+[node name="EasyModeComponent" type="Node" parent="Components"]
+script = ExtResource("2_576wg")

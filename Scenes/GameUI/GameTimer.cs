@@ -11,7 +11,9 @@ public partial class GameTimer : Node
     private Label joinCTALabel;
     private GameManager gameManager;
     private float waitTime, gameTime;
-    private bool waitTimeFinishedEmitted = false, gameTimeFinishedEmitted  = false;
+    public bool waitTimeFinishedEmitted = false, gameTimeFinishedEmitted  = false;
+    [Export]
+    private Label requiredPlayersLabel;
 
     public override void _Ready()
     {
@@ -39,6 +41,7 @@ public partial class GameTimer : Node
                 EmitSignal(SignalName.waitTimeFinished);
                 waitTimeFinishedEmitted = true;
                 SetCTALabelInvisible();
+                EasyModeActivated();
             }
         }
         else if (gameManager.CurrentGameState == GameManager.GameState.Playing)
@@ -52,6 +55,20 @@ public partial class GameTimer : Node
                 gameTimeFinishedEmitted = true;
             }
         }
+    }
+
+    public void EasyModeActivated()
+    {
+        if (gameManager.easyMode)
+        {
+            requiredPlayersLabel.Visible = true;
+        }
+    }
+
+    public void ChangeRequiredPlayersLabelText(string text)
+    {
+        Label requiredPlayersLabel = GetNode<Label>("RequiredPlayers");
+        requiredPlayersLabel.Text = text;
     }
 
     public void SetTimeLabel(string text)

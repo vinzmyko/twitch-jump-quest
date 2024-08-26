@@ -26,6 +26,7 @@ public partial class LevelCamera : Node2D
     private PathFollow2D pathFollow;
     private Area2D upwardTrigger;
     private Area2D killZone;
+    private StaticBody2D preventFromPassing;
 
     private float currentCameraSpeed = 0;
     private List<Player> playersInTriggerArea = new List<Player>();
@@ -44,6 +45,7 @@ public partial class LevelCamera : Node2D
         pathFollow = GetNode<PathFollow2D>("Path2D/PathFollow2D");
         upwardTrigger = GetNode<Area2D>("UpwardTriggerArea2D");
         killZone = GetNode<Area2D>("KillzoneTrigger");
+        preventFromPassing = GetNode<StaticBody2D>("StaticBody2D");
 
         gameManager = GetNode<GameManager>("/root/GameManager");
         gameManager.PlayerDied += OnPlayerDied;
@@ -247,11 +249,13 @@ public partial class LevelCamera : Node2D
             camera.GlobalPosition = new Vector2(camera.GlobalPosition.X, camera.GlobalPosition.Y - cameraSpeed);
             upwardTrigger.GlobalPosition = new Vector2(upwardTrigger.GlobalPosition.X, upwardTrigger.GlobalPosition.Y - cameraSpeed);
             killZone.GlobalPosition = new Vector2(killZone.GlobalPosition.X, killZone.GlobalPosition.Y - cameraSpeed);
+            preventFromPassing.GlobalPosition = new Vector2(preventFromPassing.GlobalPosition.X, preventFromPassing.GlobalPosition.Y - cameraSpeed);
         }
         else
         {
             camera.GlobalPosition = new Vector2(camera.GlobalPosition.X, camera.GlobalPosition.Y - cameraSpeed);
             killZone.GlobalPosition = new Vector2(killZone.GlobalPosition.X, killZone.GlobalPosition.Y - cameraSpeed);
+            preventFromPassing.GlobalPosition = new Vector2(preventFromPassing.GlobalPosition.X, preventFromPassing.GlobalPosition.Y - cameraSpeed);
         }
     }
 }

@@ -32,6 +32,12 @@ collision_mask = 2
 position = Vector2(0, 230.5)
 shape = SubResource("RectangleShape2D_6grmx")
 
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, -272)
+shape = SubResource("RectangleShape2D_6grmx")
+
 [node name="Components" type="Node" parent="."]
 
 [node name="EasyModeComponent" type="Node" parent="Components"]

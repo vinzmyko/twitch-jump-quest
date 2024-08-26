@@ -29,6 +29,7 @@ public partial class GameManager : Node
     public List<PlayerInfo> playerStatsInfo = new List<PlayerInfo>();
     public int totalPlayers;
     public bool easyMode = false;
+    public bool autoPlay = false;
 
     public void ResetPlayers()
     {

@@ -12,6 +12,8 @@ public partial class SelectLevel : Control
     private LineEdit customTime;
     [Export]
     private CheckButton EasyModeToggleButton;
+    [Export]
+    private CheckButton autoPlayToggleButton;
     private GameManager gameManager;
 
     public override void _Ready()
@@ -31,5 +33,6 @@ public partial class SelectLevel : Control
             }
         };
         EasyModeToggleButton.Toggled += (bool toggledOn) => {gameManager.easyMode = toggledOn;};
+        autoPlayToggleButton.Toggled += (bool toggledOn) => {gameManager.autoPlay = toggledOn;};
     }
 }

@@ -59,9 +59,14 @@ public partial class EndGameScreen : Control
 
     private void OnAnimationFinished(StringName animName)
     {
-        // gameManager.ResetPlayers();
         levelManager.teamScores.ClearTeams();
         gameManager.StartNewGame();
+
+        if (gameManager.autoPlay)
+        {
+            CallDeferred(nameof(AutoPlayEnabled));
+            return;
+        }
         
         CallDeferred(nameof(ChangeToMainMenu));
     }
@@ -71,6 +76,10 @@ public partial class EndGameScreen : Control
         SceneManager.Instance.ChangeScene("MainMenu");
     }
 
+    public void AutoPlayEnabled()
+    {
+        SceneManager.Instance.ChangeScene("LevelOne");
+    }
 
     private UNL.TeamScore WinningTeam()
     {

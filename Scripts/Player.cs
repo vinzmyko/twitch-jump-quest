@@ -115,7 +115,7 @@ public partial class Player : CharacterBody2D
         // Some reason it won't change in Player scene so I do it through code.
         SetCollisionLayerValue(1, false);
         SetCollisionLayerValue(2, true);
-        await showDisplayName(3.5);
+        await showDisplayName(8.0f);
     }
 
     private void playJumpAudio(AudioStream audio)

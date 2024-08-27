@@ -58,6 +58,7 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_4ypph")
 theme_override_font_sizes/font_size = 20
+button_pressed = true
 text = "Easy Mode"
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
@@ -113,4 +114,5 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_fonts/font = ExtResource("2_4ypph")
 theme_override_font_sizes/font_size = 20
+button_pressed = true
 text = "AutoPlay"

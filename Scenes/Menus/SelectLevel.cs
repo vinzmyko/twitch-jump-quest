@@ -34,5 +34,8 @@ public partial class SelectLevel : Control
         };
         EasyModeToggleButton.Toggled += (bool toggledOn) => {gameManager.easyMode = toggledOn;};
         autoPlayToggleButton.Toggled += (bool toggledOn) => {gameManager.autoPlay = toggledOn;};
+
+        EasyModeToggleButton.ButtonPressed = gameManager.easyMode;
+        autoPlayToggleButton.ButtonPressed = gameManager.autoPlay;
     }
 }

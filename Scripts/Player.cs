@@ -423,7 +423,7 @@ public partial class Player : CharacterBody2D
         return userID;
     }
 
-    private async Task showDisplayName(double time)
+    public async Task showDisplayName(double time)
     {
         displayLabel.Visible = true;
         await ToSignal(GetTree().CreateTimer(time), "timeout");
@@ -432,10 +432,6 @@ public partial class Player : CharacterBody2D
 
     public void SetTeamColours(Color[] colourArray, ShaderMaterial uniqueMaterial)
     {
-        // GD.Print($"Player: Setting team colours for {displayName}");
-        // GD.Print($"Player: colourArray length: {colourArray?.Length ?? 0}");
-        // GD.Print($"Player: uniqueMaterial is null: {uniqueMaterial == null}");
-
         if (colourArray == null || colourArray.Length < 5)
         {
             GD.PrintErr($"Player: Invalid colourArray for {displayName}. Length: {colourArray?.Length ?? 0}");

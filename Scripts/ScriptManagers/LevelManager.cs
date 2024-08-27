@@ -159,7 +159,7 @@ public partial class LevelManager : Node
         CallDeferred(nameof(MovePlayersToSpawnPositions));
     }
 
-    private void MovePlayersToSpawnPositions()
+    private async void MovePlayersToSpawnPositions()
     {
         var playerArray = GetTree().GetNodesInGroup("Player");
         var spawnPositionsArray = spawnPositions.GetChildren().Cast<Node2D>().ToArray();
@@ -179,6 +179,7 @@ public partial class LevelManager : Node
                 player.GlobalPosition = shuffledSpawnPositions[spawnIndex].GlobalPosition + smallDisplacement;
                 player.ResetPlayerState();
                 GD.Print($"Moved player {player.Name} to position {player.GlobalPosition}");
+                await player.showDisplayName(10f);
             }
             else
             {

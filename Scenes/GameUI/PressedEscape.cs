@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public partial class PressedEscape : Control
 {
@@ -16,6 +15,7 @@ public partial class PressedEscape : Control
         
         mainMenu.Pressed += () =>
         {
+            ToggleEscapeScreen(); // Unpause the game
             gameManager.StartNewGame();
             SceneManager.Instance.ChangeScene("MainMenu");
         };
@@ -24,6 +24,15 @@ public partial class PressedEscape : Control
             gameManager.quitNextRound = true;
             ToggleEscapeScreen();
         };
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        if (@event.IsActionPressed("Escape"))
+        {
+            ToggleEscapeScreen();
+            GetViewport().SetInputAsHandled(); 
+        }
     }
 
     public void ToggleEscapeScreen()

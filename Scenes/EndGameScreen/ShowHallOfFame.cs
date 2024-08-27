@@ -20,6 +20,11 @@ public partial class ShowHallOfFame : Control
             leastPoints.Text = player == null 
                 ? "Lowest Points Gained: N/A"
                 : $"Lowest Points Gained: {player.DisplayName} ({player.points})";
+            
+            if (player.points <= 0)
+            {
+                leastPoints.Text = $"Lowest Points Gained: {player.DisplayName} ({player.points})";
+            }
     }
 
     public void SetLeastDistanceTravelled(PlayerInfo player)

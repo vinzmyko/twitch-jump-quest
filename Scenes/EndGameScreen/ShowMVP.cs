@@ -30,15 +30,16 @@ public partial class ShowMVP : Control
     {
         mvpDisplayName.Text = mvp.DisplayName;
         mvpPlayerPoints.Text = $"Points: {mvp.points}";
-        mvpDistanceTravelled.Text = $"Distance Travelled: {mvp.HighestYPos:F1}m";
+        string disTravelled = mvp.HighestYPos <= 0 ? "N/A" : mvp.HighestYPos.ToString();
+        mvpDistanceTravelled.Text = $"Distance Travelled: {disTravelled}";
 
-        string noOfFp = mvp.NumOfFaceplants == 0 ? "N/A" : mvp.NumOfFaceplants.ToString();
+        string noOfFp = mvp.NumOfFaceplants <= 0 ? "N/A" : mvp.NumOfFaceplants.ToString();
         mvpNumOfFaceplants.Text = $"Number of Faceplants: {noOfFp}";
 
-        string disOfLongestFp = mvp.DistanceOfFurthestFaceplant == 0 ? "N/A" : $"{mvp.DistanceOfFurthestFaceplant:F1}m";
+        string disOfLongestFp = mvp.DistanceOfFurthestFaceplant <= 0 ? "N/A" : $"{mvp.DistanceOfFurthestFaceplant:F1}m";
         mvpLongestFaceplantDistance.Text = $"Longest Faceplant Distance: {disOfLongestFp}";
 
-        string comboStreak = mvp.ComboStreak == 0 ? "N/A" : $"{mvp.ComboStreak}";
+        string comboStreak = mvp.ComboStreak <= 0 ? "N/A" : $"{mvp.ComboStreak}";
         mvpComboStreak.Text = $"Highest Combo Streak: {comboStreak}";
     }
 

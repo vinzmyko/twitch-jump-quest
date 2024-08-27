@@ -62,7 +62,7 @@ public partial class ShowHallOfFame : Control
         else if (player.NumOfFaceplants == 0)
             mostFacePlants.Text = "Longest Faceplant Distance: N/A";
         else
-            longestDistanceOfFaceplant.Text = $"Longest Faceplant Distance: {player.DisplayName} ({player.DistanceOfFurthestFaceplant})";
+            longestDistanceOfFaceplant.Text = $"Longest Faceplant Distance: {player.DisplayName} ({player.DistanceOfFurthestFaceplant}m)";
     }
 
     public void SetHighestDistanceTravelled(PlayerInfo player)

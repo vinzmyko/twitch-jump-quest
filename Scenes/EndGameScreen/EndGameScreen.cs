@@ -62,6 +62,12 @@ public partial class EndGameScreen : Control
         levelManager.teamScores.ClearTeams();
         gameManager.StartNewGame();
 
+        if (gameManager.quitNextRound)
+        {
+            CallDeferred(nameof(QuitAfterRound));
+            return;
+        }
+
         if (gameManager.autoPlay)
         {
             CallDeferred(nameof(AutoPlayEnabled));
@@ -79,6 +85,11 @@ public partial class EndGameScreen : Control
     public void AutoPlayEnabled()
     {
         SceneManager.Instance.ChangeScene("LevelOne");
+    }
+
+    public void QuitAfterRound()
+    {
+        GetTree().Quit();
     }
 
     private UNL.TeamScore WinningTeam()

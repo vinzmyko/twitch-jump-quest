@@ -30,6 +30,7 @@ public partial class GameManager : Node
     public int totalPlayers;
     public bool easyMode = false;
     public bool autoPlay = false;
+    public bool quitNextRound = false;
 
     public void ResetPlayers()
     {
@@ -43,12 +44,6 @@ public partial class GameManager : Node
         playerStatsInfo.Clear();
         players.Clear();
         CurrentGameState = GameState.WaitingForPlayers;
-        
-        // Disconnect all TwitchBot message handlers
-        if (TwitchBot.Instance != null)
-        {
-            // TwitchBot.Instance.MessageReceived -= OnMessageReceived;
-        }
     }
 
     public void StartNewGame()

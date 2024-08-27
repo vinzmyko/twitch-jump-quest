@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bbh7hua1l03td"]
+[gd_scene load_steps=11 format=3 uid="uid://bbh7hua1l03td"]
 
 [ext_resource type="Script" path="res://Levels/TestLevelOne.cs" id="1_b1lmw"]
 [ext_resource type="TileSet" uid="uid://c11vpa8e7fher" path="res://Levels/BasicTileSet.tres" id="1_f01x3"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bqpfpvnticka6" path="res://Scenes/GameUI/TeamScoresDisplay.tscn" id="4_g8cey"]
 [ext_resource type="PackedScene" uid="uid://ngnphkty4eu" path="res://Scenes/GameUI/InformationDisplay.tscn" id="5_4mv7u"]
 [ext_resource type="PackedScene" uid="uid://fjcmj2gb47ne" path="res://Scenes/GameUI/GameTimer.tscn" id="6_h8v0c"]
+[ext_resource type="PackedScene" uid="uid://dh0yb34yc8tee" path="res://Scenes/GameUI/PressedEscape.tscn" id="7_2njri"]
 [ext_resource type="PackedScene" uid="uid://cbbk6o77cda6m" path="res://Scenes/LevelCamera.tscn" id="8_f78xn"]
 
 [sub_resource type="Curve2D" id="Curve2D_40v1r"]
@@ -15,8 +16,9 @@ _data = {
 }
 point_count = 16
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("pressedEscape")]
 script = ExtResource("1_b1lmw")
+pressedEscape = NodePath("CanvasLayer/PressedEscape")
 
 [node name="TileMap" type="TileMap" parent="."]
 position = Vector2(507, 381)
@@ -406,6 +408,9 @@ color = Color(0.340339, 0.340339, 0.340339, 1)
 [node name="InformationDisplay" parent="CanvasLayer" instance=ExtResource("5_4mv7u")]
 
 [node name="GameTimer" parent="CanvasLayer" instance=ExtResource("6_h8v0c")]
+
+[node name="PressedEscape" parent="CanvasLayer" instance=ExtResource("7_2njri")]
+visible = false
 
 [node name="DebugTwitchChat" parent="CanvasLayer" instance=ExtResource("2_q4lgv")]
 visible = false

@@ -31,7 +31,7 @@ public partial class ShowMVP : Control
         mvpDisplayName.Text = mvp.DisplayName;
         mvpPlayerPoints.Text = $"Points: {mvp.points}";
         string disTravelled = mvp.HighestYPos <= 0 ? "N/A" : mvp.HighestYPos.ToString();
-        mvpDistanceTravelled.Text = $"Distance Travelled: {disTravelled}";
+        mvpDistanceTravelled.Text = $"Distance Travelled: {disTravelled}m";
 
         string noOfFp = mvp.NumOfFaceplants <= 0 ? "N/A" : mvp.NumOfFaceplants.ToString();
         mvpNumOfFaceplants.Text = $"Number of Faceplants: {noOfFp}";

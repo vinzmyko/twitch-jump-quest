@@ -1,7 +1,6 @@
 using Godot;
 using System;
 using System.Linq;
-using System.Numerics;
 
 public partial class LevelManager : Node
 {
@@ -179,11 +178,21 @@ public partial class LevelManager : Node
                 player.GlobalPosition = shuffledSpawnPositions[spawnIndex].GlobalPosition + smallDisplacement;
                 player.ResetPlayerState();
                 GD.Print($"Moved player {player.Name} to position {player.GlobalPosition}");
-                await player.showDisplayName(10f);
+                player.OnlyShowDisplayName();
             }
             else
             {
                 GD.PrintErr($"Node in 'Player' group is not a Player: {playerArray[i].Name}");
+            }
+        }
+        
+        await ToSignal(GetTree().CreateTimer(10.0f), "timeout");
+
+        foreach (var node in playerArray)
+        {
+            if (node is Player player)
+            {
+                player.OnlyHideDisplayName();
             }
         }
     }

@@ -23,8 +23,7 @@ public partial class GameTimer : Node
 
         gameManager = GetNode<GameManager>("/root/GameManager");
 
-        // waitTime = gameManager.waitTime;
-        waitTime = 15f;
+        waitTime = gameManager.waitTime;
         gameTime = gameManager.gameTime;
     }
 

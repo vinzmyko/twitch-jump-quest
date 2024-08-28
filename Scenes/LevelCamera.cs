@@ -80,10 +80,10 @@ public partial class LevelCamera : Node2D
 
     }
 
-    private void OnPlayerDied(string displayName, string userID, string teamAbbrev)
+    private async void OnPlayerDied(string displayName, string userID, string teamAbbrev)
     {
-        gameManager.UpdateTotalPlayers();
-        GD.Print("player has died from signal from levelcamera");
+        await ToSignal(GetTree().CreateTimer(0.25f), "timeout");
+        UpdateEasyModeRequiredPlayersTextLabel();
     }
 
     public override void _PhysicsProcess(double delta)
@@ -96,12 +96,13 @@ public partial class LevelCamera : Node2D
     {
         if (body is Player player && !playersInTriggerArea.Contains(player))
         {
-            if (player.IsOnFloor())
+            // if (player.IsOnFloor())
+            // {
+            //     playersInTriggerArea.Add(player);
+            // }
+            // else
             {
-                playersInTriggerArea.Add(player);
-            }
-            else
-            {
+                GD.Print("Started coroutine");
                 StartGroundedCheckCoroutine(player);
             }
         }
@@ -138,8 +139,10 @@ public partial class LevelCamera : Node2D
     {
         if (body is Player player)
         {
-            CallDeferred(nameof(EmitPlayerHitKillzone), player);
-            GD.Print($"{player} has died");
+            GD.Print($"Player {player.Name} entered kill zone");
+            player.Die();
+            EmitSignal(SignalName.PlayerHitKillZone, player);
+            GD.Print($"Player {player.Name} killed");
         }
     }
 
@@ -169,7 +172,6 @@ public partial class LevelCamera : Node2D
             if (easyModeComponent.ShouldTriggerCameraMovement(playersInTriggerArea.Count, currentPathPointIndex,
             gameManager.UpdateTotalPlayers()))
             {
-                GD.Print($"\t\tplayers in trigger area: {playersInTriggerArea.Count}");
                 StartCameraMovement();
             }
         }
@@ -231,6 +233,7 @@ public partial class LevelCamera : Node2D
         {
             if (player.IsOnFloor() && upwardTrigger.OverlapsBody(player))
             {
+                GD.Print("Player in floor inside coroutine");
                 playersInTriggerArea.Add(player);
                 CheckPlayerThreshold();
                 UpdateEasyModeRequiredPlayersTextLabel();

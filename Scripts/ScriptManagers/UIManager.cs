@@ -56,15 +56,15 @@ public partial class UIManager : Node
 
     private void OnPlayerDied(string displayName, string userID, string teamAbbrev)
     {
-        GD.Print($"UIManager: Player joined - Name: {displayName}, ID: {userID}, Team: {teamAbbrev}");
-        try
-        {
-            teamScoresDisplay.AddTeamIfNotExists(teamAbbrev);
-        }
-        catch (Exception e)
-        {
-            GD.PrintErr($"UIManager: Error in OnPlayerJoined - {e.Message}\n{e.StackTrace}");
-        }
+        // GD.Print($"UIManager: Player joined - Name: {displayName}, ID: {userID}, Team: {teamAbbrev}");
+        // try
+        // {
+        //     teamScoresDisplay.AddTeamIfNotExists(teamAbbrev);
+        // }
+        // catch (Exception e)
+        // {
+        //     GD.PrintErr($"UIManager: Error in OnPlayerJoined - {e.Message}\n{e.StackTrace}");
+        // }
         informationDisplay.AddDiedMessage(displayName, teamAbbrev);
     }
 }

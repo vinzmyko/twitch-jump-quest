@@ -12,7 +12,7 @@
 
 [sub_resource type="Curve2D" id="Curve2D_40v1r"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -272, 0, 0, 0, 0, 1, -538, 0, 0, 0, 0, 0, -810, 0, 0, 0, 0, -3, -1027, 0, 0, 0, 0, -2, -1275, 0, 0, 0, 0, -4, -1494, 0, 0, 0, 0, -4, -1737, 0, 0, 0, 0, 1, -1983, 0, 0, 0, 0, -4, -2214, 0, 0, 0, 0, -4, -2462, 0, 0, 0, 0, 1, -2737, 0, 0, 0, 0, 0, -2953, 0, 0, 0, 0, 1, -3179, 0, 0, 0, 0, 0, -3385, 0, 0, 0, 0, -4, -3596)
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -272, 0, 0, 0, 0, 1, -518, 0, 0, 0, 0, 0, -800, 0, 0, 0, 0, -3, -1027, 0, 0, 0, 0, -2, -1275, 0, 0, 0, 0, -4, -1494, 0, 0, 0, 0, -4, -1737, 0, 0, 0, 0, 1, -1983, 0, 0, 0, 0, -4, -2214, 0, 0, 0, 0, -4, -2462, 0, 0, 0, 0, 1, -2737, 0, 0, 0, 0, 0, -2953, 0, 0, 0, 0, 1, -3179, 0, 0, 0, 0, 0, -3385, 0, 0, 0, 0, -4, -3596)
 }
 point_count = 16
 
@@ -429,34 +429,10 @@ position = Vector2(337, -3276)
 position = Vector2(521, -3159)
 
 [node name="PlayerSpawns" type="Node2D" parent="."]
-position = Vector2(580, 387)
-
-[node name="Marker2D" type="Marker2D" parent="PlayerSpawns"]
-position = Vector2(-303, 132)
-
-[node name="Marker2D7" type="Marker2D" parent="PlayerSpawns"]
-position = Vector2(-249, 132)
-
-[node name="Marker2D6" type="Marker2D" parent="PlayerSpawns"]
-position = Vector2(-190, 136)
+position = Vector2(610, 85)
 
 [node name="Marker2D5" type="Marker2D" parent="PlayerSpawns"]
-position = Vector2(-103, 139)
-
-[node name="Marker2D4" type="Marker2D" parent="PlayerSpawns"]
-position = Vector2(-26, 140)
-
-[node name="Marker2D2" type="Marker2D" parent="PlayerSpawns"]
-position = Vector2(44, 137)
-
-[node name="Marker2D3" type="Marker2D" parent="PlayerSpawns"]
-position = Vector2(111, 136)
-
-[node name="Marker2D8" type="Marker2D" parent="PlayerSpawns"]
-position = Vector2(153, 133)
-
-[node name="Marker2D9" type="Marker2D" parent="PlayerSpawns"]
-position = Vector2(210, 121)
+position = Vector2(158, 220)
 
 [node name="LevelCamera" parent="." instance=ExtResource("8_f78xn")]
 position = Vector2(579, 404)

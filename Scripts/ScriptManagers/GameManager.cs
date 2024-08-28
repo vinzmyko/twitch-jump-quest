@@ -90,7 +90,7 @@ public partial class GameManager : Node
         levelNode.GetNode<LevelCamera>("LevelCamera").PlayerHitKillZone += (Player player) =>
         {
             player.QueueFree();
-            player.Die();
+            // player.Die();
             GD.Print($"{player} info has been tracked");
             AddToStatTrackingList(player);
             UpdateTotalPlayers();

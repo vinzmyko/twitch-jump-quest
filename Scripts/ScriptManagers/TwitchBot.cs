@@ -131,16 +131,11 @@ namespace UNLTeamJumpQuest.TwitchIntegration
             {
                 case "controls":
                     client.SendMessage(settingsManager.GetTwitchUserName(), 
-                        "tldr: https://imgur.com/a/controls-TMPwPqw " +
-                        "<command> <degrees> <power>, if power is ommited it will be defaulted as 100%.\n " +
-                        "Degrees are from 0 - 90 using 'l' & 'r' or -90 to 90 using 'j', power is 0 to 100. Values will be clamped to follow this rule.\n" +
-                        "Example commands:\n" +
-                        "Jump straight up: 'u', 'j0', 'l0', 'r0'\n" +
-                        "45 degrees to the left: 'l45', 'j-45'\n" +
-                        "45 degress to the right: 'r45', 'j45'");
+                        "advanced controls: https://imgur.com/a/controls-TMPwPqw " +
+                        "<direction> <degrees> <power>");
                     break;
                 case "teams":
-                    client.SendMessage(settingsManager.GetTwitchUserName(), "T4T, GGEL, CHD, BIS, ICW, HVC, AST, FF, CB");
+                    client.SendMessage(settingsManager.GetTwitchUserName(), "Type a team abbreviation for this seasons current UNL team roster.");
                     break;
                 case "help":
                     client.SendMessage(settingsManager.GetTwitchUserName(), "Commands: !controls, !teams");

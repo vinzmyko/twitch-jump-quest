@@ -428,12 +428,6 @@ position = Vector2(337, -3276)
 [node name="DebugSpawnMarker2D" type="Marker2D" parent="."]
 position = Vector2(521, -3159)
 
-[node name="PlayerSpawns" type="Node2D" parent="."]
-position = Vector2(610, 85)
-
-[node name="Marker2D5" type="Marker2D" parent="PlayerSpawns"]
-position = Vector2(158, 220)
-
 [node name="LevelCamera" parent="." instance=ExtResource("8_f78xn")]
 position = Vector2(579, 404)
 
@@ -442,3 +436,6 @@ curve = SubResource("Curve2D_40v1r")
 
 [node name="PathFollow2D" type="PathFollow2D" parent="LevelCamera/Path2D"]
 rotation = -1.5708
+
+[node name="PlayerSpawns" type="Node2D" parent="."]
+position = Vector2(580, 387)

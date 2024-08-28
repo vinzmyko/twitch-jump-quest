@@ -17,7 +17,6 @@ public partial class TeamScoresDisplay : Control
         base._Ready();
 
         levelManager = GetNode<LevelManager>("/root/LevelManager");
-        GD.Print($"TeamScoresDisplay: LevelManager reference obtained: {(levelManager != null ? "Yes" : "No")}");
         settingsManager = GetNode<SettingsManager>("/root/SettingsManager");
 
         teamsVBoxContainer = GetNode<VBoxContainer>("PanelContainer/VBoxContainer");
@@ -25,7 +24,6 @@ public partial class TeamScoresDisplay : Control
 
     public void AddTeamIfNotExists(string teamAbbrev)
     {
-        GD.Print($"TeamScoresDisplay: Attempting to add team {teamAbbrev}");
         if (levelManager == null || levelManager.teamScores == null)
         {
             GD.PrintErr($"TeamScoresDisplay: levelManager or teamScores is null for team {teamAbbrev}");
@@ -57,7 +55,6 @@ public partial class TeamScoresDisplay : Control
     public void UpdateTeamScore(string teamAbbrev, int teamScore)
     {
         string upperTeamAbbrev = teamAbbrev.ToUpper();
-        GD.Print($"TeamScoresDisplay: Updating score for team {upperTeamAbbrev} to {teamScore}");
 
         if (!teamPositionDictionary.ContainsKey(upperTeamAbbrev))
         {

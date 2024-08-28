@@ -213,7 +213,7 @@ public partial class LevelManager : Node
     public int GetPlatformId(Vector2I cellPos)
     {
         int platformId = platformIdentifier.GetPlatformId(cellPos);
-        GD.Print($"GetPlatformId called for cell {cellPos}, returned ID: {platformId}");
+        // GD.Print($"GetPlatformId called for cell {cellPos}, returned ID: {platformId}");
         return platformId;
     }
 

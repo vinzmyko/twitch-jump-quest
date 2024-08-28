@@ -16,8 +16,8 @@ public partial class Player : CharacterBody2D
     public delegate void ComboStreakingEventHandler(Player player, int comboStreak);
     [Signal]
     public delegate void ScoreUpdatedEventHandler(string teamAbbrev, int points);
-	AnimatedSprite2D animatedSprite;
-    Label displayLabel;
+	private AnimatedSprite2D animatedSprite;
+    private Label displayLabel;
 
     [Export]
     private float distanceForHeadOnFloor = 225; // Base jump tiles is 8 or 128px
@@ -541,5 +541,15 @@ public partial class Player : CharacterBody2D
             teamColours[3] = team.TeamColours.ArmourMedium;
             teamColours[4] = team.TeamColours.ArmourDark;
         }
+    }
+
+    public void OnlyShowDisplayName()
+    {
+        displayLabel.Visible = true;
+    }
+
+    public void OnlyHideDisplayName()
+    {
+        displayLabel.Visible = false;
     }
 }

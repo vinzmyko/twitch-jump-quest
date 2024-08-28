@@ -14,6 +14,8 @@ public partial class SelectLevel : Control
     private CheckButton EasyModeToggleButton;
     [Export]
     private CheckButton autoPlayToggleButton;
+    [Export]
+    private CheckButton tillEveryoneDiesButton;
     private GameManager gameManager;
 
     public override void _Ready()
@@ -34,8 +36,10 @@ public partial class SelectLevel : Control
         };
         EasyModeToggleButton.Toggled += (bool toggledOn) => {gameManager.easyMode = toggledOn;};
         autoPlayToggleButton.Toggled += (bool toggledOn) => {gameManager.autoPlay = toggledOn;};
+        tillEveryoneDiesButton.Toggled += (bool toggledOn) => {gameManager.tillEveryoneDies = toggledOn;};
 
         EasyModeToggleButton.ButtonPressed = gameManager.easyMode;
         autoPlayToggleButton.ButtonPressed = gameManager.autoPlay;
+        tillEveryoneDiesButton.ButtonPressed = gameManager.tillEveryoneDies;
     }
 }

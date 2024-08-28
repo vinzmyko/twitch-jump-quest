@@ -31,6 +31,7 @@ public partial class GameManager : Node
     public bool easyMode = false;
     public bool autoPlay = false;
     public bool quitNextRound = false;
+    public bool tillEveryoneDies = false;
 
     public void ResetPlayers()
     {
@@ -94,9 +95,21 @@ public partial class GameManager : Node
             player.QueueFree();
             UpdateTotalPlayers();
             totalPlayers--;
-            if (totalPlayers <= 1)
+
+            if (tillEveryoneDies)
             {
-                EndGame();
+                GD.Print($"tillEveryoneDies: True, TotalPlayers{totalPlayers}");
+                if (totalPlayers <= 0)
+                {
+                    EndGame();
+                }
+            }
+            else
+            {
+                if (totalPlayers <= 1)
+                {
+                    EndGame();
+                }
             }
         };
     }

@@ -61,6 +61,7 @@ public partial class EndGameScreen : Control
     {
         levelManager.teamScores.ClearTeams();
         gameManager.StartNewGame();
+        GD.Print("Game state reset. Team scores cleared and new game started.");
 
         if (gameManager.quitNextRound)
         {

@@ -78,8 +78,10 @@ public partial class TeamScoresDisplay : Control
         }
 
         int playerCount = levelManager.teamScores.GetTeamPlayerCount(upperTeamAbbrev);
-        teamScoreLabel.Text = $"{upperTeamAbbrev.PadRight(4)}\t[{playerCount}] -\t{teamScore:D6}";
-        teamScoreLabel.teamScore = teamScore;
+        int currentScore = teamScoreLabel.teamScore;
+        int newScore = Mathf.Max(currentScore, teamScore); 
+        teamScoreLabel.Text = $"{upperTeamAbbrev.PadRight(4)}\t[{playerCount}] -\t{newScore:D6}";
+        teamScoreLabel.teamScore = newScore;
 
         SortTeamScores();
     }

@@ -58,6 +58,7 @@ public partial class GameManager : Node
         if (playerStatsInfo.Contains(new PlayerInfo(player)))
             return;
         playerStatsInfo.Add(new PlayerInfo(player));
+        GD.Print($"Added player {player.displayName} to stat tracking list. Total players: {playerStatsInfo.Count}");
     }
 
     public override void _Ready()
@@ -89,10 +90,8 @@ public partial class GameManager : Node
         gameTimer.gameTimeFinished += EndGame;
         levelNode.GetNode<LevelCamera>("LevelCamera").PlayerHitKillZone += (Player player) =>
         {
-            player.QueueFree();
-            // player.Die();
-            GD.Print($"{player} info has been tracked");
             AddToStatTrackingList(player);
+            player.QueueFree();
             UpdateTotalPlayers();
             totalPlayers--;
             if (totalPlayers <= 1)

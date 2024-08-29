@@ -5,7 +5,6 @@
         "body": [
             "public override void _Ready()",
             "{",
-			"\tbase._Ready();",
             "\t$0",
             "}"
         ],
@@ -17,7 +16,6 @@
         "body": [
             "public override void _PhysicsProcess(double delta)",
             "{",
-			"\tbase._PhysicsProcess(delta);",
             "\t$0",
             "}"
         ],

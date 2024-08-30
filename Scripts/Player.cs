@@ -160,7 +160,7 @@ public partial class Player : CharacterBody2D
             {
                 comboStreak = combo;
             }
-            if (combo >= 7 && combo > comboStreak)
+            if (combo >= 10 && combo >= comboStreak)
             {
                 EmitSignal(SignalName.ComboStreaking, this, comboStreak);
                 comboMultiplier = 1.0f + (combo / 100.0f);

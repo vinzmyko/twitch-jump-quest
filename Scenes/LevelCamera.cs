@@ -102,7 +102,6 @@ public partial class LevelCamera : Node2D
             // }
             // else
             {
-                GD.Print("Started coroutine");
                 StartGroundedCheckCoroutine(player);
             }
         }

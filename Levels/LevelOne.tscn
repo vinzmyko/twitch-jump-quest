@@ -421,7 +421,7 @@ position = Vector2(364, 558)
 position = Vector2(337, -3276)
 
 [node name="DebugSpawnMarker2D" type="Marker2D" parent="."]
-position = Vector2(521, -3159)
+position = Vector2(325, 531)
 
 [node name="PlayerSpawns" type="Node2D" parent="."]
 position = Vector2(580, 387)

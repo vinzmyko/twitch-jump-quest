@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 
@@ -56,9 +57,13 @@ public partial class LevelCamera : Node2D
         var root = GetTree().Root;
         var levelNode = root.GetChild(root.GetChildCount() - 1);
         gameTimer = levelNode.GetNode<GameTimer>("CanvasLayer/GameTimer");
-        gameTimer.waitTimeFinished += () => 
+        gameTimer.waitTimeFinished += async () => 
         { 
-            upwardTrigger.GetNode<CollisionShape2D>("CollisionShape2D").Disabled = false;
+            var timer = GetTree().CreateTimer(0.1); 
+            timer.Timeout += () =>
+            {
+                upwardTrigger.GetNode<CollisionShape2D>("CollisionShape2D").Disabled = false;
+            };
             if (gameManager.easyMode)
             {
                 gameTimer.EasyModeActivated();
@@ -82,12 +87,23 @@ public partial class LevelCamera : Node2D
 
     private async void OnPlayerDied(string displayName, string userID, string teamAbbrev)
     {
-        await ToSignal(GetTree().CreateTimer(0.25f), "timeout");
+        await ToSignal(GetTree().CreateTimer(0.35f), "timeout");
+        if (!IsInstanceValid(this) || IsQueuedForDeletion())
+        {
+            GD.PrintErr($"LevelCamera was disposed when trying to update UI after {displayName} died");
+            return;
+        }
         UpdateEasyModeRequiredPlayersTextLabel();
     }
 
     public override void _PhysicsProcess(double delta)
     {
+        if (!IsInstanceValid(this) || IsQueuedForDeletion())
+        {
+            // LevelCamera is being disposed, stop processing
+            return;
+        }
+
         base._PhysicsProcess(delta);
         UpdateCameraMovement(delta);
     }
@@ -230,18 +246,40 @@ public partial class LevelCamera : Node2D
 
         while (elapsedTime < maxWaitTime)
         {
-            if (player.IsOnFloor() && upwardTrigger.OverlapsBody(player))
+            if (!IsInstanceValid(player))
             {
-                GD.Print("Player in floor inside coroutine");
-                playersInTriggerArea.Add(player);
-                CheckPlayerThreshold();
-                UpdateEasyModeRequiredPlayersTextLabel();
+                GD.PrintErr($"Player {player.Name} was disposed during grounded check coroutine at time {elapsedTime}");
+                return;
+            }
+
+            if (!IsInstanceValid(upwardTrigger))
+            {
+                GD.PrintErr($"UpwardTrigger was disposed during grounded check coroutine for player {player.Name} at time {elapsedTime}");
+                return;
+            }
+
+            try
+            {
+                if (player.IsOnFloor() && upwardTrigger.OverlapsBody(player))
+                {
+                    GD.Print($"Player {player.Name} in floor inside coroutine at time {elapsedTime}");
+                    playersInTriggerArea.Add(player);
+                    CheckPlayerThreshold();
+                    UpdateEasyModeRequiredPlayersTextLabel();
+                    return;
+                }
+            }
+            catch (ObjectDisposedException e)
+            {
+                GD.PrintErr($"ObjectDisposedException in StartGroundedCheckCoroutine for player {player.Name}: {e.Message}");
                 return;
             }
 
             await ToSignal(GetTree(), "physics_frame");
             elapsedTime += (float)GetPhysicsProcessDeltaTime();
         }
+
+        GD.Print($"Grounded check coroutine for player {player.Name} timed out after {maxWaitTime} seconds");
     }
 
     private void MoveCameraWithArea2Ds(float cameraSpeed, bool includeUpwardTrigger = true)

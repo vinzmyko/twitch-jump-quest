@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
@@ -135,7 +136,7 @@ namespace UNLTeamJumpQuest.TwitchIntegration
                         "<direction> <degrees> <power>");
                     break;
                 case "teams":
-                    client.SendMessage(settingsManager.GetTwitchUserName(), "Type a team abbreviation for this seasons current UNL team roster.");
+                    client.SendMessage(settingsManager.GetTwitchUserName(), $"List of team abbreviations: {GetTeamNamesFromSystem()}");
                     break;
                 case "help":
                     client.SendMessage(settingsManager.GetTwitchUserName(), "Commands: !controls, !teams");
@@ -151,6 +152,12 @@ namespace UNLTeamJumpQuest.TwitchIntegration
                         break;
                 }
             }
+        }
+
+        private string GetTeamNamesFromSystem()
+        {
+            var teams = settingsManager.UNLTeams.Teams;
+            return string.Join(", ", teams.Select(team => team.TeamAbbreviation));
         }
 
         private void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)

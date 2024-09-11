@@ -100,7 +100,6 @@ public partial class LevelCamera : Node2D
     {
         if (!IsInstanceValid(this) || IsQueuedForDeletion())
         {
-            // LevelCamera is being disposed, stop processing
             return;
         }
 
@@ -112,14 +111,7 @@ public partial class LevelCamera : Node2D
     {
         if (body is Player player && !playersInTriggerArea.Contains(player))
         {
-            // if (player.IsOnFloor())
-            // {
-            //     playersInTriggerArea.Add(player);
-            // }
-            // else
-            {
-                StartGroundedCheckCoroutine(player);
-            }
+            StartGroundedCheckCoroutine(player);
         }
     }
 
@@ -129,7 +121,6 @@ public partial class LevelCamera : Node2D
         {
             int threshold = easyModeComponent.CalculatePlayerThreshold(gameManager.UpdateTotalPlayers(), currentPathPointIndex);
             gameTimer.ChangeRequiredPlayersLabelText($"{playersInTriggerArea.Count} / {threshold}");
-            // GD.Print($"Updated label: {playersInTriggerArea.Count} / {threshold} (Total players: {totalPlayers})");
         }
     }
 
